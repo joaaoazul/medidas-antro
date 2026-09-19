@@ -16,7 +16,9 @@ const ALFABETO = "abcdefghjkmnpqrstuvwxyz23456789";
 
 function palavraPasseTemporaria(): string {
   const grupo = () =>
-    Array.from({ length: 4 }, () => ALFABETO[randomInt(ALFABETO.length)]).join("");
+    Array.from({ length: 4 }, () => ALFABETO[randomInt(ALFABETO.length)]).join(
+      "",
+    );
   return `${grupo()}-${grupo()}-${grupo()}`;
 }
 
@@ -95,7 +97,10 @@ export async function deleteAccount(userId: string): Promise<AdminState> {
   // Sem isto, um administrador distraido fica sem forma de entrar na area de
   // administracao -- e sem forma de a recuperar sem ir ao SQL Editor.
   if (userId === viewer.id) {
-    return { status: "erro", message: "Nao podes apagar a tua propria conta aqui." };
+    return {
+      status: "erro",
+      message: "Nao podes apagar a tua propria conta aqui.",
+    };
   }
 
   const admin = createAdminClient();

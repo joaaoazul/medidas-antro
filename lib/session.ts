@@ -42,7 +42,11 @@ export async function getViewer(): Promise<Viewer | null> {
       .select("password_temporaria")
       .eq("user_id", user.id)
       .maybeSingle(),
-    supabase.from("admins").select("user_id").eq("user_id", user.id).maybeSingle(),
+    supabase
+      .from("admins")
+      .select("user_id")
+      .eq("user_id", user.id)
+      .maybeSingle(),
   ]);
 
   return {

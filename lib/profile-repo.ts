@@ -1,15 +1,6 @@
 import { createClient } from "./supabase/server";
-import {
-  VERSAO_PRIVACIDADE,
-  VERSAO_TERMOS,
-} from "./legal";
-import type {
-  Consent,
-  Objetivo,
-  Profile,
-  ProfileInput,
-  Sexo,
-} from "./profile";
+import { VERSAO_PRIVACIDADE, VERSAO_TERMOS } from "./legal";
+import type { Consent, Objetivo, Profile, ProfileInput, Sexo } from "./profile";
 
 /** Leitura e escrita de perfis e consentimentos. Sempre com a sessao de quem navega. */
 
@@ -54,10 +45,17 @@ export async function getProfile(userId: string): Promise<Profile | null> {
   return data ? rowToProfile(data as unknown as ProfileRow) : null;
 }
 
-/** Grava o perfil e da o onboarding por concluido. */
+/**
+ * Grava o perfil.
+ *
+ * `concluirOnboarding` so e verdadeiro na primeira vez. Numa edicao nas
+ * definicoes tem de ser falso: reescrever onboarding_em a cada gravacao
+ * apagava a data em que a pessoa entrou de facto, que e a unica que interessa.
+ */
 export async function saveProfile(
   userId: string,
   input: ProfileInput,
+  { concluirOnboarding = false }: { concluirOnboarding?: boolean } = {},
 ): Promise<void> {
   const supabase = await createClient();
   const { error } = await supabase.from("profiles").upsert(
@@ -71,20 +69,24 @@ export async function saveProfile(
       objetivo_peso: input.objetivoPeso,
       treinos_por_semana: input.treinosPorSemana,
       notas: input.notas,
-      onboarding_em: new Date().toISOString(),
+      ...(concluirOnboarding
+        ? { onboarding_em: new Date().toISOString() }
+        : {}),
     },
     { onConflict: "user_id" },
   );
 
-  if (error) throw new Error(`Nao foi possivel guardar o perfil: ${error.message}`);
+  if (error)
+    throw new Error(`Nao foi possivel guardar o perfil: ${error.message}`);
 }
 
 export async function getConsents(userId: string): Promise<Consent[]> {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("consents")
-    .select("documento, versao")
-    .eq("user_id", userId);
+    .select("documento, versao, aceite_em")
+    .eq("user_id", userId)
+    .order("aceite_em", { ascending: false });
 
   if (error)
     throw new Error(`Nao foi possivel ler os consentimentos: ${error.message}`);
@@ -105,6 +107,7 @@ export async function recordConsent(userId: string): Promise<void> {
   ]);
 
   if (error)
-    throw new Error(`Nao foi possivel registar o consentimento: ${error.message}`);
+    throw new Error(
+      `Nao foi possivel registar o consentimento: ${error.message}`,
+    );
 }
-

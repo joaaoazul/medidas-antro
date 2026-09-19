@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 export type Tab = "hoje" | "evolucao" | "historico";
 
 export const TABS: { key: Tab; label: string }[] = [
@@ -170,5 +172,39 @@ export function ThemeButton({
         )}
       </svg>
     </button>
+  );
+}
+
+/**
+ * Atalho para as definicoes, no cabecalho.
+ *
+ * Uma ligacao e nao um quarto separador: as definicoes visitam-se de vez em
+ * quando, e um separador fixo no fundo e espaco tirado as tres vistas que se
+ * usam todos os dias.
+ */
+export function SettingsLink() {
+  return (
+    <Link
+      href="/conta"
+      aria-label="Definicoes da conta"
+      title="Definicoes da conta"
+      className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border"
+      style={{ borderColor: "var(--border)", color: "var(--text-secondary)" }}
+    >
+      <svg
+        width="18"
+        height="18"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.75"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        aria-hidden
+      >
+        <circle cx="12" cy="12" r="3" />
+        <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 11-4 0v-.09a1.65 1.65 0 00-1.08-1.51 1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 110-4h.09a1.65 1.65 0 001.51-1.08 1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 114 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V10a1.65 1.65 0 001.51 1H21a2 2 0 110 4h-.09a1.65 1.65 0 00-1.51 1z" />
+      </svg>
+    </Link>
   );
 }

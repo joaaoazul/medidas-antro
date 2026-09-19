@@ -14,7 +14,8 @@ export default async function AdminPage() {
   const admin = createAdminClient();
   const { data, error } = await admin.auth.admin.listUsers({ perPage: 200 });
 
-  if (error) throw new Error(`Nao foi possivel listar as contas: ${error.message}`);
+  if (error)
+    throw new Error(`Nao foi possivel listar as contas: ${error.message}`);
 
   // Estado das contas numa so leitura, em vez de uma por conta.
   const { data: estados } = await admin

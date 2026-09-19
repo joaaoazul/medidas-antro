@@ -43,7 +43,10 @@ export default function AuthForm() {
       <Card className="p-5">
         <form action={formAction} className="flex flex-col gap-3">
           <label className="flex flex-col gap-1.5">
-            <span className="text-xs font-medium" style={{ color: chrome.inkSecondary }}>
+            <span
+              className="text-xs font-medium"
+              style={{ color: chrome.inkSecondary }}
+            >
               Email
             </span>
             <input
@@ -57,7 +60,10 @@ export default function AuthForm() {
           </label>
 
           <label className="flex flex-col gap-1.5">
-            <span className="text-xs font-medium" style={{ color: chrome.inkSecondary }}>
+            <span
+              className="text-xs font-medium"
+              style={{ color: chrome.inkSecondary }}
+            >
               Palavra-passe
             </span>
             <input
@@ -95,7 +101,9 @@ export default function AuthForm() {
       >
         <p>
           Esqueceste-te da palavra-passe, ou precisas de conta? Fala com{" "}
-          <span style={{ color: chrome.inkSecondary }}>{RESPONSAVEL.email}</span>
+          <span style={{ color: chrome.inkSecondary }}>
+            {RESPONSAVEL.email}
+          </span>
           . As contas desta aplicacao sao criadas pelo administrador.
         </p>
         <p className="flex justify-center gap-4">

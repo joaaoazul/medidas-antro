@@ -3,7 +3,12 @@
 import { useMemo } from "react";
 import { todayISO } from "@/lib/dates";
 import { HERO_METRIC, METRICS, METRIC_BY_ID } from "@/lib/metrics";
-import { buildSeries, deltaOver, filterByRange, latestReading } from "@/lib/series";
+import {
+  buildSeries,
+  deltaOver,
+  filterByRange,
+  latestReading,
+} from "@/lib/series";
 import type { Entry } from "@/lib/types";
 import EntryForm from "./EntryForm";
 import { HeroCard, MetricCard } from "./MetricCard";
@@ -52,7 +57,10 @@ export default function TodayView({
     <div className="flex flex-col gap-4">
       {entries.length === 0 ? (
         <Card className="p-6">
-          <p className="text-center text-sm" style={{ color: chrome.inkSecondary }}>
+          <p
+            className="text-center text-sm"
+            style={{ color: chrome.inkSecondary }}
+          >
             Ainda nao ha nada registado. Preenche as medidas de hoje aqui em
             baixo -- basta uma para comecar.
           </p>
@@ -69,7 +77,9 @@ export default function TodayView({
 
           <p
             className="text-center text-sm"
-            style={{ color: registeredToday ? chrome.inkSecondary : chrome.muted }}
+            style={{
+              color: registeredToday ? chrome.inkSecondary : chrome.muted,
+            }}
           >
             {registeredToday
               ? "Ja registaste hoje."

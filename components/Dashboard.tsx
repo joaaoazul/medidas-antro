@@ -4,8 +4,7 @@ import { useState } from "react";
 import { longLabel, todayISO } from "@/lib/dates";
 import type { Entry } from "@/lib/types";
 import HistoryView from "./HistoryView";
-import { BottomNav, type Tab, ThemeButton, TopTabs } from "./Nav";
-import SignOutButton from "./SignOutButton";
+import { BottomNav, SettingsLink, type Tab, ThemeButton, TopTabs } from "./Nav";
 import { CHROME, useTheme } from "./theme";
 import TodayView from "./TodayView";
 import TrendsView from "./TrendsView";
@@ -20,17 +19,13 @@ import TrendsView from "./TrendsView";
  */
 export default function Dashboard({
   entries,
-  email,
   nome,
   objetivoPeso,
-  admin,
 }: {
   entries: Entry[];
-  email: string;
   nome: string | null;
   /** Peso pretendido, do perfil: vira linha de referencia no grafico do peso. */
   objetivoPeso: number | null;
-  admin: boolean;
 }) {
   const { mode, toggle } = useTheme();
   const chrome = CHROME[mode];
@@ -63,7 +58,7 @@ export default function Dashboard({
           </div>
           <TopTabs active={tab} onChange={setTab} />
           <ThemeButton mode={mode} onToggle={toggle} />
-          <SignOutButton compact />
+          <SettingsLink />
         </div>
       </header>
 
@@ -74,9 +69,7 @@ export default function Dashboard({
         {tab === "evolucao" ? (
           <TrendsView entries={entries} objetivoPeso={objetivoPeso} />
         ) : null}
-        {tab === "historico" ? (
-          <HistoryView entries={entries} email={email} admin={admin} />
-        ) : null}
+        {tab === "historico" ? <HistoryView entries={entries} /> : null}
       </main>
 
       <BottomNav active={tab} onChange={setTab} />

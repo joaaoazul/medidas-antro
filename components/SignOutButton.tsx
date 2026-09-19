@@ -54,7 +54,11 @@ function Submit({ compact }: { compact: boolean }) {
  * e um POST, e nao um GET que um pre-carregamento de link ou um scanner de
  * antivirus pudesse disparar sozinho.
  */
-export default function SignOutButton({ compact = false }: { compact?: boolean }) {
+export default function SignOutButton({
+  compact = false,
+}: {
+  compact?: boolean;
+}) {
   return (
     <form action={signOut}>
       <Submit compact={compact} />

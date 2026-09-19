@@ -98,8 +98,22 @@ Três separadores, um por pergunta:
 - Uma ficha por dia no telemóvel, tabela no ecrã grande, com apagar.
 - Exportar JSON/CSV e importar JSON, para cópias de segurança e para levar os
   dados para outro lado.
-- A conta: email, mudar a palavra-passe, terminar sessão e, para o
-  administrador, a ligação à administração.
+
+**Definições** (`/conta`, pela engrenagem no cabeçalho) — tudo o que é da conta.
+Ficam fora dos separadores de propósito: são coisas que se visitam de vez em
+quando, e algumas não se desfazem, por isso não convém tê-las ao lado do registo
+do dia-a-dia.
+- Editar nome, data de nascimento, sexo, altura, objetivo, peso pretendido,
+  treinos por semana e notas.
+- Mudar a palavra-passe.
+- Ver os consentimentos dados, com versão e data.
+- Exportar os registos e apagá-los todos (com confirmação escrita).
+- Terminar sessão e, para o administrador, o atalho para a administração.
+
+**O que exige o administrador:** mudar o email, apagar a conta e retirar o
+consentimento. O email é a identidade de entrada e mudá-lo pela app exigiria
+confirmação por email, que esta app não envia; apagar a conta não tem desfazer e
+leva as medidas todas. Ficam a um pedido de distância, não a um toque.
 
 ## Contas, consentimento e onboarding
 

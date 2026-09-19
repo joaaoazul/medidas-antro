@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import LegalDoc, { Lista, Seccao } from "@/components/LegalDoc";
 import { IDADE_MINIMA, RESPONSAVEL, VERSAO_PRIVACIDADE } from "@/lib/legal";
 
-export const metadata: Metadata = { title: "Politica de Privacidade - Medidas" };
+export const metadata: Metadata = {
+  title: "Politica de Privacidade - Medidas",
+};
 
 export default function PrivacidadePage() {
   return (
@@ -26,15 +28,15 @@ export default function PrivacidadePage() {
               legivel, nem para o responsavel.
             </>,
             <>
-              <strong>Perfil:</strong> nome, data de nascimento, sexo (opcional),
-              altura, objetivo, peso pretendido, treinos por semana e as notas
-              que escreveres.
+              <strong>Perfil:</strong> nome, data de nascimento, sexo
+              (opcional), altura, objetivo, peso pretendido, treinos por semana
+              e as notas que escreveres.
             </>,
             <>
-              <strong>Medidas:</strong> peso, perimetro abdominal, percentagem de
-              gordura corporal, massa muscular e perimetros do peito, anca, braco
-              e coxa, cada um com a data a que dizem respeito, e a nota que
-              associares a esse dia.
+              <strong>Medidas:</strong> peso, perimetro abdominal, percentagem
+              de gordura corporal, massa muscular e perimetros do peito, anca,
+              braco e coxa, cada um com a data a que dizem respeito, e a nota
+              que associares a esse dia.
             </>,
             <>
               <strong>Consentimento:</strong> que documento aceitaste, em que
@@ -62,8 +64,8 @@ export default function PrivacidadePage() {
           O fundamento para os tratar e o{" "}
           <strong>teu consentimento explicito</strong>, ao abrigo do Artigo 9.o,
           n.o 2, alinea a). Para a existencia da conta em si, o fundamento e a
-          execucao do contrato entre ti e o responsavel, ao abrigo do Artigo 6.o,
-          n.o 1, alinea b).
+          execucao do contrato entre ti e o responsavel, ao abrigo do Artigo
+          6.o, n.o 1, alinea b).
         </p>
         <p>
           Podes retirar o consentimento a qualquer momento (ponto 8). Retirar o
@@ -80,8 +82,8 @@ export default function PrivacidadePage() {
         <p>
           Nao sao vendidos. Nao sao cedidos a terceiros para marketing. Nao
           alimentam perfis publicitarios. Nao sao usados para treinar modelos de
-          inteligencia artificial. Nao ha decisoes automatizadas nem definicao de
-          perfis com efeitos juridicos sobre ti.
+          inteligencia artificial. Nao ha decisoes automatizadas nem definicao
+          de perfis com efeitos juridicos sobre ti.
         </p>
       </Seccao>
 
@@ -99,8 +101,8 @@ export default function PrivacidadePage() {
               politica interna.
             </>,
             <>
-              <strong>Supabase</strong>, como subcontratante, que aloja a base de
-              dados e o servico de autenticacao. Os servidores deste projeto
+              <strong>Supabase</strong>, como subcontratante, que aloja a base
+              de dados e o servico de autenticacao. Os servidores deste projeto
               estao em Paris, na Uniao Europeia.
             </>,
           ]}
@@ -113,8 +115,8 @@ export default function PrivacidadePage() {
 
       <Seccao numero={6} titulo="Onde ficam guardados">
         <p>
-          Numa base de dados alojada pela Supabase, na regiao de Paris, dentro da
-          Uniao Europeia. A Supabase e uma entidade com sede fora do Espaco
+          Numa base de dados alojada pela Supabase, na regiao de Paris, dentro
+          da Uniao Europeia. A Supabase e uma entidade com sede fora do Espaco
           Economico Europeu; o tratamento esta abrangido pelo acordo de
           subcontratacao celebrado com o responsavel e pelas clausulas
           contratuais-tipo da Comissao Europeia, para o caso de algum acesso de
@@ -134,9 +136,9 @@ export default function PrivacidadePage() {
           separada.
         </p>
         <p>
-          Os registos de consentimento sao conservados enquanto forem necessarios
-          para demonstrar o cumprimento do RGPD, e no maximo cinco anos apos o
-          fim da conta.
+          Os registos de consentimento sao conservados enquanto forem
+          necessarios para demonstrar o cumprimento do RGPD, e no maximo cinco
+          anos apos o fim da conta.
         </p>
       </Seccao>
 
@@ -145,8 +147,8 @@ export default function PrivacidadePage() {
         <Lista
           itens={[
             <>
-              <strong>Aceder</strong> aos teus dados. A aplicacao ja to permite a
-              qualquer momento, no separador Historico.
+              <strong>Aceder</strong> aos teus dados. A aplicacao ja to permite
+              a qualquer momento, no separador Historico.
             </>,
             <>
               <strong>Corrigir</strong> o que estiver errado. Podes editar
@@ -157,8 +159,9 @@ export default function PrivacidadePage() {
               apagamento da conta pelo contacto abaixo.
             </>,
             <>
-              <strong>Portabilidade:</strong> levar os dados contigo. A aplicacao
-              exporta tudo em JSON e em CSV, formatos abertos, com um toque.
+              <strong>Portabilidade:</strong> levar os dados contigo. A
+              aplicacao exporta tudo em JSON e em CSV, formatos abertos, com um
+              toque.
             </>,
             <>
               <strong>Retirar o consentimento</strong> e opor-te ao tratamento.
@@ -175,9 +178,9 @@ export default function PrivacidadePage() {
           de um mes.
         </p>
         <p>
-          Se achares que os teus dados nao estao a ser tratados como devem, podes
-          apresentar reclamacao a Comissao Nacional de Protecao de Dados, em
-          www.cnpd.pt.
+          Se achares que os teus dados nao estao a ser tratados como devem,
+          podes apresentar reclamacao a Comissao Nacional de Protecao de Dados,
+          em www.cnpd.pt.
         </p>
       </Seccao>
 
@@ -192,8 +195,8 @@ export default function PrivacidadePage() {
         />
         <p>
           Nenhum sistema e inviolavel. Se houver uma violacao de dados com risco
-          para ti, serao cumpridos os prazos de notificacao previstos nos Artigos
-          33.o e 34.o do RGPD.
+          para ti, serao cumpridos os prazos de notificacao previstos nos
+          Artigos 33.o e 34.o do RGPD.
         </p>
       </Seccao>
 

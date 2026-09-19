@@ -149,14 +149,24 @@ export default function RelativeChart({
       <div className="h-64 w-full sm:h-80">
         {mounted && rows.length > 0 && metrics.length > 0 ? (
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={rows} margin={{ top: 8, right: 16, bottom: 4, left: 0 }}>
-              <CartesianGrid vertical={false} stroke={chrome.grid} strokeWidth={1} syncWithTicks />
+            <LineChart
+              data={rows}
+              margin={{ top: 8, right: 16, bottom: 4, left: 0 }}
+            >
+              <CartesianGrid
+                vertical={false}
+                stroke={chrome.grid}
+                strokeWidth={1}
+                syncWithTicks
+              />
               <XAxis
                 dataKey="t"
                 type="number"
                 scale="time"
                 domain={["dataMin", "dataMax"]}
-                tickFormatter={(t: number) => shortLabel(bucketAt(t, granularity))}
+                tickFormatter={(t: number) =>
+                  shortLabel(bucketAt(t, granularity))
+                }
                 tick={{ fill: chrome.muted, fontSize: 11 }}
                 tickLine={false}
                 axisLine={{ stroke: chrome.axis }}
@@ -173,9 +183,7 @@ export default function RelativeChart({
               <ReferenceLine y={0} stroke={chrome.axis} strokeWidth={1} />
               <Tooltip
                 cursor={{ stroke: chrome.axis, strokeWidth: 1 }}
-                content={
-                  <ChartTooltip metrics={metrics} mode={mode} />
-                }
+                content={<ChartTooltip metrics={metrics} mode={mode} />}
               />
               {metrics.map((id) => (
                 <Line

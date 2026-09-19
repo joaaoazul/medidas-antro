@@ -101,9 +101,11 @@ export function idadeEm(dataNascimento: string): number {
   return hoje.slice(5) < dataNascimento.slice(5) ? anos - 1 : anos;
 }
 
-
-export type Consent = { documento: "termos" | "privacidade"; versao: string };
-
+export type Consent = {
+  documento: "termos" | "privacidade";
+  versao: string;
+  aceite_em: string;
+};
 
 /** Falta aceitar a versao atual de algum dos documentos? */
 export function faltaConsentimento(consents: Consent[]): boolean {

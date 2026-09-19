@@ -36,7 +36,10 @@ export function SectionTitle({
 }) {
   return (
     <div className="mb-3">
-      <h2 className="text-base font-medium" style={{ color: "var(--text-primary)" }}>
+      <h2
+        className="text-base font-medium"
+        style={{ color: "var(--text-primary)" }}
+      >
         {children}
       </h2>
       {hint ? (

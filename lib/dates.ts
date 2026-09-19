@@ -44,8 +44,18 @@ export function monthKey(iso: string): string {
 }
 
 const MESES = [
-  "jan", "fev", "mar", "abr", "mai", "jun",
-  "jul", "ago", "set", "out", "nov", "dez",
+  "jan",
+  "fev",
+  "mar",
+  "abr",
+  "mai",
+  "jun",
+  "jul",
+  "ago",
+  "set",
+  "out",
+  "nov",
+  "dez",
 ];
 
 /** Rotulo curto para eixos e tabelas: "12 mar" ou "mar 25". */

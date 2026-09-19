@@ -158,11 +158,15 @@ export default function Onboarding({ email }: { email: string }) {
               .
             </Caixa>
 
-            <Caixa name="aceita_saude" checked={aceitaSaude} onChange={setAceitaSaude}>
+            <Caixa
+              name="aceita_saude"
+              checked={aceitaSaude}
+              onChange={setAceitaSaude}
+            >
               Consinto expressamente que os meus dados de saude -- peso, gordura
               corporal, massa muscular e perimetros -- sejam tratados para me
-              mostrarem a minha evolucao. Posso retirar este consentimento quando
-              quiser.
+              mostrarem a minha evolucao. Posso retirar este consentimento
+              quando quiser.
             </Caixa>
           </div>
 
@@ -263,7 +267,9 @@ export default function Onboarding({ email }: { email: string }) {
                   <Chip
                     key={o.key}
                     selected={objetivo === o.key}
-                    onClick={() => setObjetivo(objetivo === o.key ? null : o.key)}
+                    onClick={() =>
+                      setObjetivo(objetivo === o.key ? null : o.key)
+                    }
                   >
                     {o.label}
                   </Chip>
@@ -325,7 +331,12 @@ export default function Onboarding({ email }: { email: string }) {
 
         <div className="mt-5 flex gap-3">
           {passo > 0 ? (
-            <Button onClick={() => { setErroLocal(""); setPasso((p) => p - 1); }}>
+            <Button
+              onClick={() => {
+                setErroLocal("");
+                setPasso((p) => p - 1);
+              }}
+            >
               Voltar
             </Button>
           ) : null}

@@ -220,7 +220,8 @@ export function niceScale(points: Point[], tickCount = 5): Scale {
   const magnitude = 10 ** Math.floor(Math.log10(rawStep));
   // rawStep / magnitude fica sempre em [1, 10), por isso o 10 final garante
   // que ha sempre um passo escolhido.
-  const step = (NICE_STEPS.find((s) => s * magnitude >= rawStep) ?? 10) * magnitude;
+  const step =
+    (NICE_STEPS.find((s) => s * magnitude >= rawStep) ?? 10) * magnitude;
 
   /*
    * As marcas sao os multiplos do passo que caem DENTRO do dominio, e nao o

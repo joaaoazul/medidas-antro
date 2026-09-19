@@ -29,12 +29,15 @@ export async function GET(request: Request) {
     });
   }
 
-  return new Response(JSON.stringify({ metrics: METRICS.map((m) => m.id), entries }, null, 2), {
-    headers: {
-      "content-type": "application/json; charset=utf-8",
-      "content-disposition": `attachment; filename="medidas-${stamp}.json"`,
+  return new Response(
+    JSON.stringify({ metrics: METRICS.map((m) => m.id), entries }, null, 2),
+    {
+      headers: {
+        "content-type": "application/json; charset=utf-8",
+        "content-disposition": `attachment; filename="medidas-${stamp}.json"`,
+      },
     },
-  });
+  );
 }
 
 /** Aspas e virgulas numa nota partiriam a linha do CSV. */

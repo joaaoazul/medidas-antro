@@ -16,13 +16,7 @@ import { Button, Card, Disclosure, SectionTitle } from "./ui";
  */
 const DAILY: MetricId[] = ["peso", "abdomen", "gordura"];
 
-function Field({
-  metric,
-  mode,
-}: {
-  metric: Metric;
-  mode: "light" | "dark";
-}) {
+function Field({ metric, mode }: { metric: Metric; mode: "light" | "dark" }) {
   const chrome = CHROME[mode];
 
   return (
@@ -104,7 +98,9 @@ export default function EntryForm({
     const form = formRef.current;
     if (!form) return;
     for (const metric of METRICS) {
-      const field = form.elements.namedItem(metric.id) as HTMLInputElement | null;
+      const field = form.elements.namedItem(
+        metric.id,
+      ) as HTMLInputElement | null;
       if (field) {
         const value = existing?.values[metric.id] ?? null;
         field.value = value === null ? "" : String(value);
@@ -183,7 +179,10 @@ export default function EntryForm({
         </div>
 
         <div className="mt-3 sm:max-w-xs">
-          <Disclosure open={showAll} onToggle={() => setShowAll((open) => !open)}>
+          <Disclosure
+            open={showAll}
+            onToggle={() => setShowAll((open) => !open)}
+          >
             {showAll ? "Menos campos" : "Perimetros e nota"}
           </Disclosure>
         </div>

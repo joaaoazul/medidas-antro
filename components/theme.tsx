@@ -42,7 +42,11 @@ const subscribeToNothing = () => () => {};
 const onClient = () => true;
 const onServer = () => false;
 
-export function useTheme(): { mode: Mode; toggle: () => void; mounted: boolean } {
+export function useTheme(): {
+  mode: Mode;
+  toggle: () => void;
+  mounted: boolean;
+} {
   const mode = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
   // Os graficos so medem depois de existir DOM; este sinal adia-os ate la.
   const mounted = useSyncExternalStore(subscribeToNothing, onClient, onServer);

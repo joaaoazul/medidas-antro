@@ -65,7 +65,8 @@ export async function listEntries(): Promise<Entry[]> {
     .eq("user_id", userId)
     .order("date", { ascending: true });
 
-  if (error) throw new Error(`Nao foi possivel ler os registos: ${error.message}`);
+  if (error)
+    throw new Error(`Nao foi possivel ler os registos: ${error.message}`);
 
   return (data as unknown as Row[]).map(rowToEntry);
 }
@@ -80,7 +81,8 @@ export async function getEntry(date: string): Promise<Entry | null> {
     .eq("date", date)
     .maybeSingle();
 
-  if (error) throw new Error(`Nao foi possivel ler o registo: ${error.message}`);
+  if (error)
+    throw new Error(`Nao foi possivel ler o registo: ${error.message}`);
 
   return data ? rowToEntry(data as unknown as Row) : null;
 }
@@ -137,14 +139,33 @@ export async function importEntries(entries: EntryInput[]): Promise<number> {
 
   const { supabase, userId } = await requireUser();
 
-  const { error } = await supabase
-    .from("entries")
-    .upsert(
-      entries.map((entry) => toRow(entry, userId)),
-      { onConflict: "user_id,date" },
-    );
+  const { error } = await supabase.from("entries").upsert(
+    entries.map((entry) => toRow(entry, userId)),
+    { onConflict: "user_id,date" },
+  );
 
   if (error) throw new Error(`Nao foi possivel importar: ${error.message}`);
 
   return entries.length;
+}
+
+/**
+ * Apaga todos os registos de quem esta autenticado, mantendo a conta.
+ *
+ * Existe para quem quer recomecar do zero sem perder a conta, e para quem quer
+ * exercer o direito ao apagamento das medidas sem apagar tudo. A conta em si so
+ * o administrador apaga.
+ */
+export async function deleteAllEntries(): Promise<number> {
+  const { supabase, userId } = await requireUser();
+
+  const { data, error } = await supabase
+    .from("entries")
+    .delete()
+    .eq("user_id", userId)
+    .select("date");
+
+  if (error) throw new Error(`Nao foi possivel apagar: ${error.message}`);
+
+  return data?.length ?? 0;
 }

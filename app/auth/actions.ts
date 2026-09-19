@@ -110,6 +110,16 @@ export async function changePassword(
 
   if (!user) return { status: "erro", message: "Sem sessao iniciada." };
 
+  // Saber se era a mudanca obrigatoria decide para onde se vai a seguir: quem
+  // veio da entrada quer chegar a app, quem veio das definicoes quer ficar nas
+  // definicoes.
+  const { data: estado } = await supabase
+    .from("account_state")
+    .select("password_temporaria")
+    .eq("user_id", user.id)
+    .maybeSingle();
+  const eraObrigatoria = Boolean(estado?.password_temporaria);
+
   const { error } = await supabase.auth.updateUser({
     password: parsed.data.password,
   });
@@ -127,7 +137,9 @@ export async function changePassword(
   }
 
   revalidatePath("/", "layout");
-  redirect("/");
+
+  if (eraObrigatoria) redirect("/");
+  return { status: "ok", message: "Palavra-passe alterada." };
 }
 
 export async function signOut(): Promise<void> {

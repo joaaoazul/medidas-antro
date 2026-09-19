@@ -8,10 +8,15 @@ const dateSchema = z
   .refine((value) => {
     // O regex deixa passar 2025-02-31; so a normalizacao apanha isso.
     const parsed = new Date(`${value}T00:00:00Z`);
-    return !Number.isNaN(parsed.getTime()) &&
-      parsed.toISOString().slice(0, 10) === value;
+    return (
+      !Number.isNaN(parsed.getTime()) &&
+      parsed.toISOString().slice(0, 10) === value
+    );
   }, "Essa data nao existe no calendario.")
-  .refine((value) => value <= todayISO(), "Nao da para registar datas futuras.");
+  .refine(
+    (value) => value <= todayISO(),
+    "Nao da para registar datas futuras.",
+  );
 
 /** Uma medida ausente e null, nao 0: 0 kg seria uma leitura, a ausencia nao e. */
 function metricSchema(id: MetricId) {

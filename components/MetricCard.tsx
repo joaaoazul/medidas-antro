@@ -39,7 +39,9 @@ function Sparkline({
     return [x, y] as const;
   });
 
-  const d = coords.map(([x, y], i) => `${i === 0 ? "M" : "L"}${x} ${y}`).join(" ");
+  const d = coords
+    .map(([x, y], i) => `${i === 0 ? "M" : "L"}${x} ${y}`)
+    .join(" ");
   const [lastX, lastY] = coords[coords.length - 1];
 
   return (

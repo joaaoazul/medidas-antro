@@ -21,9 +21,9 @@ export default function TermosPage() {
 
       <Seccao numero={2} titulo="O que a aplicacao faz">
         <p>
-          A aplicacao serve para registares as tuas medidas corporais ao longo do
-          tempo -- peso, perimetros, gordura corporal e massa muscular -- e para
-          veres como evoluem por dias, semanas e meses.
+          A aplicacao serve para registares as tuas medidas corporais ao longo
+          do tempo -- peso, perimetros, gordura corporal e massa muscular -- e
+          para veres como evoluem por dias, semanas e meses.
         </p>
       </Seccao>
 
@@ -81,8 +81,8 @@ export default function TermosPage() {
           termos.
         </p>
         <p>
-          Podes exportar tudo o que registaste, a qualquer momento, em JSON ou em
-          CSV, a partir do separador Historico.
+          Podes exportar tudo o que registaste, a qualquer momento, em JSON ou
+          em CSV, a partir do separador Historico.
         </p>
       </Seccao>
 
@@ -93,9 +93,9 @@ export default function TermosPage() {
           avaria ou falha de fornecedores.
         </p>
         <p>
-          Faz as tuas proprias copias de seguranca, exportando os dados de vez em
-          quando. E a forma de nao ficares dependente da disponibilidade deste
-          servico.
+          Faz as tuas proprias copias de seguranca, exportando os dados de vez
+          em quando. E a forma de nao ficares dependente da disponibilidade
+          deste servico.
         </p>
       </Seccao>
 
@@ -107,8 +107,8 @@ export default function TermosPage() {
         </p>
         <p>
           Nada nestes termos exclui ou limita a responsabilidade que a lei nao
-          permita excluir ou limitar, designadamente por dolo ou culpa grave, nem
-          prejudica os direitos que a lei te confere enquanto consumidor.
+          permita excluir ou limitar, designadamente por dolo ou culpa grave,
+          nem prejudica os direitos que a lei te confere enquanto consumidor.
         </p>
       </Seccao>
 
@@ -120,8 +120,8 @@ export default function TermosPage() {
         </p>
         <p>
           O responsavel pode suspender ou encerrar uma conta que viole estes
-          termos, ou descontinuar o servico, avisando com antecedencia razoavel e
-          dando oportunidade de exportar os dados antes disso.
+          termos, ou descontinuar o servico, avisando com antecedencia razoavel
+          e dando oportunidade de exportar os dados antes disso.
         </p>
       </Seccao>
 

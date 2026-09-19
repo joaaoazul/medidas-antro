@@ -2,7 +2,11 @@
 
 import Link from "next/link";
 import { useActionState, useState, useTransition } from "react";
-import { createAccount, deleteAccount, resetPassword } from "@/app/admin/actions";
+import {
+  createAccount,
+  deleteAccount,
+  resetPassword,
+} from "@/app/admin/actions";
 import { ADMIN_IDLE, type AdminState } from "@/lib/form-state";
 import { longLabel } from "@/lib/dates";
 import { CHROME, useTheme } from "./theme";
@@ -157,7 +161,10 @@ export default function AdminPanel({
 }) {
   const { mode } = useTheme();
   const chrome = CHROME[mode];
-  const [state, formAction, pending] = useActionState(createAccount, ADMIN_IDLE);
+  const [state, formAction, pending] = useActionState(
+    createAccount,
+    ADMIN_IDLE,
+  );
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-8 sm:px-6">
@@ -165,7 +172,10 @@ export default function AdminPanel({
         <Link href="/" className="text-sm" style={{ color: chrome.muted }}>
           &larr; Voltar a app
         </Link>
-        <h1 className="mt-4 text-xl font-semibold" style={{ color: chrome.ink }}>
+        <h1
+          className="mt-4 text-xl font-semibold"
+          style={{ color: chrome.ink }}
+        >
           Administracao
         </h1>
         <p className="mt-1 text-sm" style={{ color: chrome.muted }}>

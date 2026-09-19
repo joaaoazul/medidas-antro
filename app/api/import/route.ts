@@ -12,7 +12,10 @@ export async function POST(request: Request) {
   try {
     body = await request.json();
   } catch {
-    return Response.json({ error: "O ficheiro nao e JSON valido." }, { status: 400 });
+    return Response.json(
+      { error: "O ficheiro nao e JSON valido." },
+      { status: 400 },
+    );
   }
 
   const raw = Array.isArray(body)

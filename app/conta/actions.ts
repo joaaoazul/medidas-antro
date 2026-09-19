@@ -1,14 +1,13 @@
 "use server";
 
-import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import type { ActionState } from "@/lib/form-state";
 import { profileSchema } from "@/lib/profile";
-import { recordConsent, saveProfile } from "@/lib/profile-repo";
-import { requireViewer } from "@/lib/session";
+import { saveProfile } from "@/lib/profile-repo";
+import { deleteAllEntries } from "@/lib/repo";
+import { requireReadyViewer } from "@/lib/session";
 import { firstError } from "@/lib/validation";
 
-/** Campo numerico opcional: vazio e null, virgula decimal aceite. */
 function numero(raw: FormDataEntryValue | null): number | null | "erro" {
   if (typeof raw !== "string") return null;
   const texto = raw.trim().replace(",", ".");
@@ -22,32 +21,11 @@ function opcao(raw: FormDataEntryValue | null): string | null {
   return valor === "" ? null : valor;
 }
 
-export async function completeOnboarding(
+export async function updateProfile(
   _prev: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
-  const viewer = await requireViewer();
-
-  /*
-   * As duas caixas sao verificadas aqui, no servidor, e nao apenas no
-   * formulario. O consentimento e a base legal para tratar dados de saude: se
-   * so o browser o verificasse, bastava um pedido feito a mao para gravar um
-   * perfil sem consentimento nenhum -- e ficava um tratamento sem fundamento,
-   * com o registo a dizer o contrario.
-   */
-  if (formData.get("aceita_documentos") !== "sim") {
-    return {
-      status: "erro",
-      message: "Tens de aceitar os Termos e a Politica de Privacidade.",
-    };
-  }
-  if (formData.get("aceita_saude") !== "sim") {
-    return {
-      status: "erro",
-      message:
-        "Sem o consentimento para tratar dados de saude nao ha como guardar medidas.",
-    };
-  }
+  const viewer = await requireReadyViewer();
 
   const altura = numero(formData.get("alturaCm"));
   const objetivoPeso = numero(formData.get("objetivoPeso"));
@@ -72,12 +50,32 @@ export async function completeOnboarding(
     return { status: "erro", message: firstError(parsed.error) };
   }
 
-  // O consentimento primeiro: se o perfil ficasse gravado e o registo do
-  // consentimento falhasse, ficavam dados de saude guardados sem prova do
-  // fundamento que os permite.
-  await recordConsent(viewer.id);
-  await saveProfile(viewer.id, parsed.data, { concluirOnboarding: true });
-
+  // Sem concluirOnboarding: a data de entrada e a original, e nao a desta
+  // gravacao.
+  await saveProfile(viewer.id, parsed.data);
   revalidatePath("/", "layout");
-  redirect("/");
+
+  return { status: "ok", message: "Dados guardados." };
+}
+
+/**
+ * Apaga todas as medidas, mantendo a conta.
+ *
+ * Nao ha desfazer, e por isso a interface pede confirmacao escrita antes de
+ * chegar aqui. A conta em si so o administrador apaga -- isso e um pedido, nao
+ * um botao, para nao se perder uma conta inteira num toque distraido.
+ */
+export async function eraseEntries(): Promise<ActionState> {
+  await requireReadyViewer();
+
+  const apagados = await deleteAllEntries();
+  revalidatePath("/", "layout");
+
+  return {
+    status: "ok",
+    message:
+      apagados === 0
+        ? "Nao havia registos para apagar."
+        : `${apagados} ${apagados === 1 ? "registo apagado" : "registos apagados"}.`,
+  };
 }
