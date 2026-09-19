@@ -195,8 +195,29 @@ O *security advisor* da Supabase está limpo (zero alertas).
 **Cópias de segurança.** A Supabase faz as suas, mas a exportação da app
 (JSON/CSV) é a tua — e é também a forma de levar os dados para outro lado.
 
-**Deploy.** Como a base de dados já não é um ficheiro local, a app corre bem em
-Vercel, Netlify ou qualquer outro sítio: são só as duas variáveis de ambiente.
+**Deploy.** A app está na Vercel, ligada ao `main` deste repositório: cada push
+constrói e publica.
+
+Três coisas que não são óbvias e custam tempo a descobrir:
+
+1. **As variáveis `NEXT_PUBLIC_*` são coladas no build, não lidas em runtime.**
+   Acrescentar uma variável não afeta deployments já construídos — é preciso
+   reconstruir. Um deployment feito antes de elas existirem fica com elas vazias
+   e rebenta em todos os pedidos, apesar de a build ter passado.
+2. **A região das funções tem de acompanhar a da base de dados.** Por omissão a
+   Vercel corre em `iad1` (Washington) e o projeto Supabase está em `cdg1`
+   (Paris): cada consulta atravessava o Atlântico, e abrir a app faz cinco.
+   Está definida para `cdg1`.
+3. **A chave de serviço não está na Vercel.** Sem ela, `/admin` rebenta em
+   produção e o resto funciona. Acrescenta `SUPABASE_SERVICE_ROLE_KEY` em
+   Settings → Environment Variables se quiseres gerir contas a partir do site,
+   em vez de o fazer a correr a app localmente.
+
+**Proteção de acesso.** O projeto tem a *Vercel Authentication* ligada, o que faz
+com que os endereços `*.vercel.app` exijam sessão iniciada na Vercel. Enquanto os
+marcadores de `lib/legal.ts` não estiverem preenchidos e o registo não estiver
+fechado do lado da Supabase, convém ficar assim. Um domínio próprio contorna-a,
+por a proteção estar em `all_except_custom_domains`.
 
 ## Estrutura
 
