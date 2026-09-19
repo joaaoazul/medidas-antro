@@ -15,3 +15,16 @@ export type ActionState = {
 };
 
 export const IDLE: ActionState = { status: "idle", message: "" };
+
+/**
+ * Estado das accoes de administracao.
+ *
+ * Leva um `segredo` porque criar uma conta ou repor uma palavra-passe produz
+ * uma palavra-passe temporaria que tem de ser mostrada UMA vez a quem a vai
+ * entregar. Nao fica guardada em lado nenhum em texto legivel: a partir do
+ * momento em que esta mensagem desaparece do ecra, nem o administrador a
+ * consegue recuperar.
+ */
+export type AdminState = ActionState & { segredo?: string };
+
+export const ADMIN_IDLE: AdminState = { status: "idle", message: "" };

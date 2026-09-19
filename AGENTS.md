@@ -35,3 +35,16 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 - Para saber quem esta autenticado, usar sempre `supabase.auth.getUser()` e
   nunca `getSession()`: o segundo so le o cookie, que o lado do cliente tambem
   sabe escrever.
+- Nao existe registo publico. Nunca acrescentar uma accao de registo a um modulo
+  "use server" acessivel ao visitante: tudo o que esses modulos exportam vira um
+  ponto de entrada chamavel do cliente, esteja ou nao ligado a um formulario.
+- `lib/profile.ts` nao pode importar nada de `lib/supabase/server`. E usado por
+  componentes de cliente, e essa importacao arrasta o cliente de servidor para o
+  pacote do browser. O acesso a dados vive em `lib/profile-repo.ts`.
+- A chave de servico so e usada em `lib/supabase/admin.ts`, que tem `server-only`
+  no topo. Cada accao de administracao chama `requireAdmin()` antes de a usar.
+- Consentimentos sao um livro de registo: so insert e select. Nunca acrescentar
+  politicas de update ou delete a `consents`.
+- Mudar o texto dos documentos legais de forma substantiva obriga a mudar a
+  versao em `lib/legal.ts` -- e so entao. Mudar a versao sem mudar o texto faz
+  pedir consentimento outra vez sem razao.

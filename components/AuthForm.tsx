@@ -1,27 +1,25 @@
 "use client";
 
-import { useActionState, useState } from "react";
-import { signIn, signUp } from "@/app/auth/actions";
+import Link from "next/link";
+import { useActionState } from "react";
+import { signIn } from "@/app/auth/actions";
 import { IDLE } from "@/lib/form-state";
+import { RESPONSAVEL } from "@/lib/legal";
 import { CHROME, useTheme } from "./theme";
-import { Button, Card, Segmented } from "./ui";
-
-type Mode = "entrar" | "criar";
+import { Button, Card } from "./ui";
 
 /**
- * Um painel por modo, e nao um formulario que troca de accao.
+ * So entrar. Nao ha criar conta aqui.
  *
- * A chave no componente pai remonta este painel ao mudar de modo, o que limpa
- * o estado da accao anterior. Sem isso, o erro "email ou palavra-passe errados"
- * ficava a olhar para quem tinha acabado de carregar em "Criar conta".
+ * A aplicacao e de acesso restrito: as contas sao criadas pelo administrador. O
+ * aviso sobre a palavra-passe esquecida esta a vista porque, sem recuperacao
+ * automatica por email, quem se esquecer fica sem saber o que fazer -- e um
+ * formulario que nao explica isso parece avariado.
  */
-function Panel({ mode }: { mode: Mode }) {
-  const { mode: theme } = useTheme();
-  const chrome = CHROME[theme];
-  const [state, formAction, pending] = useActionState(
-    mode === "entrar" ? signIn : signUp,
-    IDLE,
-  );
+export default function AuthForm() {
+  const { mode } = useTheme();
+  const chrome = CHROME[mode];
+  const [state, formAction, pending] = useActionState(signIn, IDLE);
 
   const field = "touch w-full rounded-xl border px-3 text-base";
   const fieldStyle = {
@@ -29,73 +27,6 @@ function Panel({ mode }: { mode: Mode }) {
     borderColor: "var(--border)",
     color: chrome.ink,
   };
-
-  return (
-    <form action={formAction} className="mt-5 flex flex-col gap-3">
-      <label className="flex flex-col gap-1.5">
-        <span className="text-xs font-medium" style={{ color: chrome.inkSecondary }}>
-          Email
-        </span>
-        <input
-          type="email"
-          name="email"
-          autoComplete="email"
-          required
-          className={field}
-          style={fieldStyle}
-        />
-      </label>
-
-      <label className="flex flex-col gap-1.5">
-        <span className="text-xs font-medium" style={{ color: chrome.inkSecondary }}>
-          Palavra-passe
-        </span>
-        <input
-          type="password"
-          name="password"
-          // Diz ao gestor de palavras-passe se deve oferecer a que ja tem ou
-          // propor uma nova. Sem isto, criar conta preenche a antiga.
-          autoComplete={mode === "entrar" ? "current-password" : "new-password"}
-          minLength={8}
-          required
-          className={field}
-          style={fieldStyle}
-        />
-        {mode === "criar" ? (
-          <span className="text-xs" style={{ color: chrome.muted }}>
-            Pelo menos 8 caracteres.
-          </span>
-        ) : null}
-      </label>
-
-      <div className="mt-2">
-        <Button type="submit" variant="primary" disabled={pending} full>
-          {pending
-            ? "Um momento..."
-            : mode === "entrar"
-              ? "Entrar"
-              : "Criar conta"}
-        </Button>
-      </div>
-
-      <p
-        role="status"
-        aria-live="polite"
-        className="min-h-5 text-center text-sm"
-        style={{
-          color: state.status === "erro" ? "#d03b3b" : chrome.inkSecondary,
-        }}
-      >
-        {state.message}
-      </p>
-    </form>
-  );
-}
-
-export default function AuthForm() {
-  const { mode: theme } = useTheme();
-  const chrome = CHROME[theme];
-  const [mode, setMode] = useState<Mode>("entrar");
 
   return (
     <div className="mx-auto flex min-h-screen max-w-sm flex-col justify-center px-4 py-10">
@@ -110,17 +41,72 @@ export default function AuthForm() {
       </div>
 
       <Card className="p-5">
-        <Segmented
-          label="Entrar ou criar conta"
-          value={mode}
-          onChange={setMode}
-          options={[
-            { key: "entrar", label: "Entrar" },
-            { key: "criar", label: "Criar conta" },
-          ]}
-        />
-        <Panel key={mode} mode={mode} />
+        <form action={formAction} className="flex flex-col gap-3">
+          <label className="flex flex-col gap-1.5">
+            <span className="text-xs font-medium" style={{ color: chrome.inkSecondary }}>
+              Email
+            </span>
+            <input
+              type="email"
+              name="email"
+              autoComplete="email"
+              required
+              className={field}
+              style={fieldStyle}
+            />
+          </label>
+
+          <label className="flex flex-col gap-1.5">
+            <span className="text-xs font-medium" style={{ color: chrome.inkSecondary }}>
+              Palavra-passe
+            </span>
+            <input
+              type="password"
+              name="password"
+              autoComplete="current-password"
+              required
+              className={field}
+              style={fieldStyle}
+            />
+          </label>
+
+          <div className="mt-2">
+            <Button type="submit" variant="primary" disabled={pending} full>
+              {pending ? "Um momento..." : "Entrar"}
+            </Button>
+          </div>
+
+          <p
+            role="status"
+            aria-live="polite"
+            className="min-h-5 text-center text-sm"
+            style={{
+              color: state.status === "erro" ? "#d03b3b" : chrome.inkSecondary,
+            }}
+          >
+            {state.message}
+          </p>
+        </form>
       </Card>
+
+      <div
+        className="mt-5 flex flex-col gap-3 text-center text-xs"
+        style={{ color: chrome.muted }}
+      >
+        <p>
+          Esqueceste-te da palavra-passe, ou precisas de conta? Fala com{" "}
+          <span style={{ color: chrome.inkSecondary }}>{RESPONSAVEL.email}</span>
+          . As contas desta aplicacao sao criadas pelo administrador.
+        </p>
+        <p className="flex justify-center gap-4">
+          <Link href="/termos" style={{ color: chrome.inkSecondary }}>
+            Termos de Servico
+          </Link>
+          <Link href="/privacidade" style={{ color: chrome.inkSecondary }}>
+            Politica de Privacidade
+          </Link>
+        </p>
+      </div>
     </div>
   );
 }

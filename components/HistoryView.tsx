@@ -2,6 +2,7 @@
 
 "use client";
 
+import Link from "next/link";
 import type { Entry } from "@/lib/types";
 import DataTransfer from "./DataTransfer";
 import HistoryList from "./HistoryList";
@@ -12,9 +13,11 @@ import { Card, SectionTitle } from "./ui";
 export default function HistoryView({
   entries,
   email,
+  admin,
 }: {
   entries: Entry[];
   email: string;
+  admin: boolean;
 }) {
   const { mode } = useTheme();
   const chrome = CHROME[mode];
@@ -33,6 +36,23 @@ export default function HistoryView({
             {email}
           </span>
           <SignOutButton />
+        </div>
+
+        <div className="mt-4 flex flex-wrap gap-4 text-xs">
+          <Link href="/conta/palavra-passe" style={{ color: chrome.inkSecondary }}>
+            Mudar a palavra-passe
+          </Link>
+          <Link href="/termos" style={{ color: chrome.muted }}>
+            Termos
+          </Link>
+          <Link href="/privacidade" style={{ color: chrome.muted }}>
+            Privacidade
+          </Link>
+          {admin ? (
+            <Link href="/admin" style={{ color: chrome.inkSecondary }}>
+              Administracao
+            </Link>
+          ) : null}
         </div>
       </Card>
     </div>

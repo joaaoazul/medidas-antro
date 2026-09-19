@@ -27,7 +27,13 @@ type Mode = "individual" | "comparar";
  */
 const DEFAULT_SELECTION: MetricId[] = ["peso", "abdomen", "gordura"];
 
-export default function TrendsView({ entries }: { entries: Entry[] }) {
+export default function TrendsView({
+  entries,
+  objetivoPeso,
+}: {
+  entries: Entry[];
+  objetivoPeso: number | null;
+}) {
   const { mode: theme } = useTheme();
   const chrome = CHROME[theme];
 
@@ -147,6 +153,10 @@ export default function TrendsView({ entries }: { entries: Entry[] }) {
           metric={METRIC_BY_ID[focused]}
           points={points}
           granularity={granularity}
+          // A linha de referencia so faz sentido na metrica a que o objetivo
+          // diz respeito: um peso pretendido desenhado sobre o perimetro do
+          // braco seria uma marca sem significado nenhum.
+          objetivo={focused === "peso" ? objetivoPeso : null}
         />
       ) : (
         <RelativeChart

@@ -2,7 +2,15 @@ import { NextResponse, type NextRequest } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 
 /** Caminhos acessiveis sem sessao iniciada. */
-const PUBLIC_PATHS = ["/entrar", "/auth"];
+const PUBLIC_PATHS = [
+  "/entrar",
+  "/auth",
+  // Os documentos legais tem de se poder ler ANTES de haver conta, e o endereco
+  // tem de se poder enviar a alguem. Uma politica de privacidade so acessivel a
+  // quem ja aceitou nao serve para nada.
+  "/termos",
+  "/privacidade",
+];
 
 /**
  * Renova a sessao em cada pedido e guarda as rotas privadas.

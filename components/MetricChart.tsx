@@ -5,6 +5,7 @@ import {
   Line,
   LineChart,
   ReferenceDot,
+  ReferenceLine,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -89,17 +90,26 @@ export default function MetricChart({
   metric,
   points,
   granularity,
+  objetivo = null,
 }: {
   metric: Metric;
   points: Point[];
   granularity: Granularity;
+  /** Valor pretendido, do perfil. Desenhado como linha de referencia. */
+  objetivo?: number | null;
 }) {
   const { mode, mounted } = useTheme();
   const chrome = CHROME[mode];
   const color = metric.color[mode];
 
   const last = points.length > 0 ? points[points.length - 1] : null;
-  const scale = niceScale(points);
+  // O objetivo entra na escala como se fosse um ponto: se ficasse de fora, uma
+  // meta ainda longe caia fora do grafico e a linha nao se via.
+  const scale = niceScale(
+    objetivo === null
+      ? points
+      : [...points, { bucket: "", t: 0, value: objetivo, samples: 0 }],
+  );
   const showDots = points.length <= MAX_DOTS;
 
   return (
@@ -205,6 +215,22 @@ export default function MetricChart({
                   strokeWidth: 2,
                 }}
               />
+              {objetivo !== null ? (
+                /* Tracejada e em tinta neutra: nao e um valor medido, e nao
+                   pode parecer uma segunda serie. */
+                <ReferenceLine
+                  y={objetivo}
+                  stroke={chrome.muted}
+                  strokeWidth={1}
+                  strokeDasharray="4 4"
+                  label={{
+                    value: `objetivo ${formatValue(metric.id, objetivo)}`,
+                    position: "insideTopLeft",
+                    fill: chrome.muted,
+                    fontSize: 11,
+                  }}
+                />
+              ) : null}
               {last && last.value !== null ? (
                 /* Rotulo direto so na ponta -- um numero em cada ponto nao se
                    le, e este e tambem o apoio exigido pelas cores de contraste

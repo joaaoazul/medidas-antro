@@ -4,8 +4,9 @@ App para registar medidas antropométricas todos os dias — peso, perímetro
 abdominal, gordura corporal, massa muscular e perímetros — e ver como evoluem
 por dias, semanas e meses.
 
-Next.js 16 + TypeScript, Postgres na Supabase com autenticação. Desenhada
-primeiro para o telemóvel — é lá que se regista uma pesagem, de manhã, com uma
+Next.js 16 + TypeScript, Postgres na Supabase. **Aplicação de acesso restrito:**
+não há registo público — as contas são criadas pelo administrador. Desenhada
+primeiro para o telemóvel, que é onde se regista uma pesagem, de manhã, com uma
 mão.
 
 <p>
@@ -32,13 +33,33 @@ dados, não o segredo da chave.
 O esquema está em `supabase/migrations/`. Num projeto novo, cola esse SQL no
 **SQL Editor** da Supabase (ou aplica-o com o CLI da Supabase).
 
-Na primeira visita a app manda-te para `/entrar`. Cria a conta e entras.
+### Fechar o registo e criar-te a ti
 
-> **Confirmação por email.** Um projeto novo da Supabase traz "Confirm email"
-> ligado, e o servidor de email gratuito só envia 2 emails por hora. Para uso
-> pessoal, desliga-o em **Authentication → Sign In / Providers → Email**. Se o
-> mantiveres ligado, a app diz-te que a conta foi criada e que tens de ir ao
-> email — não te deixa em silêncio.
+Esta app é restrita, e isso tem de ser imposto **também do lado da Supabase** —
+não basta não haver botão de registo na interface. Em **Authentication → Sign In
+/ Providers → Email**, desliga *Allow new users to sign up*. Sem isso, qualquer
+pessoa cria conta chamando a API diretamente.
+
+Depois cria a tua conta em **Authentication → Users → Add user** (com *Auto
+confirm user*), e promove-te a administrador no **SQL Editor**:
+
+```sql
+insert into public.admins (user_id)
+select id from auth.users where email = 'o-teu-email@exemplo.com';
+```
+
+Isto faz-se pelo SQL Editor de propósito: a tabela `admins` não tem política de
+escrita nenhuma, por isso ninguém se promove a administrador através da
+aplicação, aconteça o que acontecer no código.
+
+A partir daí, as contas criam-se dentro da app, em **Histórico → Administração**.
+
+### Preencher os documentos legais
+
+Abre `lib/legal.ts` e preenche o nome, o email, a morada e o NIF do responsável
+pelo tratamento. Esses valores aparecem nos Termos e na Política de Privacidade,
+e o RGPD obriga a identificar quem trata os dados. Enquanto lá estiverem os
+marcadores, eles aparecem no ecrã — de propósito.
 
 Para experimentar com dados: entra, vai a **Histórico → Importar JSON** e
 escolhe `exemplo/medidas-exemplo.json` (240 dias de dados fictícios, gerados).
@@ -77,6 +98,55 @@ Três separadores, um por pergunta:
 - Uma ficha por dia no telemóvel, tabela no ecrã grande, com apagar.
 - Exportar JSON/CSV e importar JSON, para cópias de segurança e para levar os
   dados para outro lado.
+- A conta: email, mudar a palavra-passe, terminar sessão e, para o
+  administrador, a ligação à administração.
+
+## Contas, consentimento e onboarding
+
+**Não há registo público.** O administrador cria a conta com uma palavra-passe
+temporária que aparece **uma só vez** no ecrã — não fica guardada legível em
+lado nenhum, nem na base de dados nem em registos. Quem a receber é obrigado a
+mudá-la na primeira entrada, antes de chegar a qualquer outra parte da app.
+
+**Não há recuperação automática de palavra-passe.** Quem se esquecer pede ao
+administrador, que repõe uma nova temporária. A página de entrada diz isso em
+vez de deixar a pessoa às voltas.
+
+**Onboarding em três passos**, na primeira entrada:
+
+1. **Termos.** Duas caixas separadas e nenhuma pré-marcada: uma para os Termos e
+   a Política de Privacidade, outra — expressa — para o tratamento de dados de
+   saúde. São duas porque o Artigo 9.º do RGPD trata dados de saúde como
+   categoria especial e exige consentimento explícito, distinto do aceite geral.
+2. **Sobre ti.** Nome e data de nascimento (obrigatórios — a idade mínima não se
+   verifica sem a perguntar), sexo e altura (opcionais).
+3. **Objetivos.** Objetivo, peso pretendido, treinos por semana e notas. Se
+   indicares um peso pretendido, ele aparece como linha de referência tracejada
+   no gráfico do peso.
+
+O consentimento é gravado como **registo**, não como estado: cada aceitação é
+uma linha nova com o documento, a versão e o momento. A tabela não tem política
+de `update` nem de `delete` — um livro de registo que se pode reescrever não
+demonstra nada, e o RGPD exige poder demonstrar o consentimento. Quando a versão
+de um documento muda, é pedido de novo na entrada seguinte.
+
+## Administração
+
+Em `/admin`, só para quem está na tabela `admins`. Permite criar contas, repor
+palavras-passe e apagar contas (o que leva consigo o perfil e todas as medidas,
+pelo apagamento em cascata — é assim que se cumpre um pedido de apagamento).
+
+**Não dá acesso às medidas nem aos perfis de ninguém.** Isso não é uma decisão de
+interface: não existe nenhuma política que dê a um administrador acesso às linhas
+de outra pessoa, por isso a base de dados recusa o pedido. A área de
+administração vê o que está em `auth.users` — email, datas — e o estado da
+palavra-passe, e nada mais.
+
+É a única parte da app que usa a chave de serviço, que ignora todas as políticas.
+Está isolada em `lib/supabase/admin.ts`, marcada com `server-only` (o build falha
+se algum componente de cliente a importar, mesmo por uma cadeia indireta), e cada
+ação confirma que quem chama é administrador antes de a usar. Sem a variável
+`SUPABASE_SERVICE_ROLE_KEY` a app funciona toda — só a administração é que não.
 
 ## Onde estão os dados, e quem lhes chega
 
@@ -95,11 +165,16 @@ Verificado no próprio projeto, numa transação revertida no fim:
 
 | Cenário | Resultado |
 |---|---|
-| A pessoa A lê a tabela (2 contas com registos) | vê só o registo dela |
-| A pessoa A tenta escrever na conta da pessoa B | recusado pela política |
-| A pessoa A tenta apagar o registo da pessoa B | não apaga nada |
+| A pessoa A lê as medidas (2 contas com registos) | vê só as dela |
+| A tenta escrever na conta de B | recusado pela política |
+| A tenta apagar o registo de B | não apaga nada |
 | Visitante sem sessão lê a tabela | não devolve nada |
-| A pessoa A escreve na própria conta | a política deixa passar |
+| A escreve na própria conta | a política deixa passar |
+| A tenta promover-se a administrador | bloqueado |
+| A tenta limpar a marca de palavra-passe temporária | não altera nada |
+| A lê o perfil de B | não vê nada |
+| A lê os consentimentos de B | não vê nada |
+| A tenta reescrever um consentimento já dado | não altera nada |
 
 O *security advisor* da Supabase está limpo (zero alertas).
 
@@ -115,6 +190,12 @@ Vercel, Netlify ou qualquer outro sítio: são só as duas variáveis de ambient
 middleware.ts        renova a sessão e guarda as rotas privadas
 supabase/migrations  esquema e políticas de segurança
 app/
+  entrar/            entrada (não há registo público)
+  bem-vindo/         onboarding: consentimento, dados e objetivos
+  conta/palavra-passe  mudança de palavra-passe, obrigatória se for temporária
+  admin/             gestão de contas, só para administradores
+  termos/            Termos de Serviço
+  privacidade/       Política de Privacidade
   layout.tsx         tipo de letra (Outfit) e o script que aplica o tema antes de pintar
   page.tsx           componente de servidor: lê os registos e entrega-os à casca
   actions.ts         server actions de gravar e apagar
@@ -125,8 +206,12 @@ app/
   globals.css        tokens de cor, claro e escuro
 lib/
   metrics.ts         definição das 8 métricas — único sítio a mexer para acrescentar uma
-  supabase/          clientes de servidor, de browser e de middleware
-  repo.ts            fronteira de acesso a dados
+  legal.ts           responsável pelo tratamento e versões dos documentos
+  profile.ts         constantes, tipos e validação do perfil (sem código de servidor)
+  profile-repo.ts    leitura e escrita de perfis e consentimentos
+  session.ts         quem está a ver, e o que lhe falta fazer antes de entrar
+  supabase/          clientes de servidor, de browser, de middleware e de administração
+  repo.ts            fronteira de acesso às medidas
   validation.ts      esquemas zod, partilhados pelo formulário e pela importação
   series.ts          intervalos, agregação, variações, indexação relativa e escala Y
   dates.ts           dias de calendário em AAAA-MM-DD, sem fusos horários
@@ -147,6 +232,15 @@ Uma entrada em `METRICS` (`lib/metrics.ts`) com um par de cores do próximo slot
 livre da paleta. O formulário, os cartões, os gráficos, a tabela, a exportação e
 as consultas seguem daí. Falta só a coluna na base de dados: uma migração nova
 em `supabase/migrations/` com `alter table public.entries add column ...`.
+
+## Nota legal
+
+Os Termos de Serviço e a Política de Privacidade descrevem com rigor o que esta
+aplicação faz — que dados recolhe, onde ficam, quem lhes chega. Não foram
+redigidos por advogado. Dados de saúde são categoria especial no Artigo 9.º do
+RGPD; antes de dares acesso a clientes reais, vale a revisão de quem perceba do
+assunto. Falta também aceitar o **acordo de subcontratação (DPA)** da Supabase,
+no dashboard, em Organization Settings.
 
 ## Notas de desenho
 

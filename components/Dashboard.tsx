@@ -21,9 +21,16 @@ import TrendsView from "./TrendsView";
 export default function Dashboard({
   entries,
   email,
+  nome,
+  objetivoPeso,
+  admin,
 }: {
   entries: Entry[];
   email: string;
+  nome: string | null;
+  /** Peso pretendido, do perfil: vira linha de referencia no grafico do peso. */
+  objetivoPeso: number | null;
+  admin: boolean;
 }) {
   const { mode, toggle } = useTheme();
   const chrome = CHROME[mode];
@@ -48,7 +55,7 @@ export default function Dashboard({
               className="text-lg leading-tight font-semibold"
               style={{ color: chrome.ink }}
             >
-              Medidas
+              {nome ? `Ola, ${nome}` : "Medidas"}
             </h1>
             <p className="truncate text-xs" style={{ color: chrome.muted }}>
               {longLabel(todayISO())}
@@ -64,9 +71,11 @@ export default function Dashboard({
         {tab === "hoje" ? (
           <TodayView entries={entries} date={date} onDate={setDate} />
         ) : null}
-        {tab === "evolucao" ? <TrendsView entries={entries} /> : null}
+        {tab === "evolucao" ? (
+          <TrendsView entries={entries} objetivoPeso={objetivoPeso} />
+        ) : null}
         {tab === "historico" ? (
-          <HistoryView entries={entries} email={email} />
+          <HistoryView entries={entries} email={email} admin={admin} />
         ) : null}
       </main>
 
