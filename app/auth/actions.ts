@@ -30,6 +30,16 @@ function translate(message: string): string {
       "A palavra-passe nova tem de ser diferente da antiga.",
     "Signups not allowed for this instance":
       "O registo esta fechado. Pede uma conta ao administrador.",
+    /*
+     * email_provider_disabled. A mensagem da Supabase fala em registo, mas o
+     * interruptor que a dispara ("Enable email provider") governa o registo E o
+     * login -- quem o desliga a pensar que esta a fechar o registo fica sem
+     * conseguir entrar, e a mensagem original manda-o procurar no sitio errado.
+     */
+    "Email logins are disabled":
+      "O login por email esta desligado no projeto Supabase. Liga 'Enable email provider'; o que fecha o registo e outro interruptor.",
+    "Email signups are disabled":
+      "O login por email esta desligado no projeto Supabase. Liga 'Enable email provider'; o que fecha o registo e outro interruptor.",
     "Password should be at least 6 characters.":
       "A palavra-passe e demasiado curta.",
   };
