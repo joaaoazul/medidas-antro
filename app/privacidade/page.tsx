@@ -1,6 +1,11 @@
 import type { Metadata } from "next";
 import LegalDoc, { Lista, Seccao } from "@/components/LegalDoc";
-import { IDADE_MINIMA, RESPONSAVEL, VERSAO_PRIVACIDADE } from "@/lib/legal";
+import {
+  IDADE_MINIMA,
+  RESPONSAVEL,
+  VERSAO_PRIVACIDADE,
+  identificacaoResponsavel,
+} from "@/lib/legal";
 
 export const metadata: Metadata = {
   title: "Politica de Privacidade - Medidas",
@@ -11,10 +16,9 @@ export default function PrivacidadePage() {
     <LegalDoc titulo="Politica de Privacidade" versao={VERSAO_PRIVACIDADE}>
       <Seccao numero={1} titulo="Quem trata os teus dados">
         <p>
-          O responsavel pelo tratamento e {RESPONSAVEL.nome}, com morada em{" "}
-          {RESPONSAVEL.morada}, contribuinte n.o {RESPONSAVEL.nif}, em{" "}
-          {RESPONSAVEL.pais}. Para qualquer assunto relacionado com os teus
-          dados, escreve para <strong>{RESPONSAVEL.email}</strong>.
+          O responsavel pelo tratamento e {identificacaoResponsavel()}. Para
+          qualquer assunto relacionado com os teus dados, escreve para{" "}
+          <strong>{RESPONSAVEL.email}</strong>.
         </p>
       </Seccao>
 

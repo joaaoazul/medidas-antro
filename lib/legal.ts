@@ -1,18 +1,36 @@
 /**
  * Identificacao do responsavel pelo tratamento e versoes dos documentos.
  *
- * PREENCHE ESTES VALORES antes de dar acesso a alguem. Aparecem nos Termos de
- * Servico e na Politica de Privacidade, e o RGPD obriga a identificar quem
- * trata os dados: uma politica que nao diz quem e o responsavel nao cumpre o
- * Artigo 13.
+ * O RGPD obriga a identificar quem trata os dados e a dar um contacto (Artigo
+ * 13). Nome e email sao o minimo; morada e NIF sao opcionais aqui e sao
+ * omitidos das frases quando ficam vazios, para nao aparecerem campos por
+ * preencher num documento legal.
  */
 export const RESPONSAVEL = {
-  nome: "[O TEU NOME OU O DA EMPRESA]",
-  email: "[EMAIL DE CONTACTO]",
-  morada: "[MORADA COMPLETA]",
-  nif: "[NIF OU NIPC]",
+  nome: "Joao Azul",
+  email: "cybersec.joao@proton.me",
+  /** Opcional. Reforca a identificacao, sobretudo se isto passar a servico pago. */
+  morada: "",
+  /** Opcional. Um particular que nao exerce atividade nao tem de o indicar. */
+  nif: "",
   pais: "Portugal",
 } as const;
+
+/**
+ * Monta a identificacao do responsavel numa frase, com o que existir.
+ *
+ * Sem isto, um documento com a morada por preencher sairia com "com morada em ,
+ * contribuinte n.o ," -- pior do que nao dizer nada.
+ */
+export function identificacaoResponsavel(): string {
+  const partes: string[] = [RESPONSAVEL.nome];
+
+  if (RESPONSAVEL.morada) partes.push(`com morada em ${RESPONSAVEL.morada}`);
+  if (RESPONSAVEL.nif) partes.push(`contribuinte n.o ${RESPONSAVEL.nif}`);
+  partes.push(`em ${RESPONSAVEL.pais}`);
+
+  return partes.join(", ");
+}
 
 /**
  * Versoes dos documentos.

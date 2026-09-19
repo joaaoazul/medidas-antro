@@ -54,12 +54,13 @@ aplicação, aconteça o que acontecer no código.
 
 A partir daí, as contas criam-se dentro da app, em **Histórico → Administração**.
 
-### Preencher os documentos legais
+### Os documentos legais
 
-Abre `lib/legal.ts` e preenche o nome, o email, a morada e o NIF do responsável
-pelo tratamento. Esses valores aparecem nos Termos e na Política de Privacidade,
-e o RGPD obriga a identificar quem trata os dados. Enquanto lá estiverem os
-marcadores, eles aparecem no ecrã — de propósito.
+O responsável pelo tratamento está identificado em `lib/legal.ts`. Nome e email
+são o mínimo que o RGPD exige (Artigo 13.º); morada e NIF são opcionais e ficam
+vazios — as frases dos documentos compõem-se com o que existir, em vez de
+mostrarem campos por preencher. Se isto passar a serviço pago, é altura de
+acrescentar os dois.
 
 Para experimentar com dados: entra, vai a **Histórico → Importar JSON** e
 escolhe `exemplo/medidas-exemplo.json` (240 dias de dados fictícios, gerados).
@@ -83,10 +84,14 @@ Três separadores, um por pergunta:
   fase recente; as outras sete métricas em cartões compactos.
 - Formulário com os três campos do dia-a-dia sempre à vista e os perímetros
   atrás de um toque, para o gesto diário caber num ecrã sem deslizar.
-- **Várias medições por dia**, cada uma com hora opcional: pesar-se de manhã e à
-  noite é o caso normal, não uma exceção. Cada gravação cria uma medição nova;
-  corrigir uma já existente faz-se pelo **Editar** no histórico. Campos em
-  branco ficam por medir (`null`), não a zero.
+- **Várias medições por dia**, distinguidas pela hora: pesar-se de manhã e à
+  noite é o caso normal, não uma exceção. A hora vem já preenchida com a atual e
+  usa o seletor do próprio sistema (a roda no iOS, o relógio no Android) — um
+  seletor desenhado à mão não conheceria o formato de 12 ou 24 horas de quem
+  está do outro lado, nem funcionaria com as ajudas de acessibilidade do
+  telemóvel. Cada gravação cria uma medição nova; corrigir uma já existente
+  faz-se pelo **Editar** no histórico. Campos em branco ficam por medir
+  (`null`), não a zero.
 
 **Evolução** — o que mudou, e em que ritmo?
 - Um gráfico de cada vez, com a métrica escolhida numa fila de fichas.

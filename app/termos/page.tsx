@@ -1,6 +1,11 @@
 import type { Metadata } from "next";
 import LegalDoc, { Lista, Seccao } from "@/components/LegalDoc";
-import { IDADE_MINIMA, RESPONSAVEL, VERSAO_TERMOS } from "@/lib/legal";
+import {
+  IDADE_MINIMA,
+  RESPONSAVEL,
+  VERSAO_TERMOS,
+  identificacaoResponsavel,
+} from "@/lib/legal";
 
 export const metadata: Metadata = { title: "Termos de Servico - Medidas" };
 
@@ -9,9 +14,8 @@ export default function TermosPage() {
     <LegalDoc titulo="Termos de Servico" versao={VERSAO_TERMOS}>
       <Seccao numero={1} titulo="Quem fornece o servico">
         <p>
-          A aplicacao Medidas e fornecida por {RESPONSAVEL.nome}, com morada em{" "}
-          {RESPONSAVEL.morada}, contribuinte n.o {RESPONSAVEL.nif}, em{" "}
-          {RESPONSAVEL.pais}. Contacto: <strong>{RESPONSAVEL.email}</strong>.
+          A aplicacao Medidas e fornecida por {identificacaoResponsavel()}.
+          Contacto: <strong>{RESPONSAVEL.email}</strong>.
         </p>
         <p>
           Ao aceitares estes termos celebras um contrato com essa entidade. Se

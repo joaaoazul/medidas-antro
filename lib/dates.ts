@@ -4,6 +4,18 @@
  * qual for a hora a que foi introduzido.
  */
 
+/**
+ * Hora local atual em "HH:MM".
+ *
+ * So e chamada no browser, dentro do efeito que preenche o formulario. Chamada
+ * durante o render, o servidor e o cliente podiam produzir minutos diferentes --
+ * ou fusos diferentes -- e a hidratacao acusava a divergencia.
+ */
+export function horaAgora(): string {
+  const now = new Date();
+  return `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
+}
+
 export function todayISO(): string {
   const now = new Date();
   return toISO(now.getFullYear(), now.getMonth() + 1, now.getDate());

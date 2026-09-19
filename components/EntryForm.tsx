@@ -1,8 +1,14 @@
 "use client";
 
-import { useActionState, useEffect, useRef, useState } from "react";
+import {
+  useActionState,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { saveEntry } from "@/app/actions";
-import { longLabel, todayISO } from "@/lib/dates";
+import { horaAgora, longLabel, todayISO } from "@/lib/dates";
 import { IDLE } from "@/lib/form-state";
 import { METRICS, type Metric, type MetricId } from "@/lib/metrics";
 import type { Entry } from "@/lib/types";
@@ -71,13 +77,16 @@ export default function EntryForm({
   const extras = METRICS.filter((m) => !DAILY.includes(m.id));
 
   /**
-   * Preenche os campos a partir da medicao em edicao, e limpa-os ao sair da
-   * edicao.
+   * Preenche os campos a partir da medicao em edicao, ou prepara-os para uma
+   * nova.
    *
    * E sincronizacao com o DOM, nao estado do React: os campos nao sao
-   * controlados, para que escrever neles nao passe por um render por tecla.
+   * controlados, para que escrever neles nao passe por um render por tecla. A
+   * data e a hora sao postas aqui, e nao em defaultValue, porque saem do
+   * relogio -- durante o render, o servidor e o cliente podiam dar minutos ou
+   * fusos diferentes, e a hidratacao acusava a divergencia.
    */
-  useEffect(() => {
+  const preencher = useCallback((medicao: Entry | null) => {
     const form = formRef.current;
     if (!form) return;
 
@@ -86,33 +95,50 @@ export default function EntryForm({
         metric.id,
       ) as HTMLInputElement | null;
       if (field) {
-        const valor = editing?.values[metric.id] ?? null;
+        const valor = medicao?.values[metric.id] ?? null;
         field.value = valor === null ? "" : String(valor);
       }
     }
 
     const nota = form.elements.namedItem("nota") as HTMLTextAreaElement | null;
-    if (nota) nota.value = editing?.nota ?? "";
+    if (nota) nota.value = medicao?.nota ?? "";
 
     const data = form.elements.namedItem("date") as HTMLInputElement | null;
-    if (data) data.value = editing?.date ?? todayISO();
+    if (data) data.value = medicao?.date ?? todayISO();
 
+    // Vem preenchida com a hora atual: e o campo que distingue duas medicoes do
+    // mesmo dia, e obrigar a escolhe-la do zero a cada pesagem seria friccao sem
+    // ganho nenhum.
     const hora = form.elements.namedItem("hora") as HTMLInputElement | null;
-    if (hora) hora.value = editing?.hora ?? "";
+    if (hora) hora.value = medicao?.hora ?? horaAgora();
+  }, []);
 
-    // Ao editar uma medicao que tem perimetros, a seccao abre: esconder valores
-    // que ja existem seria esconder o que o formulario esta prestes a alterar.
+  useEffect(() => {
+    preencher(editing);
+  }, [editing, preencher]);
+
+  /*
+   * Ao mudar de medicao, a seccao dos perimetros abre sozinha se essa medicao ja
+   * os tem: esconder valores que existem seria esconder o que o formulario esta
+   * prestes a alterar.
+   *
+   * Fica como ajuste durante o render, e nao num efeito, para nao pintar o
+   * formulario fechado e reabri-lo logo a seguir.
+   */
+  const editingId = editing?.id ?? null;
+  const [ultimaMedicao, setUltimaMedicao] = useState<string | null>(null);
+  if (editingId !== ultimaMedicao) {
+    setUltimaMedicao(editingId);
     setShowAll(
       editing !== null && extras.some((m) => editing.values[m.id] !== null),
     );
-    // extras e estavel (deriva de uma constante), por isso so a medicao conta.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [editing]);
+  }
 
-  // Depois de gravar uma medicao nova, os campos ficam limpos para a seguinte.
+  // Depois de gravar uma medicao nova, os campos ficam prontos para a seguinte,
+  // com a hora acertada no momento em que se gravou.
   useEffect(() => {
-    if (state.status === "ok" && !editing) formRef.current?.reset();
-  }, [state, editing]);
+    if (state.status === "ok" && !editing) preencher(null);
+  }, [state, editing, preencher]);
 
   return (
     <Card className="p-5">
@@ -120,7 +146,7 @@ export default function EntryForm({
         hint={
           editing
             ? "Estas a alterar uma medicao ja gravada."
-            : "Deixa em branco o que nao mediste. Podes registar mais do que uma medicao no mesmo dia -- de manha e a noite, por exemplo."
+            : "Deixa em branco o que nao mediste. Podes registar mais do que uma medicao no mesmo dia -- e a hora que as distingue."
         }
       >
         {editing ? "Editar medicao" : "Registar medidas"}
@@ -158,11 +184,16 @@ export default function EntryForm({
               className="text-xs font-medium"
               style={{ color: chrome.inkSecondary }}
             >
-              Hora (opcional)
+              Hora
             </span>
+            {/* type="time" abre o seletor do proprio sistema -- a roda no iOS, o
+                relogio no Android. Um seletor desenhado a mao seria pior: nao
+                conhece o formato de 12 ou 24 horas de quem esta do outro lado,
+                nem funciona com as ajudas de acessibilidade do telemovel. */}
             <input
               type="time"
               name="hora"
+              required
               className="touch tabular w-full rounded-xl border px-3 text-base"
               style={{
                 background: "var(--plane)",
