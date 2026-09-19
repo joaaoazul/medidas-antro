@@ -1,0 +1,2314 @@
+{
+  "entries": [
+    {
+      "date": "2026-01-22",
+      "nota": null,
+      "values": {
+        "peso": 88.8,
+        "abdomen": null,
+        "gordura": 26.6,
+        "musculo": 33.7,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-01-24",
+      "nota": null,
+      "values": {
+        "peso": 88.6,
+        "abdomen": null,
+        "gordura": 26.4,
+        "musculo": 33.9,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-01-25",
+      "nota": null,
+      "values": {
+        "peso": 88.4,
+        "abdomen": 97.9,
+        "gordura": 26.5,
+        "musculo": 33.8,
+        "peito": 103.8,
+        "anca": 102.8,
+        "braco": 32.9,
+        "coxa": 58.7
+      }
+    },
+    {
+      "date": "2026-01-27",
+      "nota": null,
+      "values": {
+        "peso": 87.8,
+        "abdomen": null,
+        "gordura": 26.5,
+        "musculo": 34.1,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-01-28",
+      "nota": null,
+      "values": {
+        "peso": 88.6,
+        "abdomen": null,
+        "gordura": 26.5,
+        "musculo": 34,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-01-30",
+      "nota": null,
+      "values": {
+        "peso": 88.2,
+        "abdomen": null,
+        "gordura": 26.3,
+        "musculo": 33.8,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-01-31",
+      "nota": null,
+      "values": {
+        "peso": 88.6,
+        "abdomen": null,
+        "gordura": 25.9,
+        "musculo": 34.1,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-02-01",
+      "nota": null,
+      "values": {
+        "peso": null,
+        "abdomen": 97.6,
+        "gordura": null,
+        "musculo": null,
+        "peito": 104.2,
+        "anca": 102.1,
+        "braco": 33.1,
+        "coxa": 58.1
+      }
+    },
+    {
+      "date": "2026-02-02",
+      "nota": null,
+      "values": {
+        "peso": 88,
+        "abdomen": null,
+        "gordura": 26.3,
+        "musculo": 33.7,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-02-03",
+      "nota": null,
+      "values": {
+        "peso": 88.5,
+        "abdomen": null,
+        "gordura": 25.6,
+        "musculo": 33.8,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-02-06",
+      "nota": null,
+      "values": {
+        "peso": 87.8,
+        "abdomen": null,
+        "gordura": 26.1,
+        "musculo": 34.1,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-02-07",
+      "nota": null,
+      "values": {
+        "peso": 88.1,
+        "abdomen": null,
+        "gordura": 26.1,
+        "musculo": 33.8,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-02-08",
+      "nota": null,
+      "values": {
+        "peso": 87.9,
+        "abdomen": 97.8,
+        "gordura": 25.5,
+        "musculo": 33.9,
+        "peito": 103.9,
+        "anca": 102.3,
+        "braco": 33,
+        "coxa": 58.4
+      }
+    },
+    {
+      "date": "2026-02-09",
+      "nota": null,
+      "values": {
+        "peso": 88.2,
+        "abdomen": null,
+        "gordura": 25.8,
+        "musculo": 33.9,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-02-13",
+      "nota": null,
+      "values": {
+        "peso": 87.5,
+        "abdomen": null,
+        "gordura": 25.7,
+        "musculo": 33.9,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-02-15",
+      "nota": "Medidas da semana",
+      "values": {
+        "peso": null,
+        "abdomen": 97.8,
+        "gordura": null,
+        "musculo": null,
+        "peito": 103.7,
+        "anca": 102.2,
+        "braco": 32.8,
+        "coxa": 58.3
+      }
+    },
+    {
+      "date": "2026-02-16",
+      "nota": null,
+      "values": {
+        "peso": 87.6,
+        "abdomen": null,
+        "gordura": 26.2,
+        "musculo": 34.3,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-02-17",
+      "nota": null,
+      "values": {
+        "peso": 87.8,
+        "abdomen": null,
+        "gordura": 26.2,
+        "musculo": 34.2,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-02-18",
+      "nota": null,
+      "values": {
+        "peso": 87.1,
+        "abdomen": null,
+        "gordura": 26.1,
+        "musculo": 34.1,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-02-19",
+      "nota": null,
+      "values": {
+        "peso": 87.1,
+        "abdomen": null,
+        "gordura": 25.1,
+        "musculo": 33.8,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-02-22",
+      "nota": "Medidas da semana",
+      "values": {
+        "peso": null,
+        "abdomen": 97.6,
+        "gordura": null,
+        "musculo": null,
+        "peito": 103.7,
+        "anca": 101.6,
+        "braco": 33,
+        "coxa": 58.3
+      }
+    },
+    {
+      "date": "2026-02-25",
+      "nota": null,
+      "values": {
+        "peso": 87.1,
+        "abdomen": null,
+        "gordura": 25.1,
+        "musculo": 34.2,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-02-26",
+      "nota": null,
+      "values": {
+        "peso": 86.9,
+        "abdomen": null,
+        "gordura": 25,
+        "musculo": 34.1,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-02-27",
+      "nota": null,
+      "values": {
+        "peso": 87.1,
+        "abdomen": null,
+        "gordura": 25.6,
+        "musculo": 33.9,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-02-28",
+      "nota": null,
+      "values": {
+        "peso": 86.8,
+        "abdomen": null,
+        "gordura": 25.2,
+        "musculo": 34.3,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-03-01",
+      "nota": null,
+      "values": {
+        "peso": 86.9,
+        "abdomen": 96.5,
+        "gordura": 25.6,
+        "musculo": 34.4,
+        "peito": 104.1,
+        "anca": 102,
+        "braco": 32.8,
+        "coxa": 57.8
+      }
+    },
+    {
+      "date": "2026-03-02",
+      "nota": null,
+      "values": {
+        "peso": 86.8,
+        "abdomen": null,
+        "gordura": 25.1,
+        "musculo": 34.1,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-03-03",
+      "nota": null,
+      "values": {
+        "peso": 86.8,
+        "abdomen": null,
+        "gordura": 25.3,
+        "musculo": 34.1,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-03-04",
+      "nota": null,
+      "values": {
+        "peso": 87.4,
+        "abdomen": null,
+        "gordura": 25.2,
+        "musculo": 34.1,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-03-05",
+      "nota": null,
+      "values": {
+        "peso": 87.5,
+        "abdomen": null,
+        "gordura": 24.8,
+        "musculo": 34.2,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-03-06",
+      "nota": null,
+      "values": {
+        "peso": 87,
+        "abdomen": null,
+        "gordura": 25.3,
+        "musculo": 34.3,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-03-07",
+      "nota": null,
+      "values": {
+        "peso": 87,
+        "abdomen": null,
+        "gordura": 25.5,
+        "musculo": 34.5,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-03-08",
+      "nota": null,
+      "values": {
+        "peso": 87.2,
+        "abdomen": 96.7,
+        "gordura": 24.9,
+        "musculo": 34.2,
+        "peito": 103.2,
+        "anca": 101.8,
+        "braco": 33.1,
+        "coxa": 57.7
+      }
+    },
+    {
+      "date": "2026-03-10",
+      "nota": null,
+      "values": {
+        "peso": 87.1,
+        "abdomen": null,
+        "gordura": 25.4,
+        "musculo": 34.4,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-03-12",
+      "nota": null,
+      "values": {
+        "peso": 86.5,
+        "abdomen": null,
+        "gordura": 24.5,
+        "musculo": 34.2,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-03-13",
+      "nota": null,
+      "values": {
+        "peso": 86.8,
+        "abdomen": null,
+        "gordura": 25.3,
+        "musculo": 34.2,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-03-15",
+      "nota": "Medidas da semana",
+      "values": {
+        "peso": 86.4,
+        "abdomen": 96.4,
+        "gordura": 25.1,
+        "musculo": 34.6,
+        "peito": 103.2,
+        "anca": 101.5,
+        "braco": 33.1,
+        "coxa": 58.2
+      }
+    },
+    {
+      "date": "2026-03-16",
+      "nota": null,
+      "values": {
+        "peso": 86.4,
+        "abdomen": null,
+        "gordura": 25.4,
+        "musculo": 34.6,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-03-17",
+      "nota": null,
+      "values": {
+        "peso": 86.7,
+        "abdomen": null,
+        "gordura": 25.3,
+        "musculo": 34.3,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-03-18",
+      "nota": null,
+      "values": {
+        "peso": 87.1,
+        "abdomen": null,
+        "gordura": 24.7,
+        "musculo": 34.4,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-03-19",
+      "nota": null,
+      "values": {
+        "peso": 86.3,
+        "abdomen": null,
+        "gordura": 25.1,
+        "musculo": 34.7,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-03-20",
+      "nota": null,
+      "values": {
+        "peso": 86.5,
+        "abdomen": null,
+        "gordura": 25.2,
+        "musculo": 34.2,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-03-21",
+      "nota": null,
+      "values": {
+        "peso": 86.9,
+        "abdomen": null,
+        "gordura": 24.5,
+        "musculo": 34.2,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-03-22",
+      "nota": null,
+      "values": {
+        "peso": 86.2,
+        "abdomen": 96.1,
+        "gordura": 24.1,
+        "musculo": 34.6,
+        "peito": 103.3,
+        "anca": 101.5,
+        "braco": 33.4,
+        "coxa": 57.7
+      }
+    },
+    {
+      "date": "2026-03-23",
+      "nota": null,
+      "values": {
+        "peso": 86.6,
+        "abdomen": null,
+        "gordura": 24.2,
+        "musculo": 34.5,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-03-24",
+      "nota": null,
+      "values": {
+        "peso": 86.6,
+        "abdomen": null,
+        "gordura": 24.7,
+        "musculo": 34.6,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-03-25",
+      "nota": null,
+      "values": {
+        "peso": 86.8,
+        "abdomen": null,
+        "gordura": 24.5,
+        "musculo": 34.7,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-03-27",
+      "nota": null,
+      "values": {
+        "peso": 86.7,
+        "abdomen": null,
+        "gordura": 24.6,
+        "musculo": 34.3,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-03-28",
+      "nota": null,
+      "values": {
+        "peso": 86.5,
+        "abdomen": null,
+        "gordura": 24.8,
+        "musculo": 34.6,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-03-29",
+      "nota": null,
+      "values": {
+        "peso": 86.4,
+        "abdomen": 95.6,
+        "gordura": 24.3,
+        "musculo": 34.7,
+        "peito": 103.4,
+        "anca": 100.9,
+        "braco": 33.4,
+        "coxa": 58.1
+      }
+    },
+    {
+      "date": "2026-04-02",
+      "nota": null,
+      "values": {
+        "peso": 86.5,
+        "abdomen": null,
+        "gordura": 24.7,
+        "musculo": 34.7,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-04-03",
+      "nota": null,
+      "values": {
+        "peso": 86,
+        "abdomen": null,
+        "gordura": 24.4,
+        "musculo": 34.3,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-04-04",
+      "nota": null,
+      "values": {
+        "peso": 85.7,
+        "abdomen": null,
+        "gordura": 23.8,
+        "musculo": 34.3,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-04-05",
+      "nota": null,
+      "values": {
+        "peso": 86,
+        "abdomen": 95.6,
+        "gordura": 24.6,
+        "musculo": 34.3,
+        "peito": 103.5,
+        "anca": 101.2,
+        "braco": 33.6,
+        "coxa": 57.9
+      }
+    },
+    {
+      "date": "2026-04-10",
+      "nota": null,
+      "values": {
+        "peso": 86.2,
+        "abdomen": null,
+        "gordura": 23.5,
+        "musculo": 34.5,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-04-11",
+      "nota": null,
+      "values": {
+        "peso": 86.2,
+        "abdomen": null,
+        "gordura": 24.1,
+        "musculo": 34.4,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-04-12",
+      "nota": null,
+      "values": {
+        "peso": 85.6,
+        "abdomen": 95.1,
+        "gordura": 23.8,
+        "musculo": 34.7,
+        "peito": 103.1,
+        "anca": 100.7,
+        "braco": 33.5,
+        "coxa": 57.7
+      }
+    },
+    {
+      "date": "2026-04-13",
+      "nota": null,
+      "values": {
+        "peso": 85.7,
+        "abdomen": null,
+        "gordura": 24.4,
+        "musculo": 34.9,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-04-14",
+      "nota": null,
+      "values": {
+        "peso": 85.6,
+        "abdomen": null,
+        "gordura": 23.6,
+        "musculo": 35,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-04-15",
+      "nota": null,
+      "values": {
+        "peso": 85.9,
+        "abdomen": null,
+        "gordura": 24,
+        "musculo": 34.7,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-04-16",
+      "nota": null,
+      "values": {
+        "peso": 86.1,
+        "abdomen": null,
+        "gordura": 24.2,
+        "musculo": 34.9,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-04-17",
+      "nota": null,
+      "values": {
+        "peso": 85.3,
+        "abdomen": null,
+        "gordura": 24,
+        "musculo": 34.6,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-04-19",
+      "nota": null,
+      "values": {
+        "peso": 85.9,
+        "abdomen": 94.5,
+        "gordura": 24,
+        "musculo": 34.7,
+        "peito": 102.8,
+        "anca": 100.8,
+        "braco": 33.3,
+        "coxa": 57.8
+      }
+    },
+    {
+      "date": "2026-04-21",
+      "nota": null,
+      "values": {
+        "peso": 85.9,
+        "abdomen": null,
+        "gordura": 23.3,
+        "musculo": 34.6,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-04-23",
+      "nota": null,
+      "values": {
+        "peso": 85.6,
+        "abdomen": null,
+        "gordura": 24.3,
+        "musculo": 34.7,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-04-24",
+      "nota": null,
+      "values": {
+        "peso": 85.1,
+        "abdomen": null,
+        "gordura": 23.4,
+        "musculo": 34.7,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-04-25",
+      "nota": null,
+      "values": {
+        "peso": 85.8,
+        "abdomen": null,
+        "gordura": 23.3,
+        "musculo": 34.6,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-04-26",
+      "nota": "Medidas da semana",
+      "values": {
+        "peso": 85,
+        "abdomen": 94.4,
+        "gordura": 23.3,
+        "musculo": 34.9,
+        "peito": 103.1,
+        "anca": 100,
+        "braco": 33.3,
+        "coxa": 57.3
+      }
+    },
+    {
+      "date": "2026-04-29",
+      "nota": null,
+      "values": {
+        "peso": 85.2,
+        "abdomen": null,
+        "gordura": 23.5,
+        "musculo": 34.6,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-04-30",
+      "nota": null,
+      "values": {
+        "peso": 85.4,
+        "abdomen": null,
+        "gordura": 23.7,
+        "musculo": 34.8,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-05-03",
+      "nota": "Medidas da semana",
+      "values": {
+        "peso": 85.6,
+        "abdomen": 94.4,
+        "gordura": 23.8,
+        "musculo": 34.9,
+        "peito": 102.7,
+        "anca": 100.2,
+        "braco": 33.6,
+        "coxa": 57.6
+      }
+    },
+    {
+      "date": "2026-05-04",
+      "nota": null,
+      "values": {
+        "peso": 85.6,
+        "abdomen": null,
+        "gordura": 23.6,
+        "musculo": 34.9,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-05-05",
+      "nota": null,
+      "values": {
+        "peso": 85.4,
+        "abdomen": null,
+        "gordura": 23.6,
+        "musculo": 34.8,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-05-06",
+      "nota": null,
+      "values": {
+        "peso": 85.1,
+        "abdomen": null,
+        "gordura": 23.7,
+        "musculo": 35.1,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-05-08",
+      "nota": null,
+      "values": {
+        "peso": 85,
+        "abdomen": null,
+        "gordura": 23,
+        "musculo": 34.7,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-05-10",
+      "nota": "Medidas da semana",
+      "values": {
+        "peso": 84.6,
+        "abdomen": 94.1,
+        "gordura": 23.1,
+        "musculo": 35.2,
+        "peito": 102.9,
+        "anca": 100.2,
+        "braco": 33.9,
+        "coxa": 57.1
+      }
+    },
+    {
+      "date": "2026-05-12",
+      "nota": null,
+      "values": {
+        "peso": 85.3,
+        "abdomen": null,
+        "gordura": 23.1,
+        "musculo": 34.9,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-05-14",
+      "nota": null,
+      "values": {
+        "peso": 85.1,
+        "abdomen": null,
+        "gordura": 23.5,
+        "musculo": 34.8,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-05-15",
+      "nota": null,
+      "values": {
+        "peso": 84.6,
+        "abdomen": null,
+        "gordura": 23.2,
+        "musculo": 35.2,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-05-17",
+      "nota": null,
+      "values": {
+        "peso": 85.2,
+        "abdomen": 94.1,
+        "gordura": 23.1,
+        "musculo": 35.3,
+        "peito": 102.8,
+        "anca": 99.7,
+        "braco": 33.6,
+        "coxa": 57.2
+      }
+    },
+    {
+      "date": "2026-05-18",
+      "nota": null,
+      "values": {
+        "peso": 85.4,
+        "abdomen": null,
+        "gordura": 23.5,
+        "musculo": 35.3,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-05-19",
+      "nota": null,
+      "values": {
+        "peso": 85,
+        "abdomen": null,
+        "gordura": 23.1,
+        "musculo": 35.2,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-05-20",
+      "nota": null,
+      "values": {
+        "peso": 85.1,
+        "abdomen": null,
+        "gordura": 23.3,
+        "musculo": 34.9,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-05-24",
+      "nota": null,
+      "values": {
+        "peso": 84.9,
+        "abdomen": 94,
+        "gordura": 23.3,
+        "musculo": 34.9,
+        "peito": 102.7,
+        "anca": 100.3,
+        "braco": 33.5,
+        "coxa": 57.5
+      }
+    },
+    {
+      "date": "2026-05-27",
+      "nota": null,
+      "values": {
+        "peso": 85.3,
+        "abdomen": null,
+        "gordura": 23.5,
+        "musculo": 35.4,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-05-28",
+      "nota": null,
+      "values": {
+        "peso": 84.9,
+        "abdomen": null,
+        "gordura": 23.4,
+        "musculo": 35.2,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-05-31",
+      "nota": null,
+      "values": {
+        "peso": 84.6,
+        "abdomen": 94.3,
+        "gordura": 23.7,
+        "musculo": 35.2,
+        "peito": 102.6,
+        "anca": 100.3,
+        "braco": 33.7,
+        "coxa": 57.4
+      }
+    },
+    {
+      "date": "2026-06-01",
+      "nota": null,
+      "values": {
+        "peso": 84.7,
+        "abdomen": null,
+        "gordura": 23.1,
+        "musculo": 35.1,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-06-02",
+      "nota": null,
+      "values": {
+        "peso": 84.9,
+        "abdomen": null,
+        "gordura": 23.6,
+        "musculo": 35.3,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-06-04",
+      "nota": null,
+      "values": {
+        "peso": 85.4,
+        "abdomen": null,
+        "gordura": 22.8,
+        "musculo": 35,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-06-06",
+      "nota": null,
+      "values": {
+        "peso": 85,
+        "abdomen": null,
+        "gordura": 23.6,
+        "musculo": 35,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-06-07",
+      "nota": null,
+      "values": {
+        "peso": 84.8,
+        "abdomen": 93.8,
+        "gordura": 23.5,
+        "musculo": 35,
+        "peito": 102.5,
+        "anca": 99.9,
+        "braco": 33.8,
+        "coxa": 57.5
+      }
+    },
+    {
+      "date": "2026-06-08",
+      "nota": null,
+      "values": {
+        "peso": 85.1,
+        "abdomen": null,
+        "gordura": 22.9,
+        "musculo": 35.3,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-06-09",
+      "nota": null,
+      "values": {
+        "peso": 84.7,
+        "abdomen": null,
+        "gordura": 23,
+        "musculo": 35.1,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-06-13",
+      "nota": null,
+      "values": {
+        "peso": 84.9,
+        "abdomen": null,
+        "gordura": 23.1,
+        "musculo": 35.6,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-06-14",
+      "nota": "Medidas da semana",
+      "values": {
+        "peso": 85.3,
+        "abdomen": 94.4,
+        "gordura": 23.7,
+        "musculo": 35.2,
+        "peito": 103,
+        "anca": 99.9,
+        "braco": 34,
+        "coxa": 57.3
+      }
+    },
+    {
+      "date": "2026-06-15",
+      "nota": null,
+      "values": {
+        "peso": 84.6,
+        "abdomen": null,
+        "gordura": 22.9,
+        "musculo": 35.3,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-06-16",
+      "nota": null,
+      "values": {
+        "peso": 85,
+        "abdomen": null,
+        "gordura": 23,
+        "musculo": 35.5,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-06-17",
+      "nota": null,
+      "values": {
+        "peso": 84.9,
+        "abdomen": null,
+        "gordura": 22.6,
+        "musculo": 35.2,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-06-18",
+      "nota": null,
+      "values": {
+        "peso": 84.8,
+        "abdomen": null,
+        "gordura": 22.8,
+        "musculo": 35.6,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-06-19",
+      "nota": null,
+      "values": {
+        "peso": 84.6,
+        "abdomen": null,
+        "gordura": 23.7,
+        "musculo": 35.2,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-06-20",
+      "nota": null,
+      "values": {
+        "peso": 83.8,
+        "abdomen": null,
+        "gordura": 21.7,
+        "musculo": 35.1,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-06-21",
+      "nota": null,
+      "values": {
+        "peso": null,
+        "abdomen": 92.8,
+        "gordura": null,
+        "musculo": null,
+        "peito": 102.2,
+        "anca": 99.2,
+        "braco": 33.7,
+        "coxa": 57
+      }
+    },
+    {
+      "date": "2026-06-23",
+      "nota": null,
+      "values": {
+        "peso": 84,
+        "abdomen": null,
+        "gordura": 21.7,
+        "musculo": 35.6,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-06-24",
+      "nota": null,
+      "values": {
+        "peso": 83.2,
+        "abdomen": null,
+        "gordura": 22.4,
+        "musculo": 35.5,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-06-26",
+      "nota": null,
+      "values": {
+        "peso": 83.9,
+        "abdomen": null,
+        "gordura": 21.9,
+        "musculo": 35.3,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-06-28",
+      "nota": null,
+      "values": {
+        "peso": 83.6,
+        "abdomen": 92.2,
+        "gordura": 21.5,
+        "musculo": 35.8,
+        "peito": 102.1,
+        "anca": 98.6,
+        "braco": 34.1,
+        "coxa": 56.8
+      }
+    },
+    {
+      "date": "2026-06-29",
+      "nota": null,
+      "values": {
+        "peso": 83.4,
+        "abdomen": null,
+        "gordura": 21.4,
+        "musculo": 35.3,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-07-01",
+      "nota": null,
+      "values": {
+        "peso": 83.8,
+        "abdomen": null,
+        "gordura": 21.7,
+        "musculo": 35.5,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-07-02",
+      "nota": null,
+      "values": {
+        "peso": 83.6,
+        "abdomen": null,
+        "gordura": 22.2,
+        "musculo": 35.4,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-07-03",
+      "nota": null,
+      "values": {
+        "peso": 83.6,
+        "abdomen": null,
+        "gordura": 21.3,
+        "musculo": 35.8,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-07-04",
+      "nota": null,
+      "values": {
+        "peso": 82.9,
+        "abdomen": null,
+        "gordura": 21.8,
+        "musculo": 35.8,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-07-05",
+      "nota": null,
+      "values": {
+        "peso": 82.9,
+        "abdomen": 91.9,
+        "gordura": 21.5,
+        "musculo": 35.6,
+        "peito": 101.8,
+        "anca": 98.8,
+        "braco": 34,
+        "coxa": 57.1
+      }
+    },
+    {
+      "date": "2026-07-06",
+      "nota": null,
+      "values": {
+        "peso": 83,
+        "abdomen": null,
+        "gordura": 21.8,
+        "musculo": 35.6,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-07-07",
+      "nota": null,
+      "values": {
+        "peso": 82.8,
+        "abdomen": null,
+        "gordura": 20.9,
+        "musculo": 35.5,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-07-08",
+      "nota": null,
+      "values": {
+        "peso": 83.4,
+        "abdomen": null,
+        "gordura": 21,
+        "musculo": 35.8,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-07-09",
+      "nota": null,
+      "values": {
+        "peso": 83.5,
+        "abdomen": null,
+        "gordura": 21.8,
+        "musculo": 35.7,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-07-10",
+      "nota": null,
+      "values": {
+        "peso": 83.4,
+        "abdomen": null,
+        "gordura": 20.9,
+        "musculo": 35.9,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-07-12",
+      "nota": null,
+      "values": {
+        "peso": 83,
+        "abdomen": 91.5,
+        "gordura": 21.7,
+        "musculo": 35.4,
+        "peito": 101.7,
+        "anca": 98.2,
+        "braco": 34,
+        "coxa": 56.8
+      }
+    },
+    {
+      "date": "2026-07-13",
+      "nota": null,
+      "values": {
+        "peso": 82.8,
+        "abdomen": null,
+        "gordura": 21.7,
+        "musculo": 35.5,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-07-16",
+      "nota": null,
+      "values": {
+        "peso": 82.7,
+        "abdomen": null,
+        "gordura": 21.8,
+        "musculo": 35.5,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-07-17",
+      "nota": null,
+      "values": {
+        "peso": 82.8,
+        "abdomen": null,
+        "gordura": 20.8,
+        "musculo": 36,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-07-18",
+      "nota": null,
+      "values": {
+        "peso": 82.8,
+        "abdomen": null,
+        "gordura": 21.1,
+        "musculo": 35.9,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-07-19",
+      "nota": null,
+      "values": {
+        "peso": 82.8,
+        "abdomen": 91.2,
+        "gordura": 20.9,
+        "musculo": 35.7,
+        "peito": 101.6,
+        "anca": 98.4,
+        "braco": 34,
+        "coxa": 56.8
+      }
+    },
+    {
+      "date": "2026-07-21",
+      "nota": null,
+      "values": {
+        "peso": 82.8,
+        "abdomen": null,
+        "gordura": 21.1,
+        "musculo": 35.8,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-07-26",
+      "nota": null,
+      "values": {
+        "peso": null,
+        "abdomen": 90.6,
+        "gordura": null,
+        "musculo": null,
+        "peito": 102.2,
+        "anca": 98,
+        "braco": 34.4,
+        "coxa": 56.3
+      }
+    },
+    {
+      "date": "2026-07-27",
+      "nota": null,
+      "values": {
+        "peso": 82.8,
+        "abdomen": null,
+        "gordura": 20.4,
+        "musculo": 36.1,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-07-28",
+      "nota": null,
+      "values": {
+        "peso": 82.4,
+        "abdomen": null,
+        "gordura": 21.3,
+        "musculo": 36,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-07-29",
+      "nota": null,
+      "values": {
+        "peso": 82.5,
+        "abdomen": null,
+        "gordura": 20.3,
+        "musculo": 36,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-07-30",
+      "nota": null,
+      "values": {
+        "peso": 82.4,
+        "abdomen": null,
+        "gordura": 20.4,
+        "musculo": 35.7,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-08-01",
+      "nota": null,
+      "values": {
+        "peso": 82.5,
+        "abdomen": null,
+        "gordura": 20.9,
+        "musculo": 35.8,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-08-02",
+      "nota": null,
+      "values": {
+        "peso": 82.2,
+        "abdomen": 90.8,
+        "gordura": 20.4,
+        "musculo": 36,
+        "peito": 101.4,
+        "anca": 98.2,
+        "braco": 34.2,
+        "coxa": 56.4
+      }
+    },
+    {
+      "date": "2026-08-03",
+      "nota": null,
+      "values": {
+        "peso": 81.9,
+        "abdomen": null,
+        "gordura": 21,
+        "musculo": 36,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-08-04",
+      "nota": null,
+      "values": {
+        "peso": 82.4,
+        "abdomen": null,
+        "gordura": 20.2,
+        "musculo": 36.2,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-08-06",
+      "nota": null,
+      "values": {
+        "peso": 81.8,
+        "abdomen": null,
+        "gordura": 20.1,
+        "musculo": 36.2,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-08-07",
+      "nota": null,
+      "values": {
+        "peso": 82.6,
+        "abdomen": null,
+        "gordura": 20.4,
+        "musculo": 36.1,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-08-09",
+      "nota": null,
+      "values": {
+        "peso": 81.8,
+        "abdomen": 90.7,
+        "gordura": 20,
+        "musculo": 36,
+        "peito": 101.6,
+        "anca": 97.8,
+        "braco": 34.2,
+        "coxa": 56.7
+      }
+    },
+    {
+      "date": "2026-08-10",
+      "nota": null,
+      "values": {
+        "peso": 82.2,
+        "abdomen": null,
+        "gordura": 19.9,
+        "musculo": 35.8,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-08-14",
+      "nota": null,
+      "values": {
+        "peso": 81.7,
+        "abdomen": null,
+        "gordura": 20.9,
+        "musculo": 35.9,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-08-15",
+      "nota": null,
+      "values": {
+        "peso": 81.8,
+        "abdomen": null,
+        "gordura": 20.4,
+        "musculo": 35.8,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-08-16",
+      "nota": null,
+      "values": {
+        "peso": null,
+        "abdomen": 90.3,
+        "gordura": null,
+        "musculo": null,
+        "peito": 101.3,
+        "anca": 97.7,
+        "braco": 34.4,
+        "coxa": 56.3
+      }
+    },
+    {
+      "date": "2026-08-17",
+      "nota": null,
+      "values": {
+        "peso": 81.9,
+        "abdomen": null,
+        "gordura": 20.3,
+        "musculo": 36,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-08-18",
+      "nota": null,
+      "values": {
+        "peso": 81.9,
+        "abdomen": null,
+        "gordura": 20.4,
+        "musculo": 36.3,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-08-19",
+      "nota": null,
+      "values": {
+        "peso": 81.4,
+        "abdomen": null,
+        "gordura": 20.4,
+        "musculo": 36.3,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-08-20",
+      "nota": null,
+      "values": {
+        "peso": 81.5,
+        "abdomen": null,
+        "gordura": 20,
+        "musculo": 36,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-08-22",
+      "nota": null,
+      "values": {
+        "peso": 81.5,
+        "abdomen": null,
+        "gordura": 19.9,
+        "musculo": 36.2,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-08-23",
+      "nota": null,
+      "values": {
+        "peso": null,
+        "abdomen": 90.2,
+        "gordura": null,
+        "musculo": null,
+        "peito": 101.8,
+        "anca": 97.2,
+        "braco": 34.2,
+        "coxa": 56.1
+      }
+    },
+    {
+      "date": "2026-08-24",
+      "nota": null,
+      "values": {
+        "peso": 81.8,
+        "abdomen": null,
+        "gordura": 20.3,
+        "musculo": 36.3,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-08-28",
+      "nota": null,
+      "values": {
+        "peso": 81.4,
+        "abdomen": null,
+        "gordura": 20.1,
+        "musculo": 36.2,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-08-29",
+      "nota": null,
+      "values": {
+        "peso": 81.7,
+        "abdomen": null,
+        "gordura": 20.3,
+        "musculo": 35.9,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-08-30",
+      "nota": null,
+      "values": {
+        "peso": 81,
+        "abdomen": 89.8,
+        "gordura": 19.6,
+        "musculo": 36.2,
+        "peito": 101.5,
+        "anca": 97.4,
+        "braco": 34.4,
+        "coxa": 56
+      }
+    },
+    {
+      "date": "2026-09-01",
+      "nota": null,
+      "values": {
+        "peso": 81.1,
+        "abdomen": null,
+        "gordura": 20.1,
+        "musculo": 36.2,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-09-02",
+      "nota": null,
+      "values": {
+        "peso": 80.9,
+        "abdomen": null,
+        "gordura": 19.6,
+        "musculo": 36.5,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-09-03",
+      "nota": null,
+      "values": {
+        "peso": 81.4,
+        "abdomen": null,
+        "gordura": 20.1,
+        "musculo": 36.2,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-09-04",
+      "nota": null,
+      "values": {
+        "peso": 80.9,
+        "abdomen": null,
+        "gordura": 20.2,
+        "musculo": 36.3,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-09-06",
+      "nota": null,
+      "values": {
+        "peso": 81.1,
+        "abdomen": 89.7,
+        "gordura": 19.8,
+        "musculo": 36.4,
+        "peito": 101.4,
+        "anca": 96.8,
+        "braco": 34.4,
+        "coxa": 56
+      }
+    },
+    {
+      "date": "2026-09-07",
+      "nota": null,
+      "values": {
+        "peso": 80.8,
+        "abdomen": null,
+        "gordura": 19.7,
+        "musculo": 36.5,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-09-08",
+      "nota": null,
+      "values": {
+        "peso": 80.9,
+        "abdomen": null,
+        "gordura": 20.1,
+        "musculo": 36.2,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-09-09",
+      "nota": null,
+      "values": {
+        "peso": 81.1,
+        "abdomen": null,
+        "gordura": 20.1,
+        "musculo": 36.3,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-09-10",
+      "nota": null,
+      "values": {
+        "peso": 80.7,
+        "abdomen": null,
+        "gordura": 19.4,
+        "musculo": 36.2,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-09-12",
+      "nota": null,
+      "values": {
+        "peso": 81.1,
+        "abdomen": null,
+        "gordura": 19.5,
+        "musculo": 36.2,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-09-13",
+      "nota": "Medidas da semana",
+      "values": {
+        "peso": 81.2,
+        "abdomen": 89.4,
+        "gordura": 19.9,
+        "musculo": 36.5,
+        "peito": 101.1,
+        "anca": 96.6,
+        "braco": 34.5,
+        "coxa": 55.8
+      }
+    },
+    {
+      "date": "2026-09-14",
+      "nota": null,
+      "values": {
+        "peso": 81.3,
+        "abdomen": null,
+        "gordura": 19.4,
+        "musculo": 36.3,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-09-17",
+      "nota": null,
+      "values": {
+        "peso": 80.6,
+        "abdomen": null,
+        "gordura": 19,
+        "musculo": 36.1,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    },
+    {
+      "date": "2026-09-19",
+      "nota": null,
+      "values": {
+        "peso": 81.2,
+        "abdomen": null,
+        "gordura": 19.4,
+        "musculo": 36.4,
+        "peito": null,
+        "anca": null,
+        "braco": null,
+        "coxa": null
+      }
+    }
+  ]
+}

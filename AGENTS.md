@@ -7,3 +7,14 @@ This version has breaking changes — APIs, conventions, and file structure may 
 This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
 
 <!-- END:nextjs-agent-rules -->
+
+## Este projeto
+
+- As métricas definem-se num único sítio: `lib/metrics.ts`. Acrescentar uma
+  entrada propaga-se ao formulário, cartões, gráficos, tabela, exportação e
+  esquema da base de dados.
+- Todo o acesso a dados passa por `lib/repo.ts`. Não usar `lib/db.ts`
+  diretamente fora dessa fronteira.
+- Antes de mexer em cores ou eixos dos gráficos, ler a secção "Notas sobre os
+  gráficos" do README: a paleta e a regra do eixo único são deliberadas.
+- `npm run lint` e `npm run build` têm de passar limpos.
