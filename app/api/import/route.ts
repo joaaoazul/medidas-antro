@@ -38,7 +38,7 @@ export async function POST(request: Request) {
     parsed.push(result.data);
   }
 
-  const imported = importEntries(parsed);
+  const imported = await importEntries(parsed);
   revalidatePath("/");
 
   return Response.json({ imported });

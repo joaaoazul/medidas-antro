@@ -8,7 +8,7 @@ import { listEntries } from "@/lib/repo";
  */
 export async function GET(request: Request) {
   const format = new URL(request.url).searchParams.get("format") ?? "json";
-  const entries = listEntries();
+  const entries = await listEntries();
   const stamp = new Date().toISOString().slice(0, 10);
 
   if (format === "csv") {

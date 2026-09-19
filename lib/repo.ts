@@ -1,41 +1,97 @@
-import { db } from "./db";
 import { METRIC_IDS, type MetricId } from "./metrics";
+import { createClient } from "./supabase/server";
 import type { Entry } from "./types";
 import type { EntryInput } from "./validation";
 
-type Row = Record<string, unknown> & { date: string; updated_at: string };
+/**
+ * Fronteira unica de acesso a dados.
+ *
+ * Todas as funcoes correm com a sessao de quem esta a navegar, por isso as
+ * politicas de seguranca da base de dados aplicam-se a cada consulta. Nenhuma
+ * delas filtra por utilizador "a mao" na clausula where por seguranca: o filtro
+ * existe para pedir menos linhas, mas quem garante o isolamento e o Postgres.
+ */
+
+type Row = {
+  date: string;
+  nota: string | null;
+  updated_at: string;
+} & Partial<Record<MetricId, number | null>>;
+
+const COLUMNS = ["date", ...METRIC_IDS, "nota", "updated_at"].join(", ");
 
 function rowToEntry(row: Row): Entry {
   const values = Object.fromEntries(
-    METRIC_IDS.map((id) => {
-      const raw = row[id];
-      return [id, typeof raw === "number" ? raw : null];
-    }),
+    METRIC_IDS.map((id) => [id, row[id] ?? null]),
   ) as Record<MetricId, number | null>;
 
   return {
     date: row.date,
     values,
-    nota: (row.nota as string | null) ?? null,
+    nota: row.nota,
     updatedAt: row.updated_at,
   };
 }
 
-const COLUMNS = ["date", ...METRIC_IDS, "nota", "updated_at"];
+/**
+ * Identidade de quem esta a fazer o pedido.
+ *
+ * getUser() valida o token contra a Supabase; getSession() so le o cookie, que
+ * o lado de la tambem sabe escrever. As rotas ja estao guardadas pelo
+ * middleware, por isso chegar aqui sem sessao e um erro de programacao e deve
+ * rebentar alto em vez de devolver uma lista vazia.
+ */
+async function requireUser() {
+  const supabase = await createClient();
+  const {
+    data: { user },
+    error,
+  } = await supabase.auth.getUser();
 
-/** Todos os registos, do mais antigo para o mais recente. */
-export function listEntries(): Entry[] {
-  const rows = db
-    .prepare(`SELECT * FROM entries ORDER BY date ASC`)
-    .all() as Row[];
-  return rows.map(rowToEntry);
+  if (error || !user) {
+    throw new Error("Sem sessao iniciada.");
+  }
+
+  return { supabase, userId: user.id };
 }
 
-export function getEntry(date: string): Entry | null {
-  const row = db.prepare(`SELECT * FROM entries WHERE date = ?`).get(date) as
-    | Row
-    | undefined;
-  return row ? rowToEntry(row) : null;
+/** Todos os registos de quem esta autenticado, do mais antigo para o mais recente. */
+export async function listEntries(): Promise<Entry[]> {
+  const { supabase, userId } = await requireUser();
+
+  const { data, error } = await supabase
+    .from("entries")
+    .select(COLUMNS)
+    .eq("user_id", userId)
+    .order("date", { ascending: true });
+
+  if (error) throw new Error(`Nao foi possivel ler os registos: ${error.message}`);
+
+  return (data as unknown as Row[]).map(rowToEntry);
+}
+
+export async function getEntry(date: string): Promise<Entry | null> {
+  const { supabase, userId } = await requireUser();
+
+  const { data, error } = await supabase
+    .from("entries")
+    .select(COLUMNS)
+    .eq("user_id", userId)
+    .eq("date", date)
+    .maybeSingle();
+
+  if (error) throw new Error(`Nao foi possivel ler o registo: ${error.message}`);
+
+  return data ? rowToEntry(data as unknown as Row) : null;
+}
+
+function toRow(input: EntryInput, userId: string) {
+  return {
+    user_id: userId,
+    date: input.date,
+    ...Object.fromEntries(METRIC_IDS.map((id) => [id, input.values[id]])),
+    nota: input.nota && input.nota.length > 0 ? input.nota : null,
+  };
 }
 
 /**
@@ -43,39 +99,52 @@ export function getEntry(date: string): Entry | null {
  * em vez de criar um duplicado -- corrigir a pesagem da manha e o caso normal,
  * nao uma excecao.
  */
-export function upsertEntry(input: EntryInput): Entry {
-  const placeholders = COLUMNS.map(() => "?").join(", ");
-  // date fica de fora do SET: e a chave do conflito.
-  const updates = COLUMNS.slice(1)
-    .map((c) => `"${c}" = excluded."${c}"`)
-    .join(", ");
+export async function upsertEntry(input: EntryInput): Promise<Entry> {
+  const { supabase, userId } = await requireUser();
 
-  db.prepare(
-    `INSERT INTO entries (${COLUMNS.map((c) => `"${c}"`).join(", ")})
-     VALUES (${placeholders})
-     ON CONFLICT(date) DO UPDATE SET ${updates}`,
-  ).run(
-    input.date,
-    ...METRIC_IDS.map((id) => input.values[id]),
-    input.nota && input.nota.length > 0 ? input.nota : null,
-    new Date().toISOString(),
-  );
+  const { data, error } = await supabase
+    .from("entries")
+    .upsert(toRow(input, userId), { onConflict: "user_id,date" })
+    .select(COLUMNS)
+    .single();
 
-  return getEntry(input.date)!;
+  if (error) throw new Error(`Nao foi possivel guardar: ${error.message}`);
+
+  return rowToEntry(data as unknown as Row);
 }
 
-export function deleteEntry(date: string): boolean {
-  return db.prepare(`DELETE FROM entries WHERE date = ?`).run(date).changes > 0;
+export async function deleteEntry(date: string): Promise<boolean> {
+  const { supabase, userId } = await requireUser();
+
+  const { data, error } = await supabase
+    .from("entries")
+    .delete()
+    .eq("user_id", userId)
+    .eq("date", date)
+    .select("date");
+
+  if (error) throw new Error(`Nao foi possivel apagar: ${error.message}`);
+
+  return (data?.length ?? 0) > 0;
 }
 
 /**
- * Importa varios registos numa transacao: ou entram todos, ou nenhum.
- * Uma importacao a meio seria pior do que uma falhada.
+ * Importa varios registos. Um unico upsert com todas as linhas: ou entram
+ * todas, ou nenhuma. Uma importacao a meio seria pior do que uma falhada.
  */
-export function importEntries(entries: EntryInput[]): number {
-  const run = db.transaction((batch: EntryInput[]) => {
-    for (const entry of batch) upsertEntry(entry);
-    return batch.length;
-  });
-  return run(entries);
+export async function importEntries(entries: EntryInput[]): Promise<number> {
+  if (entries.length === 0) return 0;
+
+  const { supabase, userId } = await requireUser();
+
+  const { error } = await supabase
+    .from("entries")
+    .upsert(
+      entries.map((entry) => toRow(entry, userId)),
+      { onConflict: "user_id,date" },
+    );
+
+  if (error) throw new Error(`Nao foi possivel importar: ${error.message}`);
+
+  return entries.length;
 }

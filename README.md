@@ -4,7 +4,7 @@ App para registar medidas antropométricas todos os dias — peso, perímetro
 abdominal, gordura corporal, massa muscular e perímetros — e ver como evoluem
 por dias, semanas e meses.
 
-Next.js 16 + TypeScript, SQLite local, sem serviços externos. Desenhada
+Next.js 16 + TypeScript, Postgres na Supabase com autenticação. Desenhada
 primeiro para o telemóvel — é lá que se regista uma pesagem, de manhã, com uma
 mão.
 
@@ -20,14 +20,28 @@ mão.
 
 ```bash
 npm install
-npm run dev          # http://localhost:3000
+cp .env.example .env.local     # e preenche os dois valores
+npm run dev                    # http://localhost:3000
 ```
 
-Não é preciso configurar nada: a base de dados é criada na primeira utilização
-em `data/medidas.db`.
+Os dois valores estão no dashboard da Supabase, em **Project Settings → API**:
+o URL do projeto e a chave publicável (`sb_publishable_...`). São públicos por
+desenho — vão no browser. Quem protege os dados são as políticas da base de
+dados, não o segredo da chave.
 
-Para experimentar com dados: abre a app, carrega em **Importar JSON** e escolhe
-`exemplo/medidas-exemplo.json` (240 dias de dados fictícios, gerados).
+O esquema está em `supabase/migrations/`. Num projeto novo, cola esse SQL no
+**SQL Editor** da Supabase (ou aplica-o com o CLI da Supabase).
+
+Na primeira visita a app manda-te para `/entrar`. Cria a conta e entras.
+
+> **Confirmação por email.** Um projeto novo da Supabase traz "Confirm email"
+> ligado, e o servidor de email gratuito só envia 2 emails por hora. Para uso
+> pessoal, desliga-o em **Authentication → Sign In / Providers → Email**. Se o
+> mantiveres ligado, a app diz-te que a conta foi criada e que tens de ir ao
+> email — não te deixa em silêncio.
+
+Para experimentar com dados: entra, vai a **Histórico → Importar JSON** e
+escolhe `exemplo/medidas-exemplo.json` (240 dias de dados fictícios, gerados).
 
 ```bash
 npm run build && npm start   # produção
@@ -64,35 +78,54 @@ Três separadores, um por pergunta:
 - Exportar JSON/CSV e importar JSON, para cópias de segurança e para levar os
   dados para outro lado.
 
-## Onde estão os dados
+## Onde estão os dados, e quem lhes chega
 
-Num ficheiro SQLite em `data/medidas.db` (configurável em `DATABASE_FILE`). A
-pasta `data/` está no `.gitignore`: são dados pessoais e não entram no
-repositório.
+Em Postgres, na Supabase, na tabela `entries`. Cada linha pertence a uma conta
+(`user_id`), e a chave primária é `(user_id, date)` — um registo por pessoa por
+dia.
 
-**Isto tem uma consequência para o deploy.** Em plataformas com sistema de
-ficheiros efémero — Vercel, Netlify e afins — o ficheiro desaparece a cada
-arranque. Para essas, ou se quiseres a app acessível de vários dispositivos, é
-preciso uma base de dados alojada. O ponto de troca está isolado: `lib/repo.ts`
-é a única fronteira de acesso a dados (seis funções), e só ele precisa de mudar.
-Para uso local ou numa máquina com disco persistente (um VPS, um Raspberry Pi,
-Docker com volume), o SQLite chega e sobra.
+**O isolamento entre contas é feito pela base de dados, não pela aplicação.** A
+chave publicável vai no browser e qualquer pessoa a consegue ler; é assim que
+foi desenhada. O que impede alguém autenticado de ler as medidas de outra pessoa
+são as políticas de Row Level Security em
+`supabase/migrations/0001_entries.sql`. Mesmo que um bug nesta app pedisse os
+registos de outra conta, o Postgres não os devolvia.
 
-Enquanto o ficheiro for local, **a exportação é a cópia de segurança.**
+Verificado no próprio projeto, numa transação revertida no fim:
+
+| Cenário | Resultado |
+|---|---|
+| A pessoa A lê a tabela (2 contas com registos) | vê só o registo dela |
+| A pessoa A tenta escrever na conta da pessoa B | recusado pela política |
+| A pessoa A tenta apagar o registo da pessoa B | não apaga nada |
+| Visitante sem sessão lê a tabela | não devolve nada |
+| A pessoa A escreve na própria conta | a política deixa passar |
+
+O *security advisor* da Supabase está limpo (zero alertas).
+
+**Cópias de segurança.** A Supabase faz as suas, mas a exportação da app
+(JSON/CSV) é a tua — e é também a forma de levar os dados para outro lado.
+
+**Deploy.** Como a base de dados já não é um ficheiro local, a app corre bem em
+Vercel, Netlify ou qualquer outro sítio: são só as duas variáveis de ambiente.
 
 ## Estrutura
 
 ```
+middleware.ts        renova a sessão e guarda as rotas privadas
+supabase/migrations  esquema e políticas de segurança
 app/
   layout.tsx         tipo de letra (Outfit) e o script que aplica o tema antes de pintar
   page.tsx           componente de servidor: lê os registos e entrega-os à casca
   actions.ts         server actions de gravar e apagar
+  entrar/            página de entrada e de criação de conta
+  auth/actions.ts    entrar, criar conta, terminar sessão
   api/export         descarregar tudo em JSON ou CSV
-  api/import         restaurar uma exportação (numa transação)
+  api/import         restaurar uma exportação (num só upsert)
   globals.css        tokens de cor, claro e escuro
 lib/
   metrics.ts         definição das 8 métricas — único sítio a mexer para acrescentar uma
-  db.ts              ligação SQLite, esquema e migração de colunas
+  supabase/          clientes de servidor, de browser e de middleware
   repo.ts            fronteira de acesso a dados
   validation.ts      esquemas zod, partilhados pelo formulário e pela importação
   series.ts          intervalos, agregação, variações, indexação relativa e escala Y
@@ -112,8 +145,8 @@ exemplo/             conjunto de dados de demonstração e imagens do README
 
 Uma entrada em `METRICS` (`lib/metrics.ts`) com um par de cores do próximo slot
 livre da paleta. O formulário, os cartões, os gráficos, a tabela, a exportação e
-a coluna na base de dados seguem daí — `lib/db.ts` acrescenta a coluna em falta
-no arranque seguinte.
+as consultas seguem daí. Falta só a coluna na base de dados: uma migração nova
+em `supabase/migrations/` com `alter table public.entries add column ...`.
 
 ## Notas de desenho
 

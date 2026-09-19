@@ -49,7 +49,7 @@ export async function saveEntry(
     return { status: "erro", message: firstError(parsedEntry.error) };
   }
 
-  upsertEntry(parsedEntry.data);
+  await upsertEntry(parsedEntry.data);
   revalidatePath("/");
 
   return {
@@ -64,7 +64,7 @@ export async function removeEntry(date: string): Promise<ActionState> {
     return { status: "erro", message: "Data invalida." };
   }
 
-  const removed = deleteEntry(date);
+  const removed = await deleteEntry(date);
   revalidatePath("/");
 
   return removed

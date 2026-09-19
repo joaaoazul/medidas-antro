@@ -5,6 +5,7 @@ import { longLabel, todayISO } from "@/lib/dates";
 import type { Entry } from "@/lib/types";
 import HistoryView from "./HistoryView";
 import { BottomNav, type Tab, ThemeButton, TopTabs } from "./Nav";
+import SignOutButton from "./SignOutButton";
 import { CHROME, useTheme } from "./theme";
 import TodayView from "./TodayView";
 import TrendsView from "./TrendsView";
@@ -17,7 +18,13 @@ import TrendsView from "./TrendsView";
  * mudar de intervalo ou de metrica e imediato, sem uma ida ao servidor a cada
  * toque num filtro.
  */
-export default function Dashboard({ entries }: { entries: Entry[] }) {
+export default function Dashboard({
+  entries,
+  email,
+}: {
+  entries: Entry[];
+  email: string;
+}) {
   const { mode, toggle } = useTheme();
   const chrome = CHROME[mode];
   const [tab, setTab] = useState<Tab>("hoje");
@@ -49,6 +56,7 @@ export default function Dashboard({ entries }: { entries: Entry[] }) {
           </div>
           <TopTabs active={tab} onChange={setTab} />
           <ThemeButton mode={mode} onToggle={toggle} />
+          <SignOutButton compact />
         </div>
       </header>
 
@@ -57,7 +65,9 @@ export default function Dashboard({ entries }: { entries: Entry[] }) {
           <TodayView entries={entries} date={date} onDate={setDate} />
         ) : null}
         {tab === "evolucao" ? <TrendsView entries={entries} /> : null}
-        {tab === "historico" ? <HistoryView entries={entries} /> : null}
+        {tab === "historico" ? (
+          <HistoryView entries={entries} email={email} />
+        ) : null}
       </main>
 
       <BottomNav active={tab} onChange={setTab} />

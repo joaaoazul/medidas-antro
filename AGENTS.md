@@ -26,3 +26,12 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 - Mudancas no formulario, no apagar ou na importacao tem de ser exercitadas a
   serio no browser, nao so olhadas: o erro acima nao aparece nem no `tsc` nem no
   `next build`.
+- Os dados estao em Postgres na Supabase. O isolamento entre contas e feito
+  pelas politicas de Row Level Security em `supabase/migrations/`, nao pelo
+  codigo da aplicacao. Qualquer tabela nova precisa de `enable row level
+  security` e das suas politicas antes de guardar seja o que for.
+- Nunca usar a chave de servico (`service_role`) nesta aplicacao: ela ignora as
+  politicas. Todo o acesso passa pela sessao de quem esta a navegar.
+- Para saber quem esta autenticado, usar sempre `supabase.auth.getUser()` e
+  nunca `getSession()`: o segundo so le o cookie, que o lado do cliente tambem
+  sabe escrever.
