@@ -1,0 +1,168 @@
+"use client";
+
+import { useMemo, useState } from "react";
+import { METRICS, METRIC_BY_ID, type MetricId } from "@/lib/metrics";
+import {
+  GRANULARITIES,
+  RANGES,
+  buildRelativeRows,
+  buildSeries,
+  filterByRange,
+} from "@/lib/series";
+import type { Entry, Granularity, RangeKey } from "@/lib/types";
+import MetricChart from "./MetricChart";
+import RelativeChart from "./RelativeChart";
+import { CHROME, useTheme } from "./theme";
+import { Chip, ChipRow, Segmented } from "./ui";
+
+type Mode = "individual" | "comparar";
+
+/**
+ * Selecao inicial do grafico comparativo.
+ *
+ * Sao os tres primeiros slots da paleta -- o unico subconjunto que passa os
+ * limiares de daltonismo com todos os pares em jogo. Mais series continuam a
+ * ser possiveis (as linhas usam a lista de pares adjacentes, que a paleta
+ * inteira cumpre), mas tres e o arranque seguro.
+ */
+const DEFAULT_SELECTION: MetricId[] = ["peso", "abdomen", "gordura"];
+
+export default function TrendsView({ entries }: { entries: Entry[] }) {
+  const { mode: theme } = useTheme();
+  const chrome = CHROME[theme];
+
+  const [range, setRange] = useState<RangeKey>("90d");
+  const [granularity, setGranularity] = useState<Granularity>("dia");
+  const [mode, setMode] = useState<Mode>("individual");
+  const [focused, setFocused] = useState<MetricId>("peso");
+  const [selected, setSelected] = useState<MetricId[]>(DEFAULT_SELECTION);
+
+  // Os filtros delimitam tudo o que vem abaixo: o grafico le sempre a mesma
+  // fatia que os controlos anunciam.
+  const ranged = useMemo(() => filterByRange(entries, range), [entries, range]);
+
+  const points = useMemo(
+    () => buildSeries(ranged, focused, granularity),
+    [ranged, focused, granularity],
+  );
+
+  const relativeRows = useMemo(
+    () => buildRelativeRows(ranged, selected, granularity),
+    [ranged, selected, granularity],
+  );
+
+  const toggleSelected = (id: MetricId) =>
+    setSelected((current) =>
+      current.includes(id)
+        ? current.filter((m) => m !== id)
+        : [...current, id].sort(
+            (a, b) =>
+              METRICS.findIndex((m) => m.id === a) -
+              METRICS.findIndex((m) => m.id === b),
+          ),
+    );
+
+  return (
+    <div className="flex flex-col gap-4">
+      {/*
+       * Os controlos ficam acima do grafico, mas comprimidos ao minimo: num
+       * telemovel, quatro filas de fichas empurravam o grafico inteiro para
+       * fora do ecra, e o grafico e que e o conteudo. A escolha de vista virou
+       * um comutador, as metricas ficaram numa fila deslizante e o intervalo e
+       * o agrupamento partilham uma linha com os rotulos ao lado.
+       */}
+      {/* No ecra grande o comutador nao precisa de 1200px: a largura total e
+          para o polegar, nao para o rato. */}
+      <div className="sm:max-w-sm">
+        <Segmented
+          label="Vista"
+          value={mode}
+          onChange={setMode}
+          options={[
+            { key: "individual", label: "Uma metrica" },
+            { key: "comparar", label: "Comparar" },
+          ]}
+        />
+      </div>
+
+      <ChipRow label={mode === "individual" ? "Metrica" : "Metricas"}>
+        {METRICS.map((metric) => (
+          <Chip
+            key={metric.id}
+            swatch={metric.color[theme]}
+            selected={
+              mode === "individual"
+                ? metric.id === focused
+                : selected.includes(metric.id)
+            }
+            onClick={() =>
+              mode === "individual"
+                ? setFocused(metric.id)
+                : toggleSelected(metric.id)
+            }
+          >
+            {metric.short}
+          </Chip>
+        ))}
+      </ChipRow>
+
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-6">
+        <ChipRow label="Intervalo" inline>
+          {RANGES.map((option) => (
+            <Chip
+              key={option.key}
+              selected={option.key === range}
+              onClick={() => setRange(option.key)}
+            >
+              {option.label}
+            </Chip>
+          ))}
+        </ChipRow>
+
+        <ChipRow label="Agrupar" inline>
+          {GRANULARITIES.map((option) => (
+            <Chip
+              key={option.key}
+              selected={option.key === granularity}
+              onClick={() => setGranularity(option.key)}
+            >
+              {option.label}
+            </Chip>
+          ))}
+        </ChipRow>
+      </div>
+
+      {/*
+       * Um grafico de cada vez, escolhido nas fichas acima.
+       *
+       * A alternativa seria empilhar as oito metricas num so grafico com dois
+       * eixos Y. Seria errado: duas escalas independentes podem ser esticadas
+       * ate qualquer cruzamento parecer significativo, e quem le nao tem como
+       * saber que o cruzamento e um artefacto do eixo. Quando e mesmo preciso
+       * ve-las juntas, a vista "Comparar" indexa tudo a uma base comum e usa um
+       * unico eixo honesto.
+       */}
+      {mode === "individual" ? (
+        <MetricChart
+          metric={METRIC_BY_ID[focused]}
+          points={points}
+          granularity={granularity}
+        />
+      ) : (
+        <RelativeChart
+          rows={relativeRows}
+          metrics={selected}
+          granularity={granularity}
+        />
+      )}
+
+      <p className="px-1 text-xs" style={{ color: chrome.muted }}>
+        {granularity === "dia"
+          ? "Cada ponto e uma medicao."
+          : `Cada ponto e a media das medicoes ${
+              granularity === "semana" ? "da semana" : "do mes"
+            }.`}
+      </p>
+    </div>
+  );
+}

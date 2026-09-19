@@ -3,16 +3,8 @@
 import { revalidatePath } from "next/cache";
 import { METRIC_IDS, METRIC_BY_ID, type MetricId } from "@/lib/metrics";
 import { deleteEntry, upsertEntry } from "@/lib/repo";
+import type { ActionState } from "@/lib/form-state";
 import { entrySchema, firstError } from "@/lib/validation";
-
-export type ActionState = {
-  status: "idle" | "ok" | "erro";
-  message: string;
-  /** Data gravada com sucesso, para o formulario dar sinal de vida. */
-  savedDate?: string;
-};
-
-export const IDLE: ActionState = { status: "idle", message: "" };
 
 /**
  * Converte o texto do campo em numero.

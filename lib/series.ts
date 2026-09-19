@@ -197,7 +197,7 @@ const NICE_STEPS = [1, 2, 2.5, 5, 10];
  * nunca se lera. O dominio e alargado ate ao multiplo do passo, nunca
  * encolhido: arredondar para dentro cortaria pontos reais.
  */
-export function niceScale(points: Point[], tickCount = 4): Scale {
+export function niceScale(points: Point[], tickCount = 5): Scale {
   const values = points
     .map((p) => p.value)
     .filter((v): v is number => v !== null);
@@ -222,16 +222,18 @@ export function niceScale(points: Point[], tickCount = 4): Scale {
   // que ha sempre um passo escolhido.
   const step = (NICE_STEPS.find((s) => s * magnitude >= rawStep) ?? 10) * magnitude;
 
-  const lo = Math.floor(min / step) * step;
-  const hi = Math.ceil(max / step) * step;
-
-  // Somar o passo repetidamente acumula erro binario (0.1 + 0.2 ...), por isso
-  // cada marca e calculada a partir do indice e arredondada ao passo.
-  const decimals = Math.max(0, -Math.floor(Math.log10(step)));
-  const count = Math.round((hi - lo) / step);
-  const ticks = Array.from({ length: count + 1 }, (_, i) =>
-    Number((lo + i * step).toFixed(decimals + 2)),
+  /*
+   * As marcas sao os multiplos do passo que caem DENTRO do dominio, e nao o
+   * contrario: alargar o dominio ate ao multiplo seguinte, dos dois lados,
+   * podia acrescentar quase um passo inteiro de vazio em cima e em baixo, e o
+   * grafico passava metade da altura a desenhar nada.
+   */
+  const decimals = Math.max(0, -Math.floor(Math.log10(step))) + 2;
+  const first = Math.ceil(min / step);
+  const last = Math.floor(max / step);
+  const ticks = Array.from({ length: Math.max(0, last - first + 1) }, (_, i) =>
+    Number(((first + i) * step).toFixed(decimals)),
   );
 
-  return { domain: [ticks[0], ticks[ticks.length - 1]], ticks };
+  return { domain: [min, max], ticks };
 }

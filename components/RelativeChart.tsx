@@ -15,6 +15,7 @@ import { METRIC_BY_ID, type MetricId } from "@/lib/metrics";
 import type { RelativeRow } from "@/lib/series";
 import type { Granularity } from "@/lib/types";
 import { CHROME, useTheme } from "./theme";
+import { Card } from "./ui";
 
 function bucketAt(t: number, granularity: Granularity): string {
   const iso = msToISO(t);
@@ -102,19 +103,22 @@ export default function RelativeChart({
   const chrome = CHROME[mode];
 
   return (
-    <figure
-      className="rounded-xl border p-4"
-      style={{ background: "var(--surface-1)", borderColor: "var(--border)" }}
-    >
+    <Card className="p-4 sm:p-5" as="figure">
       <figcaption className="mb-1">
-        <h2 className="text-sm font-medium" style={{ color: chrome.ink }}>
+        <h2 className="text-base font-medium" style={{ color: chrome.ink }}>
           Evolucao relativa
         </h2>
+        {/*
+          A razao completa vive no README e no comentario de buildRelativeRows:
+          peso, perimetros e percentagens nao partilham escala, e dois eixos Y
+          independentes podem ser esticados ate qualquer cruzamento parecer um
+          facto. Aqui fica so o que o leitor precisa de saber para ler o eixo --
+          cinco linhas de explicacao num telemovel empurram o grafico para fora
+          do ecra, e um grafico que nao se ve nao explica nada.
+        */}
         <p className="mt-0.5 text-xs" style={{ color: chrome.muted }}>
-          Cada metrica em % face a primeira medicao do intervalo. Peso, medidas
-          e percentagens nao partilham escala: indexar tudo a uma base comum
-          poe-as num unico eixo em vez de dois eixos que se podem esticar ate
-          qualquer cruzamento parecer um facto.
+          Cada metrica em % face a primeira medicao do intervalo, para caberem
+          todas num unico eixo.
         </p>
       </figcaption>
 
@@ -142,11 +146,11 @@ export default function RelativeChart({
         ))}
       </ul>
 
-      <div className="h-72 w-full">
+      <div className="h-64 w-full sm:h-80">
         {mounted && rows.length > 0 && metrics.length > 0 ? (
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={rows} margin={{ top: 8, right: 16, bottom: 4, left: 0 }}>
-              <CartesianGrid vertical={false} stroke={chrome.grid} strokeWidth={1} />
+              <CartesianGrid vertical={false} stroke={chrome.grid} strokeWidth={1} syncWithTicks />
               <XAxis
                 dataKey="t"
                 type="number"
@@ -206,6 +210,6 @@ export default function RelativeChart({
           </div>
         )}
       </div>
-    </figure>
+    </Card>
   );
 }

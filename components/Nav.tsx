@@ -1,0 +1,174 @@
+"use client";
+
+export type Tab = "hoje" | "evolucao" | "historico";
+
+export const TABS: { key: Tab; label: string }[] = [
+  { key: "hoje", label: "Hoje" },
+  { key: "evolucao", label: "Evolucao" },
+  { key: "historico", label: "Historico" },
+];
+
+function Icon({ tab }: { tab: Tab }) {
+  const common = {
+    width: 20,
+    height: 20,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: 1.75,
+    strokeLinecap: "round" as const,
+    strokeLinejoin: "round" as const,
+    "aria-hidden": true,
+  };
+
+  if (tab === "hoje") {
+    return (
+      <svg {...common}>
+        <rect x="3" y="5" width="18" height="16" rx="3" />
+        <path d="M8 3v4M16 3v4M12 11v6M9 14h6" />
+      </svg>
+    );
+  }
+  if (tab === "evolucao") {
+    return (
+      <svg {...common}>
+        <path d="M4 19V5" />
+        <path d="M4 19h16" />
+        <path d="M7 15l4-5 3 3 4-6" />
+      </svg>
+    );
+  }
+  return (
+    <svg {...common}>
+      <path d="M4 7h16M4 12h16M4 17h10" />
+    </svg>
+  );
+}
+
+/**
+ * Separadores em barra fixa no fundo, so no ecra pequeno.
+ *
+ * O fundo do ecra e onde o polegar chega sem trocar a mao de posicao; um menu
+ * no topo obriga a agarrar o telemovel de outra maneira so para mudar de vista.
+ * No ecra grande a barra desaparece e os separadores vivem no cabecalho, onde
+ * o rato ja esta.
+ */
+export function BottomNav({
+  active,
+  onChange,
+}: {
+  active: Tab;
+  onChange: (tab: Tab) => void;
+}) {
+  return (
+    <nav
+      aria-label="Seccoes"
+      className="fixed inset-x-0 bottom-0 z-20 border-t sm:hidden"
+      style={{
+        background: "var(--surface-1)",
+        borderColor: "var(--border)",
+        paddingBottom: "env(safe-area-inset-bottom)",
+      }}
+    >
+      <ul className="flex">
+        {TABS.map((tab) => {
+          const on = tab.key === active;
+          return (
+            <li key={tab.key} className="flex-1">
+              <button
+                type="button"
+                aria-current={on ? "page" : undefined}
+                onClick={() => onChange(tab.key)}
+                className="flex w-full flex-col items-center gap-1 py-2.5 text-[11px] font-medium"
+                style={{
+                  color: on ? "var(--text-primary)" : "var(--text-muted)",
+                }}
+              >
+                <Icon tab={tab.key} />
+                {tab.label}
+              </button>
+            </li>
+          );
+        })}
+      </ul>
+    </nav>
+  );
+}
+
+export function TopTabs({
+  active,
+  onChange,
+}: {
+  active: Tab;
+  onChange: (tab: Tab) => void;
+}) {
+  return (
+    <nav aria-label="Seccoes" className="hidden sm:block">
+      <ul
+        className="flex rounded-xl border p-1"
+        style={{ borderColor: "var(--border)", background: "var(--surface-1)" }}
+      >
+        {TABS.map((tab) => {
+          const on = tab.key === active;
+          return (
+            <li key={tab.key}>
+              <button
+                type="button"
+                aria-current={on ? "page" : undefined}
+                onClick={() => onChange(tab.key)}
+                className="flex items-center gap-2 rounded-lg px-3 py-1.5 text-sm font-medium"
+                style={{
+                  background: on ? "var(--selected)" : "transparent",
+                  color: on ? "var(--text-primary)" : "var(--text-secondary)",
+                }}
+              >
+                <Icon tab={tab.key} />
+                {tab.label}
+              </button>
+            </li>
+          );
+        })}
+      </ul>
+    </nav>
+  );
+}
+
+export function ThemeButton({
+  mode,
+  onToggle,
+}: {
+  mode: "light" | "dark";
+  onToggle: () => void;
+}) {
+  const dark = mode === "dark";
+  return (
+    <button
+      type="button"
+      onClick={onToggle}
+      aria-label={dark ? "Mudar para modo claro" : "Mudar para modo escuro"}
+      className="flex h-11 w-11 items-center justify-center rounded-xl border"
+      style={{ borderColor: "var(--border)", color: "var(--text-secondary)" }}
+    >
+      <svg
+        width="18"
+        height="18"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.75"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        aria-hidden
+      >
+        {dark ? (
+          <>
+            <circle cx="12" cy="12" r="4.5" />
+            <path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M19.1 4.9l-1.4 1.4M6.3 17.7l-1.4 1.4" />
+          </>
+        ) : (
+          <path d="M20 14.5A8.5 8.5 0 019.5 4a8.5 8.5 0 1010.5 10.5z" />
+        )}
+      </svg>
+    </button>
+  );
+}

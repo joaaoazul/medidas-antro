@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { CHROME, useTheme } from "./theme";
+import { Card, SectionTitle } from "./ui";
 
 export default function DataTransfer({ count }: { count: number }) {
   const { mode } = useTheme();
@@ -38,29 +39,22 @@ export default function DataTransfer({ count }: { count: number }) {
   }
 
   return (
-    <section
-      className="rounded-xl border p-4"
-      style={{ background: "var(--surface-1)", borderColor: "var(--border)" }}
-    >
-      <h2 className="text-sm font-medium" style={{ color: chrome.ink }}>
+    <Card className="p-5">
+      <SectionTitle hint="Os dados ficam num ficheiro SQLite nesta maquina. Exporta de vez em quando -- e tambem a forma de os levar para outro lado.">
         Copia de seguranca
-      </h2>
-      <p className="mt-0.5 text-xs" style={{ color: chrome.muted }}>
-        Os dados ficam num ficheiro SQLite nesta maquina. Exporta de vez em
-        quando -- e tambem a forma de os levar para outro lado.
-      </p>
+      </SectionTitle>
 
-      <div className="mt-3 flex flex-wrap items-center gap-3 text-sm">
+      <div className="flex flex-wrap items-center gap-2 text-sm">
         <a
           href="/api/export?format=json"
-          className="rounded-lg border px-3 py-1.5 text-xs"
+          className="touch flex items-center rounded-xl border px-3.5 text-sm font-medium"
           style={{ borderColor: "var(--border)", color: chrome.inkSecondary }}
         >
           Exportar JSON
         </a>
         <a
           href="/api/export?format=csv"
-          className="rounded-lg border px-3 py-1.5 text-xs"
+          className="touch flex items-center rounded-xl border px-3.5 text-sm font-medium"
           style={{ borderColor: "var(--border)", color: chrome.inkSecondary }}
         >
           Exportar CSV
@@ -68,7 +62,7 @@ export default function DataTransfer({ count }: { count: number }) {
         <button
           type="button"
           onClick={() => inputRef.current?.click()}
-          className="rounded-lg border px-3 py-1.5 text-xs"
+          className="touch rounded-xl border px-3.5 text-sm font-medium"
           style={{ borderColor: "var(--border)", color: chrome.inkSecondary }}
         >
           Importar JSON
@@ -83,18 +77,18 @@ export default function DataTransfer({ count }: { count: number }) {
             if (file) void onFile(file);
           }}
         />
-        <span className="text-xs" style={{ color: chrome.muted }}>
-          {count} {count === 1 ? "registo" : "registos"} na base
-        </span>
+      </div>
+
+      <p className="mt-3 text-xs" style={{ color: chrome.muted }}>
+        {count} {count === 1 ? "registo" : "registos"} na base.{" "}
         <span
           role="status"
           aria-live="polite"
-          className="text-xs"
           style={{ color: error ? "#d03b3b" : chrome.inkSecondary }}
         >
           {message}
         </span>
-      </div>
-    </section>
+      </p>
+    </Card>
   );
 }

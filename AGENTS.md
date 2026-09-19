@@ -18,3 +18,11 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 - Antes de mexer em cores ou eixos dos gráficos, ler a secção "Notas sobre os
   gráficos" do README: a paleta e a regra do eixo único são deliberadas.
 - `npm run lint` e `npm run build` têm de passar limpos.
+- `app/actions.ts` tem `"use server"`: so pode exportar funcoes assincronas.
+  Tudo o que um modulo desses exporta vira um ponto de entrada chamavel a partir
+  do cliente, por isso exportar de la uma constante compila, passa no lint e
+  rebenta em tempo de execucao na primeira submissao. Tipos e constantes
+  partilhados com o formulario vivem em `lib/form-state.ts`.
+- Mudancas no formulario, no apagar ou na importacao tem de ser exercitadas a
+  serio no browser, nao so olhadas: o erro acima nao aparece nem no `tsc` nem no
+  `next build`.

@@ -15,6 +15,7 @@ import { formatValue, type Metric } from "@/lib/metrics";
 import { niceScale } from "@/lib/series";
 import type { Granularity, Point } from "@/lib/types";
 import { CHROME, useTheme } from "./theme";
+import { Card } from "./ui";
 
 /** Acima disto os pontos deixam de ser marcas e passam a ser ruido. */
 const MAX_DOTS = 40;
@@ -102,11 +103,8 @@ export default function MetricChart({
   const showDots = points.length <= MAX_DOTS;
 
   return (
-    <figure
-      className="rounded-xl border p-4"
-      style={{ background: "var(--surface-1)", borderColor: "var(--border)" }}
-    >
-      <figcaption className="mb-3 flex items-baseline justify-between gap-3">
+    <Card className="p-4 sm:p-5" as="figure">
+      <figcaption className="mb-4 flex items-baseline justify-between gap-3">
         <span className="flex items-center gap-2">
           <span
             aria-hidden
@@ -120,7 +118,7 @@ export default function MetricChart({
           />
           {/* Serie unica: o titulo diz o que esta desenhado, por isso nao ha
               caixa de legenda a repetir a mesma informacao. */}
-          <span className="text-sm font-medium" style={{ color: chrome.ink }}>
+          <span className="text-base font-medium" style={{ color: chrome.ink }}>
             {metric.label}
           </span>
         </span>
@@ -129,7 +127,7 @@ export default function MetricChart({
         </span>
       </figcaption>
 
-      <div className="h-44 w-full">
+      <div className="h-64 w-full sm:h-80">
         {mounted && points.length > 0 ? (
           <ResponsiveContainer width="100%" height="100%">
             <LineChart
@@ -140,6 +138,9 @@ export default function MetricChart({
                 vertical={false}
                 stroke={chrome.grid}
                 strokeWidth={1}
+                // Sem isto o Recharts acrescenta linhas nos limites do dominio,
+                // que nao tem marca nenhuma a dizer que valor representam.
+                syncWithTicks
               />
               <XAxis
                 dataKey="t"
@@ -236,6 +237,6 @@ export default function MetricChart({
           </div>
         )}
       </div>
-    </figure>
+    </Card>
   );
 }

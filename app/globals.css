@@ -62,20 +62,40 @@
   --color-grid: var(--grid);
   --color-axis: var(--axis);
   --color-hairline: var(--border);
-  --font-sans: system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-sans: var(--font-outfit), system-ui, -apple-system, sans-serif;
 }
 
 body {
   background: var(--plane);
   color: var(--text-primary);
-  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  /* Outfit e a sans da app, incluindo os numeros grandes: uma face de display
+     ou uma serifada ao lado dela leria como decoracao fora de sitio. */
+  font-family: var(--font-outfit), system-ui, -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
+  /* Um separador fixo no fundo nao pode tapar a ultima linha de conteudo. */
+  padding-bottom: env(safe-area-inset-bottom);
 }
 
 /* Colunas de numeros alinham; numeros grandes isolados usam figuras
    proporcionais, que a tabular estica de mais em tamanho grande. */
 .tabular {
   font-variant-numeric: tabular-nums;
+}
+
+/* Alvos de toque: o polegar nao acerta em 24px. */
+.touch {
+  min-height: 44px;
+}
+
+/* Tiras de filtros que passam do ecra deslizam na horizontal em vez de
+   partirem para varias linhas e empurrarem o conteudo para baixo. */
+.scroll-x {
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.scroll-x::-webkit-scrollbar {
+  display: none;
 }
 
 /* O anel da cor da superficie mantem os pontos legiveis onde cruzam a linha. */
