@@ -16,68 +16,97 @@ import { Button, Card } from "./ui";
  * da cor nem do rato. Esta vista e essa garantia -- e, de passagem, a forma mais
  * rapida de corrigir um engano de digitacao.
  *
- * Duas apresentacoes do mesmo conteudo: no telemovel uma ficha por dia, porque
- * uma tabela de nove colunas num ecra de 390px so se le a arrastar para o lado;
- * no ecra grande a tabela, que se percorre muito melhor com os olhos.
+ * Duas apresentacoes do mesmo conteudo: no telemovel uma ficha por medicao,
+ * porque uma tabela de dez colunas num ecra de 390px so se le a arrastar para o
+ * lado; no ecra grande a tabela, que se percorre muito melhor com os olhos.
  */
 
-/** Dias mostrados antes de ser preciso pedir o resto. */
+/** Medicoes mostradas antes de ser preciso pedir o resto. */
 const PREVIEW = 10;
 
-function DeleteControl({ entry }: { entry: Entry }) {
+/** "19 set 2026 as 08:15", ou so a data quando nao ha hora. */
+function quando(entry: Entry): string {
+  return entry.hora
+    ? `${longLabel(entry.date)} as ${entry.hora}`
+    : longLabel(entry.date);
+}
+
+function Accoes({
+  entry,
+  onEdit,
+}: {
+  entry: Entry;
+  onEdit: (entry: Entry) => void;
+}) {
   const { mode } = useTheme();
   const chrome = CHROME[mode];
   const [pending, startTransition] = useTransition();
   const [confirming, setConfirming] = useState(false);
 
-  if (!confirming) {
-    return (
-      <button
-        type="button"
-        onClick={() => setConfirming(true)}
-        className="text-xs"
-        style={{ color: chrome.muted }}
-        aria-label={`Apagar o registo de ${longLabel(entry.date)}`}
-      >
-        Apagar
-      </button>
-    );
-  }
-
   return (
     <span className="flex items-center gap-3">
       <button
         type="button"
-        disabled={pending}
-        onClick={() =>
-          startTransition(async () => {
-            await removeEntry(entry.date);
-            setConfirming(false);
-          })
-        }
-        className="text-xs font-medium"
-        style={{ color: "#d03b3b" }}
-      >
-        Confirmar
-      </button>
-      <button
-        type="button"
-        onClick={() => setConfirming(false)}
+        onClick={() => onEdit(entry)}
         className="text-xs"
-        style={{ color: chrome.muted }}
+        style={{ color: chrome.inkSecondary }}
+        aria-label={`Editar a medicao de ${quando(entry)}`}
       >
-        Cancelar
+        Editar
       </button>
+
+      {confirming ? (
+        <>
+          <button
+            type="button"
+            disabled={pending}
+            onClick={() =>
+              startTransition(async () => {
+                await removeEntry(entry.id);
+                setConfirming(false);
+              })
+            }
+            className="text-xs font-medium"
+            style={{ color: "#d03b3b" }}
+          >
+            Confirmar
+          </button>
+          <button
+            type="button"
+            onClick={() => setConfirming(false)}
+            className="text-xs"
+            style={{ color: chrome.muted }}
+          >
+            Cancelar
+          </button>
+        </>
+      ) : (
+        <button
+          type="button"
+          onClick={() => setConfirming(true)}
+          className="text-xs"
+          style={{ color: chrome.muted }}
+          aria-label={`Apagar a medicao de ${quando(entry)}`}
+        >
+          Apagar
+        </button>
+      )}
     </span>
   );
 }
 
-export default function HistoryList({ entries }: { entries: Entry[] }) {
+export default function HistoryList({
+  entries,
+  onEdit,
+}: {
+  entries: Entry[];
+  onEdit: (entry: Entry) => void;
+}) {
   const { mode } = useTheme();
   const chrome = CHROME[mode];
   const [expanded, setExpanded] = useState(false);
 
-  // Do mais recente para o mais antigo: quem abre o historico vem quase sempre
+  // Da mais recente para a mais antiga: quem abre o historico vem quase sempre
   // ver ou corrigir o que registou ha pouco.
   const rows = [...entries].reverse();
   const visible = expanded ? rows : rows.slice(0, PREVIEW);
@@ -86,7 +115,7 @@ export default function HistoryList({ entries }: { entries: Entry[] }) {
     return (
       <Card className="p-6">
         <p className="text-center text-sm" style={{ color: chrome.muted }}>
-          Ainda nao ha registos neste intervalo.
+          Ainda nao ha medicoes neste intervalo.
         </p>
       </Card>
     );
@@ -94,12 +123,12 @@ export default function HistoryList({ entries }: { entries: Entry[] }) {
 
   return (
     <div>
-      {/* Telemovel: uma ficha por dia. */}
+      {/* Telemovel: uma ficha por medicao. */}
       <ul className="flex flex-col gap-3 sm:hidden">
         {visible.map((entry) => {
-          const measured = METRICS.filter((m) => entry.values[m.id] !== null);
+          const medidas = METRICS.filter((m) => entry.values[m.id] !== null);
           return (
-            <li key={entry.date}>
+            <li key={entry.id}>
               <Card className="p-4" as="div">
                 <div className="flex items-baseline justify-between gap-3">
                   <h3
@@ -107,12 +136,20 @@ export default function HistoryList({ entries }: { entries: Entry[] }) {
                     style={{ color: chrome.ink }}
                   >
                     {longLabel(entry.date)}
+                    {entry.hora ? (
+                      <span
+                        className="tabular ml-2 text-xs font-normal"
+                        style={{ color: chrome.muted }}
+                      >
+                        {entry.hora}
+                      </span>
+                    ) : null}
                   </h3>
-                  <DeleteControl entry={entry} />
+                  <Accoes entry={entry} onEdit={onEdit} />
                 </div>
 
                 <dl className="mt-3 grid grid-cols-3 gap-x-3 gap-y-2.5">
-                  {measured.map((metric) => (
+                  {medidas.map((metric) => (
                     <div key={metric.id}>
                       <dt
                         className="flex items-center gap-1 text-[11px] whitespace-nowrap"
@@ -162,7 +199,7 @@ export default function HistoryList({ entries }: { entries: Entry[] }) {
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <caption className="sr-only">
-              Medidas registadas por dia no intervalo selecionado
+              Medicoes registadas, da mais recente para a mais antiga
             </caption>
             <thead>
               <tr style={{ color: chrome.muted }}>
@@ -170,7 +207,7 @@ export default function HistoryList({ entries }: { entries: Entry[] }) {
                   scope="col"
                   className="px-4 py-3 text-left text-xs font-normal"
                 >
-                  Data
+                  Quando
                 </th>
                 {METRICS.map((metric) => (
                   <th
@@ -194,14 +231,14 @@ export default function HistoryList({ entries }: { entries: Entry[] }) {
                   </th>
                 ))}
                 <th scope="col" className="px-4 py-3 text-right">
-                  <span className="sr-only">Acoes</span>
+                  <span className="sr-only">Accoes</span>
                 </th>
               </tr>
             </thead>
             <tbody>
               {visible.map((entry) => (
                 <tr
-                  key={entry.date}
+                  key={entry.id}
                   className="border-t"
                   style={{ borderColor: "var(--border)" }}
                 >
@@ -211,6 +248,14 @@ export default function HistoryList({ entries }: { entries: Entry[] }) {
                     style={{ color: chrome.ink }}
                   >
                     {longLabel(entry.date)}
+                    {entry.hora ? (
+                      <span
+                        className="tabular ml-2 text-xs"
+                        style={{ color: chrome.muted }}
+                      >
+                        {entry.hora}
+                      </span>
+                    ) : null}
                     {entry.nota ? (
                       <span
                         className="mt-0.5 block max-w-52 truncate text-xs"
@@ -236,7 +281,7 @@ export default function HistoryList({ entries }: { entries: Entry[] }) {
                     </td>
                   ))}
                   <td className="px-4 py-2.5 text-right">
-                    <DeleteControl entry={entry} />
+                    <Accoes entry={entry} onEdit={onEdit} />
                   </td>
                 </tr>
               ))}
@@ -249,8 +294,8 @@ export default function HistoryList({ entries }: { entries: Entry[] }) {
         <div className="mt-3">
           <Button onClick={() => setExpanded((open) => !open)} full>
             {expanded
-              ? `Mostrar so os ultimos ${PREVIEW}`
-              : `Mostrar os ${rows.length} dias`}
+              ? `Mostrar so as ultimas ${PREVIEW}`
+              : `Mostrar as ${rows.length} medicoes`}
           </Button>
         </div>
       ) : null}

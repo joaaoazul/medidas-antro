@@ -2,9 +2,11 @@ import { METRICS, METRIC_IDS } from "@/lib/metrics";
 import { listEntries } from "@/lib/repo";
 
 /**
- * Descarrega todos os registos. Os dados vivem num ficheiro SQLite local, por
- * isso a exportacao e a copia de seguranca -- e a porta de saida, para que os
- * dados nunca fiquem presos a esta app.
+ * Descarrega todas as medicoes, em JSON ou CSV.
+ *
+ * O JSON leva o identificador de cada medicao, e e o que torna a importacao
+ * idempotente: restaurar duas vezes a mesma copia de seguranca reconcilia pelo
+ * id em vez de duplicar tudo. O CSV e para ler numa folha de calculo.
  */
 export async function GET(request: Request) {
   const format = new URL(request.url).searchParams.get("format") ?? "json";
@@ -12,10 +14,11 @@ export async function GET(request: Request) {
   const stamp = new Date().toISOString().slice(0, 10);
 
   if (format === "csv") {
-    const header = ["data", ...METRIC_IDS, "nota"].join(",");
+    const header = ["data", "hora", ...METRIC_IDS, "nota"].join(",");
     const lines = entries.map((entry) =>
       [
         entry.date,
+        entry.hora ?? "",
         ...METRIC_IDS.map((id) => entry.values[id] ?? ""),
         csvField(entry.nota ?? ""),
       ].join(","),

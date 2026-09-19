@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { METRIC_IDS, METRIC_BY_ID, type MetricId } from "@/lib/metrics";
-import { deleteEntry, upsertEntry } from "@/lib/repo";
+import { deleteEntry, saveEntry as gravar } from "@/lib/repo";
 import type { ActionState } from "@/lib/form-state";
 import { entrySchema, firstError } from "@/lib/validation";
 
@@ -39,8 +39,14 @@ export async function saveEntry(
   }
 
   const nota = formData.get("nota");
+  const id = formData.get("id");
+  const hora = formData.get("hora");
+
   const parsedEntry = entrySchema.safeParse({
+    // Presente so quando o formulario esta a editar uma medicao existente.
+    id: typeof id === "string" && id !== "" ? id : undefined,
     date: String(formData.get("date") ?? ""),
+    hora: typeof hora === "string" && hora.trim() !== "" ? hora.trim() : null,
     nota: typeof nota === "string" && nota.trim() !== "" ? nota.trim() : null,
     values,
   });
@@ -49,25 +55,36 @@ export async function saveEntry(
     return { status: "erro", message: firstError(parsedEntry.error) };
   }
 
-  await upsertEntry(parsedEntry.data);
+  try {
+    await gravar(parsedEntry.data);
+  } catch (erro) {
+    return {
+      status: "erro",
+      message:
+        erro instanceof Error ? erro.message : "Nao foi possivel guardar.",
+    };
+  }
+
   revalidatePath("/");
+
+  const quando = parsedEntry.data.hora
+    ? `${parsedEntry.data.date} as ${parsedEntry.data.hora}`
+    : parsedEntry.data.date;
 
   return {
     status: "ok",
-    message: `Registo de ${parsedEntry.data.date} guardado.`,
+    message: parsedEntry.data.id
+      ? `Medicao de ${quando} atualizada.`
+      : `Medicao de ${quando} guardada.`,
     savedDate: parsedEntry.data.date,
   };
 }
 
-export async function removeEntry(date: string): Promise<ActionState> {
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
-    return { status: "erro", message: "Data invalida." };
-  }
-
-  const removed = await deleteEntry(date);
+export async function removeEntry(id: string): Promise<ActionState> {
+  const removed = await deleteEntry(id);
   revalidatePath("/");
 
   return removed
-    ? { status: "ok", message: `Registo de ${date} apagado.` }
-    : { status: "erro", message: "Esse registo ja nao existe." };
+    ? { status: "ok", message: "Medicao apagada." }
+    : { status: "erro", message: "Essa medicao ja nao existe." };
 }

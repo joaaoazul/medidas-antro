@@ -2,8 +2,8 @@
 
 import { useActionState, useEffect, useRef, useState } from "react";
 import { saveEntry } from "@/app/actions";
+import { longLabel, todayISO } from "@/lib/dates";
 import { IDLE } from "@/lib/form-state";
-import { todayISO } from "@/lib/dates";
 import { METRICS, type Metric, type MetricId } from "@/lib/metrics";
 import type { Entry } from "@/lib/types";
 import { CHROME, useTheme } from "./theme";
@@ -55,13 +55,12 @@ function Field({ metric, mode }: { metric: Metric; mode: "light" | "dark" }) {
 }
 
 export default function EntryForm({
-  entries,
-  date,
-  onDate,
+  /** Medicao a editar; nulo quando o formulario cria uma nova. */
+  editing,
+  onCancelEdit,
 }: {
-  entries: Entry[];
-  date: string;
-  onDate: (next: string) => void;
+  editing: Entry | null;
+  onCancelEdit: () => void;
 }) {
   const { mode } = useTheme();
   const chrome = CHROME[mode];
@@ -69,76 +68,110 @@ export default function EntryForm({
   const [showAll, setShowAll] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
 
-  const existing = entries.find((e) => e.date === date) ?? null;
-
   const extras = METRICS.filter((m) => !DAILY.includes(m.id));
-  const hasExtras =
-    existing !== null && extras.some((m) => existing.values[m.id] !== null);
-
-  /*
-   * Ao mudar de dia, a seccao dos perimetros abre sozinha se esse dia ja os tem:
-   * esconder valores que existem seria esconder o que o formulario esta prestes
-   * a substituir. Fica como ajuste durante o render, e nao num efeito, para nao
-   * pintar o formulario fechado e reabri-lo logo a seguir.
-   */
-  const [lastDate, setLastDate] = useState(date);
-  if (date !== lastDate) {
-    setLastDate(date);
-    setShowAll(hasExtras);
-  }
 
   /**
-   * Ao escolher uma data ja registada, os campos passam a mostrar o que la
-   * esta: gravar por cima e edicao deliberada, nao um duplicado acidental.
+   * Preenche os campos a partir da medicao em edicao, e limpa-os ao sair da
+   * edicao.
    *
-   * Isto e sincronizacao com o DOM, nao estado do React: os campos nao sao
+   * E sincronizacao com o DOM, nao estado do React: os campos nao sao
    * controlados, para que escrever neles nao passe por um render por tecla.
    */
   useEffect(() => {
     const form = formRef.current;
     if (!form) return;
+
     for (const metric of METRICS) {
       const field = form.elements.namedItem(
         metric.id,
       ) as HTMLInputElement | null;
       if (field) {
-        const value = existing?.values[metric.id] ?? null;
-        field.value = value === null ? "" : String(value);
+        const valor = editing?.values[metric.id] ?? null;
+        field.value = valor === null ? "" : String(valor);
       }
     }
+
     const nota = form.elements.namedItem("nota") as HTMLTextAreaElement | null;
-    if (nota) nota.value = existing?.nota ?? "";
-  }, [existing]);
+    if (nota) nota.value = editing?.nota ?? "";
+
+    const data = form.elements.namedItem("date") as HTMLInputElement | null;
+    if (data) data.value = editing?.date ?? todayISO();
+
+    const hora = form.elements.namedItem("hora") as HTMLInputElement | null;
+    if (hora) hora.value = editing?.hora ?? "";
+
+    // Ao editar uma medicao que tem perimetros, a seccao abre: esconder valores
+    // que ja existem seria esconder o que o formulario esta prestes a alterar.
+    setShowAll(
+      editing !== null && extras.some((m) => editing.values[m.id] !== null),
+    );
+    // extras e estavel (deriva de uma constante), por isso so a medicao conta.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [editing]);
+
+  // Depois de gravar uma medicao nova, os campos ficam limpos para a seguinte.
+  useEffect(() => {
+    if (state.status === "ok" && !editing) formRef.current?.reset();
+  }, [state, editing]);
 
   return (
     <Card className="p-5">
-      <SectionTitle hint="Deixa em branco o que nao mediste. Um registo por dia: gravar a mesma data substitui o anterior.">
-        {existing ? "Editar registo" : "Registar medidas"}
+      <SectionTitle
+        hint={
+          editing
+            ? "Estas a alterar uma medicao ja gravada."
+            : "Deixa em branco o que nao mediste. Podes registar mais do que uma medicao no mesmo dia -- de manha e a noite, por exemplo."
+        }
+      >
+        {editing ? "Editar medicao" : "Registar medidas"}
       </SectionTitle>
 
       <form ref={formRef} action={formAction}>
-        <label className="flex flex-col gap-1.5">
-          <span
-            className="text-xs font-medium"
-            style={{ color: chrome.inkSecondary }}
-          >
-            Data
-          </span>
-          <input
-            type="date"
-            name="date"
-            value={date}
-            max={todayISO()}
-            onChange={(event) => onDate(event.target.value)}
-            required
-            className="touch tabular w-full rounded-xl border px-3 text-base"
-            style={{
-              background: "var(--plane)",
-              borderColor: "var(--border)",
-              color: chrome.ink,
-            }}
-          />
-        </label>
+        {/* Sem id, a gravacao cria uma medicao nova; com id, altera aquela. */}
+        <input type="hidden" name="id" value={editing?.id ?? ""} />
+
+        <div className="grid grid-cols-2 gap-3">
+          <label className="flex flex-col gap-1.5">
+            <span
+              className="text-xs font-medium"
+              style={{ color: chrome.inkSecondary }}
+            >
+              Data
+            </span>
+            <input
+              type="date"
+              name="date"
+              defaultValue={todayISO()}
+              max={todayISO()}
+              required
+              className="touch tabular w-full rounded-xl border px-3 text-base"
+              style={{
+                background: "var(--plane)",
+                borderColor: "var(--border)",
+                color: chrome.ink,
+              }}
+            />
+          </label>
+
+          <label className="flex flex-col gap-1.5">
+            <span
+              className="text-xs font-medium"
+              style={{ color: chrome.inkSecondary }}
+            >
+              Hora (opcional)
+            </span>
+            <input
+              type="time"
+              name="hora"
+              className="touch tabular w-full rounded-xl border px-3 text-base"
+              style={{
+                background: "var(--plane)",
+                borderColor: "var(--border)",
+                color: chrome.ink,
+              }}
+            />
+          </label>
+        </div>
 
         <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3">
           {METRICS.filter((m) => DAILY.includes(m.id)).map((metric) => (
@@ -179,23 +212,32 @@ export default function EntryForm({
         </div>
 
         <div className="mt-3 sm:max-w-xs">
-          <Disclosure
-            open={showAll}
-            onToggle={() => setShowAll((open) => !open)}
-          >
+          <Disclosure open={showAll} onToggle={() => setShowAll((o) => !o)}>
             {showAll ? "Menos campos" : "Perimetros e nota"}
           </Disclosure>
         </div>
 
-        <div className="mt-5 sm:max-w-xs">
-          <Button type="submit" variant="primary" disabled={pending} full>
-            {pending
-              ? "A guardar..."
-              : existing
-                ? "Atualizar registo"
-                : "Guardar"}
-          </Button>
+        <div className="mt-5 flex flex-wrap items-center gap-3">
+          <div className="flex-1 sm:max-w-xs sm:flex-none">
+            <Button type="submit" variant="primary" disabled={pending} full>
+              {pending
+                ? "A guardar..."
+                : editing
+                  ? "Guardar alteracoes"
+                  : "Guardar"}
+            </Button>
+          </div>
+          {editing ? (
+            <Button onClick={onCancelEdit}>Cancelar edicao</Button>
+          ) : null}
         </div>
+
+        {editing ? (
+          <p className="mt-2 text-xs" style={{ color: chrome.muted }}>
+            A editar a medicao de {longLabel(editing.date)}
+            {editing.hora ? ` as ${editing.hora}` : ""}.
+          </p>
+        ) : null}
 
         {/* role="status" faz o leitor de ecra anunciar o resultado sem roubar o
             foco a quem esta a preencher. */}

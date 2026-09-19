@@ -48,3 +48,10 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 - Mudar o texto dos documentos legais de forma substantiva obriga a mudar a
   versao em `lib/legal.ts` -- e so entao. Mudar a versao sem mudar o texto faz
   pedir consentimento outra vez sem razao.
+- Uma medicao nao e um dia. A tabela `entries` tem chave propria (`id`) e pode
+  ter varias linhas na mesma data, com `hora` opcional. Nada no codigo deve
+  voltar a assumir que a data e unica -- gravar passa a criar, e so altera
+  quando ha `id`.
+- A data e um dia de calendario (`date`) e a hora e uma coluna a parte, de
+  proposito: com um `timestamptz`, uma pesagem as 23:30 em Lisboa cairia no dia
+  seguinte em UTC e apareceria no dia errado no grafico.

@@ -83,19 +83,23 @@ Três separadores, um por pergunta:
   fase recente; as outras sete métricas em cartões compactos.
 - Formulário com os três campos do dia-a-dia sempre à vista e os perímetros
   atrás de um toque, para o gesto diário caber num ecrã sem deslizar.
-- **Um registo por dia.** A data é a chave: voltar a gravar o mesmo dia corrige
-  o registo em vez de criar um duplicado, e o formulário mostra o que já lá
-  está. Campos em branco ficam por medir (`null`), não a zero.
+- **Várias medições por dia**, cada uma com hora opcional: pesar-se de manhã e à
+  noite é o caso normal, não uma exceção. Cada gravação cria uma medição nova;
+  corrigir uma já existente faz-se pelo **Editar** no histórico. Campos em
+  branco ficam por medir (`null`), não a zero.
 
 **Evolução** — o que mudou, e em que ritmo?
 - Um gráfico de cada vez, com a métrica escolhida numa fila de fichas.
-- Intervalo (30 / 90 / 365 dias / tudo) e agrupamento por dia, semana ou mês
-  (semana e mês são a média das medições existentes).
+- Intervalo (30 / 90 / 365 dias / tudo) e agrupamento por dia, semana ou mês.
+  **Cada ponto é a média das medições desse balde** — incluindo o balde "dia",
+  quando há mais do que uma medição nesse dia. O tooltip diz de quantas medições
+  é a média, para o número nunca passar por uma leitura única quando não é.
 - Vista **Comparar**, com as métricas escolhidas indexadas em % face à primeira
   medição do intervalo.
 
 **Histórico** — o que é que eu registei no dia 12?
-- Uma ficha por dia no telemóvel, tabela no ecrã grande, com apagar.
+- Uma ficha por medição no telemóvel, tabela no ecrã grande, com editar e
+  apagar. Editar leva a medição ao formulário, no separador Hoje.
 - Exportar JSON/CSV e importar JSON, para cópias de segurança e para levar os
   dados para outro lado.
 
@@ -193,7 +197,10 @@ Verificado no próprio projeto, numa transação revertida no fim:
 O *security advisor* da Supabase está limpo (zero alertas).
 
 **Cópias de segurança.** A Supabase faz as suas, mas a exportação da app
-(JSON/CSV) é a tua — e é também a forma de levar os dados para outro lado.
+(JSON/CSV) é a tua — e é também a forma de levar os dados para outro lado. O
+JSON leva o identificador de cada medição, por isso restaurar duas vezes a mesma
+cópia reconcilia em vez de duplicar. Uma cópia feita antes de existirem horas
+continua a importar: a hora ausente é tratada como "sem hora".
 
 **Deploy.** A app está na Vercel, ligada ao `main` deste repositório: cada push
 constrói e publica.

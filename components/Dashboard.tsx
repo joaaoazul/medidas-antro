@@ -30,9 +30,15 @@ export default function Dashboard({
   const { mode, toggle } = useTheme();
   const chrome = CHROME[mode];
   const [tab, setTab] = useState<Tab>("hoje");
-  // A data do formulario vive aqui para sobreviver a uma ida ao historico e
-  // volta: quem foi confirmar um valor nao quer encontrar o campo reposto.
-  const [date, setDate] = useState(todayISO());
+  // A medicao em edicao vive aqui, e nao dentro do historico, porque o
+  // formulario esta noutro separador: escolher "editar" no historico tem de
+  // levar a pessoa ao formulario com aquela medicao carregada.
+  const [editing, setEditing] = useState<Entry | null>(null);
+
+  function editar(entry: Entry) {
+    setEditing(entry);
+    setTab("hoje");
+  }
 
   return (
     // O espaco em baixo e o que impede a barra fixa de tapar a ultima linha.
@@ -64,12 +70,18 @@ export default function Dashboard({
 
       <main className="mx-auto max-w-5xl px-4 py-5 sm:px-6 sm:py-8">
         {tab === "hoje" ? (
-          <TodayView entries={entries} date={date} onDate={setDate} />
+          <TodayView
+            entries={entries}
+            editing={editing}
+            onCancelEdit={() => setEditing(null)}
+          />
         ) : null}
         {tab === "evolucao" ? (
           <TrendsView entries={entries} objetivoPeso={objetivoPeso} />
         ) : null}
-        {tab === "historico" ? <HistoryView entries={entries} /> : null}
+        {tab === "historico" ? (
+          <HistoryView entries={entries} onEdit={editar} />
+        ) : null}
       </main>
 
       <BottomNav active={tab} onChange={setTab} />

@@ -26,12 +26,12 @@ const SHORT_WINDOW = 7;
  */
 export default function TodayView({
   entries,
-  date,
-  onDate,
+  editing,
+  onCancelEdit,
 }: {
   entries: Entry[];
-  date: string;
-  onDate: (next: string) => void;
+  editing: Entry | null;
+  onCancelEdit: () => void;
 }) {
   const { mode } = useTheme();
   const chrome = CHROME[mode];
@@ -47,7 +47,7 @@ export default function TodayView({
     [recent],
   );
 
-  const registeredToday = entries.some((e) => e.date === todayISO());
+  const registosDeHoje = entries.filter((e) => e.date === todayISO()).length;
   const hero = METRIC_BY_ID[HERO_METRIC];
   const others = METRICS.filter(
     (m) => m.id !== HERO_METRIC && latestReading(entries, m.id) !== null,
@@ -78,12 +78,14 @@ export default function TodayView({
           <p
             className="text-center text-sm"
             style={{
-              color: registeredToday ? chrome.inkSecondary : chrome.muted,
+              color: registosDeHoje > 0 ? chrome.inkSecondary : chrome.muted,
             }}
           >
-            {registeredToday
-              ? "Ja registaste hoje."
-              : "Ainda nao registaste hoje."}
+            {registosDeHoje === 0
+              ? "Ainda nao registaste hoje."
+              : registosDeHoje === 1
+                ? "Ja registaste uma medicao hoje."
+                : `Ja registaste ${registosDeHoje} medicoes hoje.`}
           </p>
 
           {others.length > 0 ? (
@@ -102,7 +104,7 @@ export default function TodayView({
         </>
       )}
 
-      <EntryForm entries={entries} date={date} onDate={onDate} />
+      <EntryForm editing={editing} onCancelEdit={onCancelEdit} />
     </div>
   );
 }

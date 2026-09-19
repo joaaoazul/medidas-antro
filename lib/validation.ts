@@ -29,9 +29,26 @@ function metricSchema(id: MetricId) {
     );
 }
 
+/**
+ * Hora opcional.
+ *
+ * Aceita ausente e trata-o como "sem hora", para que uma copia de seguranca
+ * feita antes de existirem horas continue a importar sem erro.
+ */
+const horaSchema = z
+  .union([z.string(), z.null(), z.undefined()])
+  .transform((v) => (v === undefined || v === "" ? null : v))
+  .refine(
+    (v) => v === null || /^([01]\d|2[0-3]):[0-5]\d$/.test(v),
+    "Hora invalida (usa HH:MM).",
+  );
+
 export const entrySchema = z
   .object({
+    /** Presente ao editar uma medicao existente; ausente ao criar. */
+    id: z.string().uuid().optional(),
     date: dateSchema,
+    hora: horaSchema,
     nota: z.string().trim().max(500, "Nota demasiado longa.").nullable(),
     values: z.object(
       Object.fromEntries(METRICS.map((m) => [m.id, metricSchema(m.id)])),

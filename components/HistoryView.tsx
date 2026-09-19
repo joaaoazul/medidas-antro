@@ -9,10 +9,16 @@ import HistoryList from "./HistoryList";
  * apagamento vivem em /conta -- misturar definicoes com o registo do dia-a-dia
  * poe accoes que nao se desfazem ao lado de accoes triviais.
  */
-export default function HistoryView({ entries }: { entries: Entry[] }) {
+export default function HistoryView({
+  entries,
+  onEdit,
+}: {
+  entries: Entry[];
+  onEdit: (entry: Entry) => void;
+}) {
   return (
     <div className="flex flex-col gap-4">
-      <HistoryList entries={entries} />
+      <HistoryList entries={entries} onEdit={onEdit} />
       <DataTransfer count={entries.length} />
     </div>
   );
