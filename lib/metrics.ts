@@ -27,6 +27,15 @@ export type Metric = {
   unit: string;
   /** Casas decimais usadas em inputs, eixos e tabelas. */
   decimals: number;
+  /**
+   * Genero do rotulo, para o texto corrido concordar.
+   *
+   * "o perimetro abdominal" mas "a massa muscular": qualquer frase que nomeie
+   * uma metrica precisa disto, e adivinha-lo pela terminacao falha em metade
+   * dos casos. Vive aqui porque e uma propriedade do rotulo, e os rotulos
+   * definem-se neste ficheiro e em mais nenhum.
+   */
+  genero: "m" | "f";
   /** Limites de sanidade do formulario (nao sao objetivos, sao guardas). */
   min: number;
   max: number;
@@ -40,6 +49,7 @@ export const METRICS: Metric[] = [
     short: "Peso",
     unit: "kg",
     decimals: 1,
+    genero: "m",
     min: 20,
     max: 400,
     color: { light: "#2a78d6", dark: "#3987e5" },
@@ -50,6 +60,7 @@ export const METRICS: Metric[] = [
     short: "Abdómen",
     unit: "cm",
     decimals: 1,
+    genero: "m",
     min: 30,
     max: 250,
     color: { light: "#eb6834", dark: "#d95926" },
@@ -60,6 +71,7 @@ export const METRICS: Metric[] = [
     short: "Gordura",
     unit: "%",
     decimals: 1,
+    genero: "f",
     min: 1,
     max: 70,
     color: { light: "#1baf7a", dark: "#199e70" },
@@ -70,6 +82,7 @@ export const METRICS: Metric[] = [
     short: "Músculo",
     unit: "kg",
     decimals: 1,
+    genero: "f",
     min: 5,
     max: 200,
     color: { light: "#eda100", dark: "#c98500" },
@@ -80,6 +93,7 @@ export const METRICS: Metric[] = [
     short: "Peito",
     unit: "cm",
     decimals: 1,
+    genero: "m",
     min: 40,
     max: 200,
     color: { light: "#e87ba4", dark: "#d55181" },
@@ -90,6 +104,7 @@ export const METRICS: Metric[] = [
     short: "Anca",
     unit: "cm",
     decimals: 1,
+    genero: "f",
     min: 40,
     max: 200,
     color: { light: "#008300", dark: "#008300" },
@@ -100,6 +115,7 @@ export const METRICS: Metric[] = [
     short: "Braço",
     unit: "cm",
     decimals: 1,
+    genero: "m",
     min: 15,
     max: 80,
     color: { light: "#4a3aa7", dark: "#9085e9" },
@@ -110,6 +126,7 @@ export const METRICS: Metric[] = [
     short: "Coxa",
     unit: "cm",
     decimals: 1,
+    genero: "f",
     min: 20,
     max: 120,
     color: { light: "#e34948", dark: "#e66767" },
@@ -124,6 +141,13 @@ export const METRIC_BY_ID: Record<MetricId, Metric> = Object.fromEntries(
 
 /** A metrica que lidera o painel (unica figura heroi da vista). */
 export const HERO_METRIC: MetricId = "peso";
+
+/** "o peso", "a massa muscular" -- para texto corrido. */
+export function comArtigo(id: MetricId, usarShort = false): string {
+  const metric = METRIC_BY_ID[id];
+  const nome = usarShort ? metric.short : metric.label;
+  return `${metric.genero === "f" ? "a" : "o"} ${nome.toLowerCase()}`;
+}
 
 export function formatValue(id: MetricId, value: number | null): string {
   if (value === null || Number.isNaN(value)) return "--";

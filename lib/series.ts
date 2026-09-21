@@ -327,30 +327,19 @@ const RITMO_MIN_DIAS = 14;
  * O `r2` sai junto de proposito: uma reta e sempre possivel de calcular, mesmo
  * quando os pontos sao uma nuvem e ela nao descreve nada.
  */
-function ajuste(
-  entries: Entry[],
-  metric: MetricId,
-  janela: number,
-): Ritmo | null {
-  const latest = latestReading(entries, metric);
-  if (!latest) return null;
-
-  const desde = addDaysISO(latest.date, -(janela - 1));
-  const amostras: { x: number; y: number }[] = [];
-
-  for (const entry of entries) {
-    if (entry.date < desde || entry.date > latest.date) continue;
-    const value = entry.values[metric];
-    if (value === null) continue;
-    amostras.push({ x: daysBetween(desde, entry.date), y: value });
-  }
-
-  if (amostras.length < RITMO_MIN_MEDICOES) return null;
-
-  const dias = amostras[amostras.length - 1].x - amostras[0].x;
-  if (dias < RITMO_MIN_DIAS) return null;
-
+/**
+ * Reta de minimos quadrados: declive por unidade de x, e o ajuste.
+ *
+ * Devolve null quando nao ha reta nenhuma a tirar dali -- todos os pontos no
+ * mesmo x, ou todos com o mesmo y. E a unica implementacao da conta; o ritmo e
+ * os insights usam esta.
+ */
+export function regressao(
+  amostras: { x: number; y: number }[],
+): { declive: number; r2: number } | null {
   const n = amostras.length;
+  if (n < 2) return null;
+
   const mediaX = amostras.reduce((s, p) => s + p.x, 0) / n;
   const mediaY = amostras.reduce((s, p) => s + p.y, 0) / n;
 
@@ -363,17 +352,52 @@ function ajuste(
     syy += (y - mediaY) ** 2;
   }
 
-  // Todas as medicoes no mesmo dia, ou todas com o mesmo valor: nao ha declive
-  // nenhum a tirar dali.
   if (sxx === 0 || syy === 0) return null;
 
-  const declive = sxy / sxx;
+  return { declive: sxy / sxx, r2: (sxy * sxy) / (sxx * syy) };
+}
+
+/** Medicoes de uma metrica numa janela, como pares (dias, valor). */
+export function amostras(
+  entries: Entry[],
+  metric: MetricId,
+  de: string,
+  ate: string,
+): { x: number; y: number }[] {
+  const out: { x: number; y: number }[] = [];
+  for (const entry of entries) {
+    if (entry.date < de || entry.date > ate) continue;
+    const value = entry.values[metric];
+    if (value === null) continue;
+    out.push({ x: daysBetween(de, entry.date), y: value });
+  }
+  return out;
+}
+
+function ajuste(
+  entries: Entry[],
+  metric: MetricId,
+  janela: number,
+): Ritmo | null {
+  const latest = latestReading(entries, metric);
+  if (!latest) return null;
+
+  const desde = addDaysISO(latest.date, -(janela - 1));
+  const pontos = amostras(entries, metric, desde, latest.date);
+
+  if (pontos.length < RITMO_MIN_MEDICOES) return null;
+
+  const dias = pontos[pontos.length - 1].x - pontos[0].x;
+  if (dias < RITMO_MIN_DIAS) return null;
+
+  const reta = regressao(pontos);
+  if (!reta) return null;
 
   return {
-    porSemana: declive * 7,
-    medicoes: n,
+    porSemana: reta.declive * 7,
+    medicoes: pontos.length,
     dias,
-    r2: (sxy * sxy) / (sxx * syy),
+    r2: reta.r2,
   };
 }
 

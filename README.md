@@ -118,6 +118,12 @@ Três separadores, um por pergunta:
   "comecei creatina", "férias", "doente".
 - Cada gráfico traz um **resumo em texto** para leitores de ecrã: de onde para
   onde, em quantas medições, com o mínimo e o máximo.
+- **O que os teus dados dizem**: um cartão por baixo do gráfico que procura os
+  casos em que os registos dizem alguma coisa e a põe por palavras — o ruído
+  típico de um dia para o outro (e quantos dias são precisos para a mudança
+  real o ultrapassar), uma recomposição em curso, um planalto, a diferença
+  entre a pesagem da manhã e a da noite, um padrão por dia da semana. Cada um
+  aponta para o artigo que desenvolve o assunto.
 - Vista **Comparar**, com as métricas escolhidas indexadas em % face à primeira
   medição do intervalo.
 
@@ -273,6 +279,7 @@ app/
 lib/
   metrics.ts         definição das 8 métricas — único sítio a mexer para acrescentar uma
   novidades.ts       versão do cartão de novidades e a chave que o guarda
+  insights.ts        o que os registos de uma pessoa dizem sobre ela
   legal.ts           responsável pelo tratamento e versões dos documentos
   profile.ts         constantes, tipos e validação do perfil (sem código de servidor)
   profile-repo.ts    leitura e escrita de perfis e consentimentos
@@ -287,7 +294,7 @@ components/
   Nav.tsx            barra fixa no fundo (telemóvel) e separadores no cabeçalho (ecrã grande)
   ui.tsx             peças partilhadas: cartão, fichas, comutador, botões
   TodayView          .. Novidades, HeroCard, MetricCard, EntryForm
-  TrendsView         .. MetricChart, RelativeChart
+  TrendsView         .. MetricChart, RelativeChart, Insights
   HistoryView        .. HistoryList, DataTransfer
   theme.tsx          modo claro/escuro e o cromado dos gráficos em hex
 exemplo/             conjunto de dados de demonstração e imagens do README
@@ -296,7 +303,8 @@ exemplo/             conjunto de dados de demonstração e imagens do README
 ## Acrescentar uma métrica
 
 Uma entrada em `METRICS` (`lib/metrics.ts`) com um par de cores do próximo slot
-livre da paleta. O formulário, os cartões, os gráficos, a tabela, a exportação e
+livre da paleta e o `genero` do rótulo — "o perímetro abdominal" mas "a massa
+muscular", e qualquer frase que nomeie a métrica precisa de concordar. O formulário, os cartões, os gráficos, a tabela, a exportação e
 as consultas seguem daí. Falta só a coluna na base de dados: uma migração nova
 em `supabase/migrations/` com `alter table public.entries add column ...`.
 
@@ -349,6 +357,17 @@ desaparece por CSS, pelo atributo que o script do layout carimba no `<html>` —
 a mesma técnica do tema, e pela mesma razão: decidido depois da hidratação, o
 cartão aparecia à vista e empurrava o resto da página para baixo em cada visita,
 mesmo a quem já o tinha fechado.
+
+**Os insights descrevem, nunca julgam.** Pela mesma razão que a variação não é
+verde nem vermelha: a app não sabe qual é o objetivo de quem a usa. Nenhum texto
+felicita nem alerta — dizem o que está nos registos e mais nada. Cada um tem o
+seu mínimo de medições e o seu limiar, e não aparece sem eles: um insight que
+aparece sempre não informa nada, e um que aparece sem base é pior do que
+nenhum. O padrão semanal, por exemplo, é calculado sobre o **resíduo face à
+tendência** — sem descontar a tendência, quem está a perder peso veria sempre o
+início da semana "mais pesado" do que o fim, e o padrão seria um artefacto da
+ordem dos dias. A explicação de cada fenómeno vive nos artigos, que é onde está
+o aviso de que nada disto é aconselhamento médico.
 
 **A janela do ritmo adapta-se; a projeção tem de ser merecida.** Medido no
 conjunto de exemplo, o declive do peso é quase o mesmo em qualquer janela — entre

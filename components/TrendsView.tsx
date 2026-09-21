@@ -11,6 +11,7 @@ import {
   notasPorBalde,
 } from "@/lib/series";
 import type { Entry, Granularity, RangeKey } from "@/lib/types";
+import Insights from "./Insights";
 import MetricChart from "./MetricChart";
 import RelativeChart from "./RelativeChart";
 import { CHROME, useTheme } from "./theme";
@@ -201,6 +202,10 @@ export default function TrendsView({
           ? " Os anéis assinalam medições com nota -- passa por cima para a ler."
           : ""}
       </p>
+
+      {/* Todos os registos, e nao os filtrados: ver o que os dados dizem nao
+          devia depender de que intervalo esta escolhido no gráfico. */}
+      <Insights entries={entries} />
     </div>
   );
 }
