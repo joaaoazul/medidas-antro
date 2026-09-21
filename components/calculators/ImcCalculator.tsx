@@ -2,9 +2,10 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { calcularImc, categoriaImc } from "@/lib/calculators";
+import { calcularImc, categoriaImc, IMC_CATEGORIAS, IMC_DOMINIO_MAX } from "@/lib/calculators";
 import { CHROME, useTheme } from "../theme";
 import { Card } from "../ui";
+import { RangeBar } from "./RangeBar";
 
 export default function ImcCalculator({
   pesoInicial,
@@ -74,9 +75,14 @@ export default function ImcCalculator({
             <span className="tabular text-5xl leading-none font-semibold" style={{ color: chrome.ink }}>
               {resultado.imc.toFixed(1)}
             </span>
-            <p className="mt-2 text-sm font-medium" style={{ color: chrome.inkSecondary }}>
-              {resultado.categoria}
+            <p className="mt-2 text-sm font-medium" style={{ color: resultado.categoria.cor }}>
+              {resultado.categoria.label}
             </p>
+            <RangeBar categorias={IMC_CATEGORIAS} dominioMax={IMC_DOMINIO_MAX} valor={resultado.imc} />
+            <div className="flex justify-between text-xs" style={{ color: chrome.muted }}>
+              <span>0</span>
+              <span>{IMC_DOMINIO_MAX}+</span>
+            </div>
           </>
         ) : (
           <p className="text-sm" style={{ color: chrome.muted }}>

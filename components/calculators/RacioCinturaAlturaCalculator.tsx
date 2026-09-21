@@ -2,9 +2,15 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { calcularRacioCinturaAltura } from "@/lib/calculators";
+import {
+  calcularRacioCinturaAltura,
+  categoriaRacioCinturaAltura,
+  RACIO_CATEGORIAS,
+  RACIO_DOMINIO_MAX,
+} from "@/lib/calculators";
 import { CHROME, useTheme } from "../theme";
 import { Card } from "../ui";
+import { RangeBar } from "./RangeBar";
 
 export default function RacioCinturaAlturaCalculator({
   cinturaInicial,
@@ -73,11 +79,14 @@ export default function RacioCinturaAlturaCalculator({
             <span className="tabular text-5xl leading-none font-semibold" style={{ color: chrome.ink }}>
               {resultado.toFixed(2)}
             </span>
-            <p className="mt-2 text-sm font-medium" style={{ color: chrome.inkSecondary }}>
-              {resultado < 0.5
-                ? "Abaixo de 0,5 -- dentro da referência habitual."
-                : "Acima de 0,5 -- fora da referência habitual."}
+            <p className="mt-2 text-sm font-medium" style={{ color: categoriaRacioCinturaAltura(resultado).cor }}>
+              {categoriaRacioCinturaAltura(resultado).label}
             </p>
+            <RangeBar categorias={RACIO_CATEGORIAS} dominioMax={RACIO_DOMINIO_MAX} valor={resultado} />
+            <div className="flex justify-between text-xs" style={{ color: chrome.muted }}>
+              <span>0</span>
+              <span>{RACIO_DOMINIO_MAX}+</span>
+            </div>
           </>
         ) : (
           <p className="text-sm" style={{ color: chrome.muted }}>

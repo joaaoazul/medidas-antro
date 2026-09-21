@@ -13,22 +13,42 @@ export function calcularImc(pesoKg: number, alturaCm: number): number {
 }
 
 export const IMC_CATEGORIAS = [
-  { max: 18.5, label: "Abaixo do peso" },
-  { max: 25, label: "Peso saudável" },
-  { max: 30, label: "Excesso de peso" },
-  { max: Infinity, label: "Obesidade" },
+  { max: 18.5, label: "Abaixo do peso", cor: "#5b93d9" },
+  { max: 25, label: "Peso saudável", cor: "#4caf6e" },
+  { max: 30, label: "Excesso de peso", cor: "#e2a83f" },
+  { max: Infinity, label: "Obesidade", cor: "#d9534f" },
 ] as const;
 
-export function categoriaImc(imc: number): string {
-  return IMC_CATEGORIAS.find((c) => imc < c.max)!.label;
+/** O IMC nunca desce a zero nem sobe para sempre -- so a barra precisa disto. */
+export const IMC_DOMINIO_MAX = 40;
+
+export function categoriaImc(imc: number) {
+  return IMC_CATEGORIAS.find((c) => imc < c.max)!;
 }
 
-/** Cintura a dividir pela altura, ambas na mesma unidade. Referencia: abaixo de 0,5. */
+/** Cintura a dividir pela altura, ambas na mesma unidade. */
 export function calcularRacioCinturaAltura(
   cinturaCm: number,
   alturaCm: number,
 ): number {
   return cinturaCm / alturaCm;
+}
+
+/**
+ * Bandas "semaforo" de Ashwell para o racio cintura-altura: sem risco
+ * acrescido abaixo de 0,5, risco acrescido ate 0,6, risco muito alto dai para
+ * cima. E a referencia mais citada para este racio.
+ */
+export const RACIO_CATEGORIAS = [
+  { max: 0.5, label: "Sem risco acrescido", cor: "#4caf6e" },
+  { max: 0.6, label: "Risco acrescido", cor: "#e2a83f" },
+  { max: Infinity, label: "Risco muito alto", cor: "#d9534f" },
+] as const;
+
+export const RACIO_DOMINIO_MAX = 0.75;
+
+export function categoriaRacioCinturaAltura(racio: number) {
+  return RACIO_CATEGORIAS.find((c) => racio < c.max)!;
 }
 
 export const PROTEINA_CONTEXTOS = [
@@ -134,5 +154,19 @@ export function calcularMacros(
     proteinaG,
     gorduraG,
     carboidratosG,
+  };
+}
+
+/** Cada macro em % das calorias totais, para uma barra de proporcao. */
+export function percentagensMacros(macros: Macros) {
+  const kcalProteina = macros.proteinaG * 4;
+  const kcalCarboidratos = macros.carboidratosG * 4;
+  const kcalGordura = macros.gorduraG * 9;
+  const total = kcalProteina + kcalCarboidratos + kcalGordura || 1;
+
+  return {
+    proteina: (kcalProteina / total) * 100,
+    carboidratos: (kcalCarboidratos / total) * 100,
+    gordura: (kcalGordura / total) * 100,
   };
 }

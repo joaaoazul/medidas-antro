@@ -6,6 +6,7 @@ import {
   calcularBmr,
   calcularMacros,
   calcularTdee,
+  percentagensMacros,
   NIVEIS_ATIVIDADE,
   OBJETIVOS_CALORIAS,
   type NivelAtividadeKey,
@@ -21,6 +22,26 @@ const SEXOS: { key: Sexo; label: string }[] = [
   { key: "outro", label: "Outro" },
   { key: "nao_dizer", label: "Prefiro não dizer" },
 ];
+
+/**
+ * Cores so decorativas, sem juizo de bom/mau -- ao contrario do IMC e do
+ * racio cintura-altura, a repartição de macros nao tem uma referencia certa
+ * ou errada.
+ */
+const MACRO_CORES = {
+  proteina: "#4a9d8f",
+  carboidratos: "#8b7cd6",
+  gordura: "#d67ca8",
+};
+
+function Dot({ cor }: { cor: string }) {
+  return (
+    <span
+      aria-hidden
+      style={{ display: "inline-block", width: 7, height: 7, borderRadius: 999, background: cor }}
+    />
+  );
+}
 
 export default function CaloriasMacrosCalculator({
   pesoInicial,
@@ -66,6 +87,8 @@ export default function CaloriasMacrosCalculator({
     );
     return { bmr, tdee, macros };
   }, [peso, altura, idade, sexo, nivel, objetivo]);
+
+  const percentagens = resultado ? percentagensMacros(resultado.macros) : null;
 
   return (
     <div className="flex flex-col gap-4">
@@ -172,7 +195,7 @@ export default function CaloriasMacrosCalculator({
       </Card>
 
       <Card className="p-5">
-        {resultado ? (
+        {resultado && percentagens ? (
           <>
             <span className="tabular text-5xl leading-none font-semibold" style={{ color: chrome.ink }}>
               {resultado.macros.calorias}
@@ -185,24 +208,38 @@ export default function CaloriasMacrosCalculator({
               gasto total estimado: {Math.round(resultado.tdee)} kcal
             </p>
 
-            <div className="mt-4 grid grid-cols-3 gap-3 border-t pt-4" style={{ borderColor: "var(--border)" }}>
+            <div className="mt-4 border-t pt-4" style={{ borderColor: "var(--border)" }}>
+              <div className="flex h-2.5 overflow-hidden rounded-full">
+                <div style={{ width: `${percentagens.proteina}%`, background: MACRO_CORES.proteina }} />
+                <div style={{ width: `${percentagens.carboidratos}%`, background: MACRO_CORES.carboidratos }} />
+                <div style={{ width: `${percentagens.gordura}%`, background: MACRO_CORES.gordura }} />
+              </div>
+            </div>
+
+            <div className="mt-4 grid grid-cols-3 gap-3">
               <div>
                 <p className="tabular text-xl font-semibold" style={{ color: chrome.ink }}>
                   {resultado.macros.proteinaG}g
                 </p>
-                <p className="text-xs" style={{ color: chrome.muted }}>Proteína</p>
+                <p className="flex items-center gap-1.5 text-xs" style={{ color: chrome.muted }}>
+                  <Dot cor={MACRO_CORES.proteina} /> Proteína
+                </p>
               </div>
               <div>
                 <p className="tabular text-xl font-semibold" style={{ color: chrome.ink }}>
                   {resultado.macros.carboidratosG}g
                 </p>
-                <p className="text-xs" style={{ color: chrome.muted }}>Hidratos</p>
+                <p className="flex items-center gap-1.5 text-xs" style={{ color: chrome.muted }}>
+                  <Dot cor={MACRO_CORES.carboidratos} /> Hidratos
+                </p>
               </div>
               <div>
                 <p className="tabular text-xl font-semibold" style={{ color: chrome.ink }}>
                   {resultado.macros.gorduraG}g
                 </p>
-                <p className="text-xs" style={{ color: chrome.muted }}>Gordura</p>
+                <p className="flex items-center gap-1.5 text-xs" style={{ color: chrome.muted }}>
+                  <Dot cor={MACRO_CORES.gordura} /> Gordura
+                </p>
               </div>
             </div>
           </>
