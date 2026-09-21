@@ -118,7 +118,7 @@ export function BottomNav({
             style={{ color: "var(--text-muted)" }}
           >
             <ArtigosIcon />
-            Artigos
+            Aprender
           </Link>
         </li>
       </ul>
@@ -166,7 +166,7 @@ export function TopTabs({
             style={{ color: "var(--text-secondary)" }}
           >
             <ArtigosIcon />
-            Artigos
+            Aprender
           </Link>
         </li>
       </ul>

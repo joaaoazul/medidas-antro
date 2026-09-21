@@ -3,14 +3,23 @@ import Link from "next/link";
 import { ArticleBadge } from "@/components/ArticleIcon";
 import ArticleDisclaimer from "@/components/ArticleDisclaimer";
 import { ARTICLES } from "@/lib/articles";
+import { getViewer } from "@/lib/session";
+import { TOOLS } from "@/lib/tools";
 
 export const metadata: Metadata = {
-  title: "Artigos - Medidas",
+  title: "Aprender - Medidas",
   description:
-    "Notas gerais sobre medidas e o corpo. Não é aconselhamento médico.",
+    "Ferramentas e notas gerais sobre medidas e o corpo. Não é aconselhamento médico.",
 };
 
-export default function ArtigosPage() {
+export default async function ArtigosPage() {
+  const viewer = await getViewer();
+  // So mostra as ferramentas a quem tem conta pronta a usar: precisam de
+  // sessao, e ligam para /ferramentas, que a exige. Sem isto, quem chega
+  // aqui pelo rodape do login via um atalho que so o devolve ao login.
+  const mostrarFerramentas =
+    viewer && !viewer.precisaOnboarding && !viewer.precisaAceitar;
+
   return (
     <main className="mx-auto max-w-2xl px-4 py-10 sm:px-6 sm:py-14">
       <Link
@@ -25,17 +34,61 @@ export default function ArtigosPage() {
         className="mt-6 text-2xl font-semibold"
         style={{ color: "var(--text-primary)" }}
       >
-        Artigos
+        Aprender
       </h1>
       <p className="mt-1 text-sm" style={{ color: "var(--text-muted)" }}>
-        Notas gerais sobre medidas e o corpo.
+        Ferramentas e notas gerais sobre medidas e o corpo.
       </p>
 
       <div className="mt-6">
         <ArticleDisclaimer />
       </div>
 
-      <ul className="mt-8 flex flex-col gap-6">
+      {mostrarFerramentas ? (
+        <>
+          <h2
+            className="mt-8 text-base font-semibold"
+            style={{ color: "var(--text-primary)" }}
+          >
+            Ferramentas
+          </h2>
+          <ul className="mt-3 flex flex-col gap-3">
+            {TOOLS.map((tool) => (
+              <li key={tool.slug}>
+                <Link
+                  href={`/ferramentas/${tool.slug}`}
+                  className="flex items-center gap-4 rounded-2xl border p-4"
+                  style={{ borderColor: "var(--border)" }}
+                >
+                  <ArticleBadge slug={tool.slug} size={40} />
+                  <div className="min-w-0">
+                    <h3
+                      className="text-sm font-semibold"
+                      style={{ color: "var(--text-primary)" }}
+                    >
+                      {tool.titulo}
+                    </h3>
+                    <p
+                      className="mt-0.5 text-xs"
+                      style={{ color: "var(--text-secondary)" }}
+                    >
+                      {tool.resumo}
+                    </p>
+                  </div>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </>
+      ) : null}
+
+      <h2
+        className="mt-8 text-base font-semibold"
+        style={{ color: "var(--text-primary)" }}
+      >
+        Artigos
+      </h2>
+      <ul className="mt-3 flex flex-col gap-6">
         {ARTICLES.map((article) => (
           <li key={article.slug}>
             <Link
@@ -45,12 +98,12 @@ export default function ArtigosPage() {
             >
               <ArticleBadge slug={article.slug} />
               <div className="min-w-0">
-                <h2
+                <h3
                   className="text-base font-semibold"
                   style={{ color: "var(--text-primary)" }}
                 >
                   {article.titulo}
-                </h2>
+                </h3>
                 <p
                   className="mt-1.5 text-sm leading-relaxed"
                   style={{ color: "var(--text-secondary)" }}

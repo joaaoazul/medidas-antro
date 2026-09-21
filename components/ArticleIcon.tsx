@@ -1,12 +1,31 @@
 /**
- * Uma ilustracao simples por artigo, no mesmo estilo de linha dos icones da
- * Nav e do Logo -- tracado fino, cantos arredondados, currentColor. Nada de
- * fotografias: seriam de banco de imagens, sem relacao com o resto do
- * desenho da app, e com direitos que esta app nao tem como verificar.
+ * Uma ilustracao simples por artigo ou ferramenta, no mesmo estilo de linha
+ * dos icones da Nav e do Logo -- tracado fino, cantos arredondados,
+ * currentColor. Nada de fotografias: seriam de banco de imagens, sem relacao
+ * com o resto do desenho da app, e com direitos que esta app nao tem como
+ * verificar. Uma ferramenta e o artigo que a acompanha (ex.: "racio-cintura-
+ * altura") partilham slug de proposito -- e a mesma ideia em dois formatos.
  */
 const PATHS: Record<string, React.ReactNode> = {
   "porque-o-peso-varia": (
     <path d="M3 13c2-5 4 5 6 0s4-5 6 0s4-5 6 0" />
+  ),
+  imc: (
+    <>
+      <circle cx="12" cy="6" r="3" />
+      <path d="M6 21v-5a6 6 0 0112 0v5" />
+    </>
+  ),
+  proteina: (
+    <>
+      <circle cx="5" cy="12" r="2.2" />
+      <circle cx="12" cy="12" r="2.2" />
+      <circle cx="19" cy="12" r="2.2" />
+      <path d="M7.2 12h2.6M14.2 12h2.6" />
+    </>
+  ),
+  "calorias-e-macros": (
+    <path d="M12 3c2 3-1 5-1 8a1 1 0 002 0c0-1 1-2 2-3c1 2 1 4 1 5a4 4 0 01-8 0c0-4 2-6 4-10z" />
   ),
   "peso-nao-e-gordura": (
     <>
@@ -74,13 +93,19 @@ const PATHS: Record<string, React.ReactNode> = {
   ),
   "racio-cintura-altura": (
     <>
-      <path d="M12 3v18" />
-      <path d="M7 10h10" />
+      <circle cx="12" cy="5" r="2.5" />
+      <path d="M8 21v-6a4 4 0 018 0v6" />
+      <path d="M7 13h10" />
     </>
   ),
   "sobrecarga-progressiva": <path d="M2 20h20M5 20v-7M11 20v-11M17 20v-4" />,
   "proteina-e-musculo": (
-    <path d="M12 3c-4 5-6 9-6 12a6 6 0 0012 0c0-3-2-7-6-12z" />
+    <>
+      <circle cx="5" cy="12" r="2.2" />
+      <circle cx="12" cy="12" r="2.2" />
+      <circle cx="19" cy="12" r="2.2" />
+      <path d="M7.2 12h2.6M14.2 12h2.6" />
+    </>
   ),
   "frequencia-de-treino": (
     <>

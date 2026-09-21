@@ -116,7 +116,7 @@ export default function AuthForm() {
             Política de Privacidade
           </Link>
           <Link href="/artigos" style={{ color: chrome.inkSecondary }}>
-            Artigos
+            Aprender
           </Link>
         </p>
       </div>
