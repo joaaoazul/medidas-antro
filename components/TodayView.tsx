@@ -8,6 +8,7 @@ import {
   deltaOver,
   filterByRange,
   latestReading,
+  ritmo,
 } from "@/lib/series";
 import type { Entry } from "@/lib/types";
 import EntryForm from "./EntryForm";
@@ -54,6 +55,8 @@ export default function TodayView({
     [recent],
   );
 
+  const ritmoHeroi = useMemo(() => ritmo(entries, HERO_METRIC), [entries]);
+
   const registosDeHoje = entries.filter((e) => e.date === todayISO()).length;
   const hero = METRIC_BY_ID[HERO_METRIC];
   const others = METRICS.filter(
@@ -91,6 +94,7 @@ export default function TodayView({
             delta={deltaOver(entries, HERO_METRIC, SHORT_WINDOW)}
             points={series[HERO_METRIC]}
             objetivo={HERO_METRIC === "peso" ? objetivoPeso : null}
+            ritmo={ritmoHeroi}
           />
 
           <p

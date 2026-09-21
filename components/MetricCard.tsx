@@ -1,8 +1,8 @@
 "use client";
 
 import { longLabel } from "@/lib/dates";
-import { formatValue, type Metric } from "@/lib/metrics";
-import type { Delta, Reading } from "@/lib/series";
+import { METRIC_BY_ID, formatValue, type Metric } from "@/lib/metrics";
+import { projecao, type Delta, type Reading, type Ritmo } from "@/lib/series";
 import type { Point } from "@/lib/types";
 import { CHROME, useTheme } from "./theme";
 import { Card } from "./ui";
@@ -136,6 +136,66 @@ function ObjetivoLine({
 }
 
 /**
+ * Ritmo das ultimas semanas e, quando faz sentido, quando o objetivo e
+ * alcancado a esse ritmo.
+ *
+ * Na mesma tinta neutra do resto, e pela mesma razao: a app nao sabe se
+ * -0,4 kg por semana e a meta ou o alarme.
+ *
+ * A projecao tem guardas que a descricao nao tem (ver `projecao`), e aparece
+ * com "por volta de" em vez de uma data exata -- o numero sai de uma reta
+ * ajustada a quatro semanas de balanca, nao de um calendario.
+ */
+function RitmoLine({
+  metric,
+  ritmo,
+  reading,
+  objetivo,
+}: {
+  metric: Metric;
+  ritmo: Ritmo;
+  reading: Reading | null;
+  objetivo?: number | null;
+}) {
+  const { mode } = useTheme();
+  const chrome = CHROME[mode];
+
+  const semanas = Math.round(ritmo.dias / 7);
+  const arrow = ritmo.porSemana > 0 ? "↑" : ritmo.porSemana < 0 ? "↓" : "→";
+
+  /*
+   * Uma casa decimal a mais do que a metrica, so aqui.
+   *
+   * O ritmo e uma quantidade derivada e muito menor do que uma leitura: com as
+   * casas do peso, "0,25 kg por semana" apareceria como "0,2" -- um quinto de
+   * erro no unico numero da frase. A precisao acompanha a grandeza, nao a
+   * unidade.
+   */
+  const ritmoFormatado = Math.abs(ritmo.porSemana).toFixed(
+    METRIC_BY_ID[metric.id].decimals + 1,
+  );
+
+  const previsao =
+    reading && objetivo
+      ? projecao(ritmo, reading.value, objetivo)
+      : null;
+
+  return (
+    <span className="tabular text-xs" style={{ color: chrome.muted }}>
+      <span aria-hidden>{arrow}</span> {ritmoFormatado} {metric.unit} por
+      semana nas últimas {semanas} semanas
+      {previsao ? (
+        <>
+          {" "}
+          &middot; a este ritmo, {formatValue(metric.id, objetivo!)}{" "}
+          {metric.unit} por volta de {longLabel(previsao.data)}
+        </>
+      ) : null}
+    </span>
+  );
+}
+
+/**
  * Numeros em figuras tabulares, inclusive o grande.
  *
  * A regra geral manda figuras proporcionais num valor grande isolado, porque a
@@ -151,6 +211,7 @@ export function HeroCard({
   delta,
   points,
   objetivo,
+  ritmo,
 }: {
   metric: Metric;
   reading: Reading | null;
@@ -158,6 +219,8 @@ export function HeroCard({
   points: Point[];
   /** Peso pretendido, do perfil. So faz sentido quando a metrica heroi e o peso. */
   objetivo?: number | null;
+  /** Ritmo das ultimas semanas; nulo quando nao ha medicoes que cheguem. */
+  ritmo?: Ritmo | null;
 }) {
   const { mode } = useTheme();
   const chrome = CHROME[mode];
@@ -208,6 +271,17 @@ export function HeroCard({
       {objetivo ? (
         <div className="mt-1.5">
           <ObjetivoLine metric={metric} reading={reading} objetivo={objetivo} />
+        </div>
+      ) : null}
+
+      {ritmo ? (
+        <div className="mt-1.5">
+          <RitmoLine
+            metric={metric}
+            ritmo={ritmo}
+            reading={reading}
+            objetivo={objetivo}
+          />
         </div>
       ) : null}
     </Card>

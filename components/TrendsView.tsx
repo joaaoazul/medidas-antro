@@ -8,6 +8,7 @@ import {
   buildRelativeRows,
   buildSeries,
   filterByRange,
+  notasPorBalde,
 } from "@/lib/series";
 import type { Entry, Granularity, RangeKey } from "@/lib/types";
 import MetricChart from "./MetricChart";
@@ -64,6 +65,11 @@ export default function TrendsView({
    * nao dois -- e este rodape garantia sem condicao nenhuma que cada ponto era
    * uma medicao. Dizia-o precisamente a quem tinha o caso em que nao era.
    */
+  const notas = useMemo(
+    () => notasPorBalde(ranged, granularity),
+    [ranged, granularity],
+  );
+
   const variasPorDia = useMemo(() => {
     const vistos = new Set<string>();
     for (const entry of ranged) {
@@ -173,6 +179,7 @@ export default function TrendsView({
           // diz respeito: um peso pretendido desenhado sobre o perimetro do
           // braco seria uma marca sem significado nenhum.
           objetivo={focused === "peso" ? objetivoPeso : null}
+          notas={notas}
         />
       ) : (
         <RelativeChart
@@ -190,6 +197,9 @@ export default function TrendsView({
           : `Cada ponto é a média das medições ${
               granularity === "semana" ? "da semana" : "do mês"
             }.`}
+        {mode === "individual" && notas.size > 0
+          ? " Os anéis assinalam medições com nota -- passa por cima para a ler."
+          : ""}
       </p>
     </div>
   );

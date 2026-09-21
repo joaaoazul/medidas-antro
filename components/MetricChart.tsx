@@ -21,6 +21,9 @@ import { Card } from "./ui";
 /** Acima disto os pontos deixam de ser marcas e passam a ser ruido. */
 const MAX_DOTS = 40;
 
+/** Notas mostradas num tooltip antes de passar a conta-las. */
+const MAX_NOTAS = 3;
+
 function bucketAt(t: number, granularity: Granularity): string {
   const iso = msToISO(t);
   return granularity === "mes" ? iso.slice(0, 7) : iso;
@@ -35,6 +38,7 @@ function ChartTooltip({
   metric,
   granularity,
   showTrend,
+  notas,
   color,
   ink,
   muted,
@@ -45,6 +49,7 @@ function ChartTooltip({
   metric: Metric;
   granularity: Granularity;
   showTrend: boolean;
+  notas: Map<string, string[]>;
   color: string;
   ink: string;
   muted: string;
@@ -94,7 +99,62 @@ function ChartTooltip({
           tendência {formatValue(metric.id, point.trend)} {metric.unit}
         </div>
       ) : null}
+      {/* Um balde de um mes pode ter muitas notas, e um tooltip com dez linhas
+          tapa o grafico que veio explicar. Tres, e a conta das que ficam. */}
+      {(notas.get(point.bucket) ?? []).slice(0, MAX_NOTAS).map((nota, i) => (
+        <div
+          key={i}
+          className="mt-1.5 max-w-52 border-t pt-1.5 text-xs"
+          style={{ borderColor: "var(--border)", color: ink }}
+        >
+          {nota}
+        </div>
+      ))}
+      {(notas.get(point.bucket) ?? []).length > MAX_NOTAS ? (
+        <div className="mt-1 text-xs" style={{ color: muted }}>
+          e mais {(notas.get(point.bucket) ?? []).length - MAX_NOTAS}
+        </div>
+      ) : null}
     </div>
+  );
+}
+
+const SEM_NOTAS: Map<string, string[]> = new Map();
+
+/**
+ * O grafico em palavras, para quem o nao ve.
+ *
+ * O SVG do Recharts nao diz nada a um leitor de ecra, e o historico -- que e a
+ * garantia de acesso aos valores sem depender da cor -- da a tabela toda, nao a
+ * forma da curva. Esta frase e a forma: de onde para onde, em quantas medicoes,
+ * com o minimo e o maximo do intervalo.
+ */
+function resumo(metric: Metric, points: Point[], granularity: Granularity): string {
+  const lidos = points.filter(
+    (p): p is Point & { value: number } => p.value !== null,
+  );
+  if (lidos.length === 0) return `${metric.label}: sem medições neste intervalo.`;
+
+  const primeiro = lidos[0];
+  const ultimo = lidos[lidos.length - 1];
+  const valores = lidos.map((p) => p.value);
+  const min = Math.min(...valores);
+  const max = Math.max(...valores);
+
+  const unidade = metric.unit;
+  const v = (n: number) => formatValue(metric.id, n);
+  const baldes =
+    granularity === "dia" ? "dias" : granularity === "semana" ? "semanas" : "meses";
+
+  if (lidos.length === 1) {
+    return `${metric.label}: uma medição, ${v(ultimo.value)} ${unidade} em ${longLabel(ultimo.bucket)}.`;
+  }
+
+  return (
+    `${metric.label}, ${lidos.length} ${baldes} com medição: ` +
+    `de ${v(primeiro.value)} ${unidade} em ${longLabel(primeiro.bucket)} ` +
+    `a ${v(ultimo.value)} ${unidade} em ${longLabel(ultimo.bucket)}. ` +
+    `Mínimo ${v(min)} ${unidade}, máximo ${v(max)} ${unidade}.`
   );
 }
 
@@ -103,12 +163,15 @@ export default function MetricChart({
   points,
   granularity,
   objetivo = null,
+  notas = SEM_NOTAS,
 }: {
   metric: Metric;
   points: Point[];
   granularity: Granularity;
   /** Valor pretendido, do perfil. Desenhado como linha de referencia. */
   objetivo?: number | null;
+  /** Notas das medicoes, por balde. Assinaladas por baixo da linha. */
+  notas?: Map<string, string[]>;
 }) {
   const { mode, mounted } = useTheme();
   const chrome = CHROME[mode];
@@ -181,7 +244,11 @@ export default function MetricChart({
         </span>
       </figcaption>
 
-      <div className="h-64 w-full sm:h-80">
+      {/* Antes do grafico e nao depois: quem ouve a pagina deve saber o que ali
+          esta antes de atravessar uma arvore de SVG que nao lhe diz nada. */}
+      <p className="sr-only">{resumo(metric, points, granularity)}</p>
+
+      <div className="h-64 w-full sm:h-80" aria-hidden>
         {mounted && points.length > 0 ? (
           <ResponsiveContainer width="100%" height="100%">
             <LineChart
@@ -226,6 +293,7 @@ export default function MetricChart({
                     metric={metric}
                     granularity={granularity}
                     showTrend={showTrend}
+                    notas={notas}
                     color={color}
                     ink={chrome.ink}
                     muted={chrome.muted}
@@ -294,6 +362,29 @@ export default function MetricChart({
                   }}
                 />
               ) : null}
+              {/*
+               * Um anel a volta da medicao que tem nota.
+               *
+               * A nota pertence aquela medicao, por isso e ali que se assinala
+               * -- uma marca no eixo obrigava a procurar a que ponto pertencia,
+               * e chocava com o rotulo do objetivo quando este anda por baixo.
+               * Em tinta neutra e sem preenchimento, para nao passar por um
+               * valor medido de outra serie. A nota em si vive no tooltip:
+               * escrita sobre a linha, tapava os dados que veio explicar.
+               */}
+              {points
+                .filter((p) => p.value !== null && notas.has(p.bucket))
+                .map((p) => (
+                  <ReferenceDot
+                    key={`nota-${p.bucket}`}
+                    x={p.t}
+                    y={p.value as number}
+                    r={5}
+                    fill="none"
+                    stroke={chrome.muted}
+                    strokeWidth={1.5}
+                  />
+                ))}
               {last && last.value !== null ? (
                 /* Rotulo direto so na ponta -- um numero em cada ponto nao se
                    le, e este e tambem o apoio exigido pelas cores de contraste

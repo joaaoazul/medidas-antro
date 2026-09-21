@@ -297,3 +297,185 @@ export function withTrend(points: Point[]): TrendPoint[] {
 
   return out;
 }
+
+export type Ritmo = {
+  /** Variacao por semana, na unidade da metrica. */
+  porSemana: number;
+  /** Quantas medicoes entraram na conta. */
+  medicoes: number;
+  /** Dias entre a primeira e a ultima medicao usadas. */
+  dias: number;
+  /** Qualidade do ajuste, 0 a 1. E o que separa uma tendencia de uma nuvem. */
+  r2: number;
+};
+
+/** Abaixo disto a reta passa por tao poucos pontos que nao descreve nada. */
+const RITMO_MIN_MEDICOES = 6;
+
+/** E tem de as apanhar espalhadas: seis pesagens em tres dias nao sao um ritmo. */
+const RITMO_MIN_DIAS = 14;
+
+/**
+ * Ajuste por minimos quadrados a uma janela fixa de dias.
+ *
+ * A pergunta do separador Evolucao e "o que mudou, e em que ritmo?", e a app
+ * so respondia a primeira metade: a variacao face a uma medicao antiga depende
+ * de duas leituras, e uma balanca pode mover-se um quilo num dia. Uma reta por
+ * todas as medicoes da janela usa-as a todas, por isso um dia mau nao manda no
+ * declive.
+ *
+ * O `r2` sai junto de proposito: uma reta e sempre possivel de calcular, mesmo
+ * quando os pontos sao uma nuvem e ela nao descreve nada.
+ */
+function ajuste(
+  entries: Entry[],
+  metric: MetricId,
+  janela: number,
+): Ritmo | null {
+  const latest = latestReading(entries, metric);
+  if (!latest) return null;
+
+  const desde = addDaysISO(latest.date, -(janela - 1));
+  const amostras: { x: number; y: number }[] = [];
+
+  for (const entry of entries) {
+    if (entry.date < desde || entry.date > latest.date) continue;
+    const value = entry.values[metric];
+    if (value === null) continue;
+    amostras.push({ x: daysBetween(desde, entry.date), y: value });
+  }
+
+  if (amostras.length < RITMO_MIN_MEDICOES) return null;
+
+  const dias = amostras[amostras.length - 1].x - amostras[0].x;
+  if (dias < RITMO_MIN_DIAS) return null;
+
+  const n = amostras.length;
+  const mediaX = amostras.reduce((s, p) => s + p.x, 0) / n;
+  const mediaY = amostras.reduce((s, p) => s + p.y, 0) / n;
+
+  let sxy = 0;
+  let sxx = 0;
+  let syy = 0;
+  for (const { x, y } of amostras) {
+    sxy += (x - mediaX) * (y - mediaY);
+    sxx += (x - mediaX) ** 2;
+    syy += (y - mediaY) ** 2;
+  }
+
+  // Todas as medicoes no mesmo dia, ou todas com o mesmo valor: nao ha declive
+  // nenhum a tirar dali.
+  if (sxx === 0 || syy === 0) return null;
+
+  const declive = sxy / sxx;
+
+  return {
+    porSemana: declive * 7,
+    medicoes: n,
+    dias,
+    r2: (sxy * sxy) / (sxx * syy),
+  };
+}
+
+/**
+ * Acima deste ajuste, a reta descreve mesmo os pontos e pode ser extrapolada.
+ *
+ * Extrapolar e uma afirmacao muito mais forte do que descrever, e merece uma
+ * guarda mais forte: uma reta atraves de uma nuvem tem sempre um declive, e
+ * multiplica-lo por meses da uma data com ar de facto.
+ */
+const RITMO_R2_MINIMO = 0.5;
+
+/**
+ * Janelas tentadas, da mais curta para a mais longa.
+ *
+ * Medido no conjunto de exemplo (240 dias), o declive e quase o mesmo em todas
+ * -- entre -0,22 e -0,27 kg por semana -- mas o ajuste sobe de 0,33 a 28 dias
+ * para 0,83 a 90. Ou seja: a tendencia esta la desde o inicio, e o que falta
+ * numa janela curta nao e sinal, e tempo para o sinal vencer o ruido da
+ * balanca. Por isso preferimos sempre a janela mais curta -- e a mais recente,
+ * e a que reage primeiro a uma mudanca -- e so alargamos quando ela nao chega
+ * para sustentar o que dizemos.
+ */
+const RITMO_JANELAS = [28, 42, 56, 90];
+
+/**
+ * Ritmo de variacao, na janela mais curta que o consiga sustentar.
+ *
+ * Devolve tambem a janela que acabou por usar, para a interface dizer "nas
+ * ultimas 4 semanas" ou "nas ultimas 13" em vez de um periodo inventado.
+ * Quando nenhuma janela chega ao ajuste minimo, devolve a mais curta que seja
+ * valida: o ritmo continua a poder ser descrito, e e a `projecao` que recusa
+ * extrapola-lo.
+ */
+export function ritmo(entries: Entry[], metric: MetricId): Ritmo | null {
+  let primeiro: Ritmo | null = null;
+
+  for (const janela of RITMO_JANELAS) {
+    const r = ajuste(entries, metric, janela);
+    if (!r) continue;
+    if (r.r2 >= RITMO_R2_MINIMO) return r;
+    primeiro ??= r;
+  }
+
+  return primeiro;
+}
+
+/** Mais longe do que isto, a projecao diz mais sobre a reta do que sobre a pessoa. */
+const PROJECAO_DIAS_MAXIMO = 365;
+
+/**
+ * Quando e que o objetivo e alcancado, ao ritmo atual -- ou null quando nao ha
+ * projecao honesta a fazer.
+ *
+ * Devolve null se o ajuste for fraco, se o ritmo apontar ao contrario do
+ * objetivo, ou se a data cair para la do horizonte: nos tres casos o numero
+ * existiria, e nos tres seria ficcao com ar de previsao.
+ */
+export function projecao(
+  ritmo: Ritmo,
+  atual: number,
+  objetivo: number,
+): { data: string; dias: number } | null {
+  if (ritmo.r2 < RITMO_R2_MINIMO) return null;
+
+  const falta = objetivo - atual;
+  if (falta === 0) return null;
+  // Sinais diferentes: esta a afastar-se do objetivo, e a "previsao" seria uma
+  // data no passado.
+  if (Math.sign(falta) !== Math.sign(ritmo.porSemana)) return null;
+
+  const dias = Math.round((falta / ritmo.porSemana) * 7);
+  if (dias <= 0 || dias > PROJECAO_DIAS_MAXIMO) return null;
+
+  return { data: addDaysISO(todayISO(), dias), dias };
+}
+
+/**
+ * Notas das medicoes, agrupadas pelo balde em que caem.
+ *
+ * As notas ja existiam por medicao, mas so se viam no historico -- e sao
+ * precisamente o que explica um degrau na linha ("comecei creatina", "ferias",
+ * "doente"). Trazidas para o grafico, transformam-no de "o que aconteceu" em
+ * "porque aconteceu".
+ *
+ * Varias notas podem cair no mesmo balde quando se agrupa por semana ou mes;
+ * sao guardadas todas, pela mesma razao que a media diz de quantas medicoes e
+ * feita: quem le tem direito a saber o que esta ali dentro.
+ */
+export function notasPorBalde(
+  entries: Entry[],
+  granularity: Granularity,
+): Map<string, string[]> {
+  const notas = new Map<string, string[]>();
+
+  for (const entry of entries) {
+    if (!entry.nota) continue;
+    const key = bucketOf(entry.date, granularity);
+    const lista = notas.get(key) ?? [];
+    lista.push(entry.nota);
+    notas.set(key, lista);
+  }
+
+  return notas;
+}

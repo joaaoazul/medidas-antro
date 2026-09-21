@@ -88,6 +88,10 @@ Três separadores, um por pergunta:
   leitura, e o preço é reaparecer uma vez em cada dispositivo novo.
 - O peso em grande, com a variação face a ~7 dias antes e uma mini-linha da
   fase recente; as outras sete métricas em cartões compactos.
+- **O ritmo**, por regressão sobre as últimas semanas — "0,25 kg por semana nas
+  últimas 6 semanas" — e, quando os dados o sustentam, quando o peso pretendido
+  é alcançado a esse ritmo. A janela adapta-se (ver as notas de desenho) e a
+  projeção tem guardas próprias: sem elas, seria uma data com ar de facto.
 - Formulário com os três campos do dia-a-dia sempre à vista e os perímetros
   atrás de um toque, para o gesto diário caber num ecrã sem deslizar.
 - **Várias medições por dia**, distinguidas pela hora: pesar-se de manhã e à
@@ -109,6 +113,11 @@ Três separadores, um por pergunta:
   por cima dos pontos, na mesma cor e esbatida. Os pontos continuam a ser as
   medições reais; a linha responde à pergunta que uma pesagem isolada não
   responde.
+- As **notas** das medições aparecem no gráfico: um anel à volta da medição
+  anotada, e o texto no tooltip. São elas que explicam os degraus na linha —
+  "comecei creatina", "férias", "doente".
+- Cada gráfico traz um **resumo em texto** para leitores de ecrã: de onde para
+  onde, em quantas medições, com o mínimo e o máximo.
 - Vista **Comparar**, com as métricas escolhidas indexadas em % face à primeira
   medição do intervalo.
 
@@ -340,6 +349,17 @@ desaparece por CSS, pelo atributo que o script do layout carimba no `<html>` —
 a mesma técnica do tema, e pela mesma razão: decidido depois da hidratação, o
 cartão aparecia à vista e empurrava o resto da página para baixo em cada visita,
 mesmo a quem já o tinha fechado.
+
+**A janela do ritmo adapta-se; a projeção tem de ser merecida.** Medido no
+conjunto de exemplo, o declive do peso é quase o mesmo em qualquer janela — entre
+-0,22 e -0,27 kg por semana — mas o ajuste (r²) sobe de 0,33 a 28 dias para 0,83
+a 90. Ou seja: a tendência está lá desde o início, e o que falta numa janela
+curta não é sinal, é tempo para o sinal vencer o ruído da balança. Por isso a
+app tenta sempre a janela mais curta — é a mais recente, e a que reage primeiro
+a uma mudança — e só alarga quando ela não chega. Descrever o ritmo é uma coisa;
+**extrapolá-lo é uma afirmação muito mais forte**, e por isso a projeção exige
+r² acima de 0,5, que o ritmo aponte ao objetivo e que a data caia dentro de um
+ano. Sem as três, uma reta através de uma nuvem de pontos daria sempre uma data.
 
 **A tendência é uma leitura, os pontos é que são o dado.** A média móvel
 desenha-se primeiro, por baixo, esbatida e na cor da própria métrica — uma cor
