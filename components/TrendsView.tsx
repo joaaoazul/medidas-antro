@@ -32,9 +32,11 @@ const DEFAULT_SELECTION: MetricId[] = ["peso", "abdomen", "gordura"];
 export default function TrendsView({
   entries,
   objetivoPeso,
+  alturaCm,
 }: {
   entries: Entry[];
   objetivoPeso: number | null;
+  alturaCm: number | null;
 }) {
   const { mode: theme } = useTheme();
   const chrome = CHROME[theme];
@@ -205,7 +207,7 @@ export default function TrendsView({
 
       {/* Todos os registos, e nao os filtrados: ver o que os dados dizem nao
           devia depender de que intervalo esta escolhido no gráfico. */}
-      <Insights entries={entries} />
+      <Insights entries={entries} alturaCm={alturaCm} />
     </div>
   );
 }

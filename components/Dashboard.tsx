@@ -22,11 +22,14 @@ export default function Dashboard({
   entries,
   nome,
   objetivoPeso,
+  alturaCm,
 }: {
   entries: Entry[];
   nome: string | null;
   /** Peso pretendido, do perfil: vira linha de referencia no grafico do peso. */
   objetivoPeso: number | null;
+  /** Altura, do perfil: sem ela nao ha racio cintura-altura a calcular. */
+  alturaCm: number | null;
 }) {
   const { mode, toggle } = useTheme();
   const chrome = CHROME[mode];
@@ -89,7 +92,11 @@ export default function Dashboard({
           />
         ) : null}
         {tab === "evolucao" ? (
-          <TrendsView entries={entries} objetivoPeso={objetivoPeso} />
+          <TrendsView
+            entries={entries}
+            objetivoPeso={objetivoPeso}
+            alturaCm={alturaCm}
+          />
         ) : null}
         {tab === "historico" ? (
           <HistoryView entries={entries} onEdit={editar} />

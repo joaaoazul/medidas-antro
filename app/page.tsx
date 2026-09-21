@@ -19,6 +19,7 @@ export default async function Home() {
         entries={entries}
         nome={viewer.profile?.nome ?? null}
         objetivoPeso={viewer.profile?.objetivoPeso ?? null}
+        alturaCm={viewer.profile?.alturaCm ?? null}
       />
     </main>
   );

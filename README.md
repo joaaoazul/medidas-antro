@@ -121,9 +121,11 @@ Três separadores, um por pergunta:
 - **O que os teus dados dizem**: um cartão por baixo do gráfico que procura os
   casos em que os registos dizem alguma coisa e a põe por palavras — o ruído
   típico de um dia para o outro (e quantos dias são precisos para a mudança
-  real o ultrapassar), uma recomposição em curso, um planalto, a diferença
-  entre a pesagem da manhã e a da noite, um padrão por dia da semana. Cada um
-  aponta para o artigo que desenvolve o assunto.
+  real o ultrapassar), uma recomposição em curso, um planalto, qual das oito
+  métricas mais se mexeu, o rácio cintura-altura e para onde vai, a diferença
+  entre a pesagem da manhã e a da noite, um padrão por dia da semana, e a
+  cadência do registo. Cada um aponta para o artigo que desenvolve o assunto,
+  e só aparecem os que os dados sustentam — no máximo quatro de cada vez.
 - Vista **Comparar**, com as métricas escolhidas indexadas em % face à primeira
   medição do intervalo.
 

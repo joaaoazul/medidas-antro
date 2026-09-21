@@ -18,8 +18,14 @@
  *    desenvolve o assunto -- e la que estao os avisos de que isto nao e
  *    aconselhamento medico, escritos uma vez e nao repetidos mal.
  */
-import { addDaysISO, longLabel } from "./dates";
 import {
+  RACIO_CATEGORIAS,
+  calcularRacioCinturaAltura,
+  categoriaRacioCinturaAltura,
+} from "./calculators";
+import { addDaysISO, daysBetween, longLabel, todayISO } from "./dates";
+import {
+  METRICS,
   METRIC_BY_ID,
   comArtigo,
   formatValue,
@@ -373,6 +379,193 @@ function insightSemanal(entries: Entry[]): Insight | null {
   };
 }
 
+
+/* ------------------------------------------------------------------ *
+ * A metrica que mais se mexeu
+ * ------------------------------------------------------------------ */
+
+/** Janela onde se compara o movimento das varias metricas. */
+const MOVIMENTO_DIAS = 90;
+
+/** Movimento relativo abaixo disto e erro de medicao, nao mudanca. */
+const MOVIMENTO_MINIMO_PCT = 1.5;
+
+/**
+ * Qual das oito metricas se mexeu mais, em proporcao.
+ *
+ * Compara-se em percentagem e nao na unidade porque kg, cm e pontos
+ * percentuais nao se comparam -- e a mesma razao pela qual o grafico nunca tem
+ * dois eixos Y, e pela qual a vista Comparar indexa tudo a uma base comum. A
+ * pergunta a que responde -- "o que e que esta mesmo a mudar em mim?" -- nao se
+ * responde olhando para oito cartoes um a um.
+ */
+function insightMovimento(entries: Entry[]): Insight | null {
+  const latest = latestReading(entries, "peso");
+  if (!latest) return null;
+
+  const de = addDaysISO(latest.date, -MOVIMENTO_DIAS);
+  if (entries[0].date > addDaysISO(de, 14)) return null;
+
+  const movimentos: { metric: MetricId; pct: number; delta: number }[] = [];
+  for (const metric of METRICS) {
+    const e = extremos(entries, metric.id, de, latest.date);
+    if (!e || e.inicio === 0) continue;
+    movimentos.push({
+      metric: metric.id,
+      pct: (e.delta / e.inicio) * 100,
+      delta: e.delta,
+    });
+  }
+
+  if (movimentos.length < 2) return null;
+
+  movimentos.sort((a, b) => Math.abs(b.pct) - Math.abs(a.pct));
+  const maior = movimentos[0];
+  if (Math.abs(maior.pct) < MOVIMENTO_MINIMO_PCT) return null;
+
+  const peso = movimentos.find((m) => m.metric === "peso");
+  // Se o que mais se mexeu foi o proprio peso, o insight nao acrescenta nada ao
+  // que o cartao do Hoje ja diz em grande.
+  if (maior.metric === "peso") return null;
+
+  const verbo = maior.delta < 0 ? "desceu" : "subiu";
+  const comparacao =
+    peso && Math.abs(peso.pct) >= 0.5
+      ? ` No mesmo período o peso mudou ${Math.abs(peso.pct).toFixed(1)}%.`
+      : " No mesmo período o peso praticamente não mudou.";
+
+  /*
+   * Numa metrica que ja e uma percentagem, escrever "desceu 2,3 %, 10,3% do
+   * que era" poe duas percentagens com significados diferentes na mesma
+   * frase. Pontos para a variacao absoluta resolve, e e o termo correto.
+   */
+  const emPontos = u(maior.metric) === "%";
+  const absoluta = emPontos
+    ? `${v(maior.metric, maior.delta)} pontos`
+    : `${v(maior.metric, maior.delta)} ${u(maior.metric)}`;
+
+  return {
+    id: "movimento",
+    titulo: `${METRIC_BY_ID[maior.metric].short} é o que mais mudou`,
+    texto:
+      `Em ${MOVIMENTO_DIAS} dias ${comArtigo(maior.metric)} ${verbo} ` +
+      `${absoluta} -- ${Math.abs(maior.pct).toFixed(1)}% do que era.${comparacao}`,
+    artigo: "peso-nao-e-gordura",
+  };
+}
+
+/* ------------------------------------------------------------------ *
+ * Racio cintura-altura
+ * ------------------------------------------------------------------ */
+
+/**
+ * O racio cintura-altura, e para onde vai.
+ *
+ * A ferramenta ja calcula o de hoje; o que falta e o movimento. Um racio
+ * isolado e um numero com uma banda ao lado, e o mesmo racio com tres meses
+ * atras ao lado e uma direcao -- que e o que a pessoa pode mudar.
+ *
+ * So aparece com a altura preenchida: sem ela nao ha racio nenhum.
+ */
+function insightRacio(entries: Entry[], alturaCm: number | null): Insight | null {
+  if (!alturaCm) return null;
+
+  const latest = latestReading(entries, "abdomen");
+  if (!latest) return null;
+  // Uma fita metrica de ha meio ano nao descreve ninguem hoje.
+  if (daysBetween(latest.date, todayISO()) > 60) return null;
+
+  const agora = calcularRacioCinturaAltura(latest.value, alturaCm);
+  const categoria = categoriaRacioCinturaAltura(agora);
+
+  /*
+   * A banda vem com os seus limites, e nao so com o nome.
+   *
+   * Arredondado a duas casas, um racio de 0,503 aparece como "0,50" ao lado de
+   * "risco acrescido", e quem leia a banda como "abaixo de 0,50" ve uma
+   * contradicao onde ha so arredondamento. Dizer de onde ate onde vai a banda
+   * torna o caso de fronteira obvio em vez de suspeito -- e informa, que e o
+   * que um insight tem de fazer.
+   */
+  const i = RACIO_CATEGORIAS.indexOf(categoria);
+  const minimo = i === 0 ? null : RACIO_CATEGORIAS[i - 1].max;
+  const limites =
+    minimo === null
+      ? `abaixo de ${categoria.max.toFixed(2)}`
+      : categoria.max === Infinity
+        ? `acima de ${minimo.toFixed(2)}`
+        : `de ${minimo.toFixed(2)} a ${categoria.max.toFixed(2)}`;
+
+  const antes = extremos(
+    entries,
+    "abdomen",
+    addDaysISO(latest.date, -90),
+    latest.date,
+  );
+
+  let movimento = "";
+  if (antes && Math.abs(antes.delta) >= 1) {
+    const racioAntes = calcularRacioCinturaAltura(antes.inicio, alturaCm);
+    const verbo = antes.delta < 0 ? "Desceu" : "Subiu";
+    movimento = ` ${verbo} de ${racioAntes.toFixed(2)} nos últimos três meses.`;
+  }
+
+  return {
+    id: "racio",
+    titulo: `O teu rácio cintura-altura é ${agora.toFixed(2)}`,
+    texto:
+      `Cai na banda "${categoria.label.toLowerCase()}" das referências mais ` +
+      `citadas, que vai ${limites}.${movimento} ` +
+      `Mede a cintura contra a altura, por isso não confunde quem é baixo e ` +
+      `magro com quem é alto e largo -- ao contrário do IMC.`,
+    artigo: "racio-cintura-altura",
+  };
+}
+
+/* ------------------------------------------------------------------ *
+ * Cadencia do registo
+ * ------------------------------------------------------------------ */
+
+/** Dias observados para contar a cadencia. */
+const CADENCIA_DIAS = 30;
+
+/**
+ * Com que frequencia a pessoa se pesa, e o que isso faz a leitura.
+ *
+ * Nao e uma repreensao -- a app nao manda em ninguem. E a consequencia
+ * tecnica: com menos pontos, cada um pesa mais na tendencia, e a linha reage
+ * mais a um dia isolado. Quem souber isso le o proprio grafico melhor.
+ */
+function insightCadencia(entries: Entry[]): Insight | null {
+  const hoje = todayISO();
+  const de = addDaysISO(hoje, -(CADENCIA_DIAS - 1));
+
+  // So a quem ja tem historico: a quem comecou ha duas semanas isto nao diz
+  // nada que nao seja obvio.
+  if (entries.length === 0 || daysBetween(entries[0].date, hoje) < 60) {
+    return null;
+  }
+
+  const dias = new Set<string>();
+  for (const entry of entries) {
+    if (entry.date >= de && entry.values.peso !== null) dias.add(entry.date);
+  }
+
+  // Acima de metade dos dias nao ha nada a dizer: a leitura e solida.
+  if (dias.size === 0 || dias.size > CADENCIA_DIAS * 0.5) return null;
+
+  return {
+    id: "cadencia",
+    titulo: `Pesaste-te em ${dias.size} dos últimos ${CADENCIA_DIAS} dias`,
+    texto:
+      `Com menos pontos, cada pesagem pesa mais na tendência, e a linha reage ` +
+      `mais a um dia isolado. Não há número certo de pesagens -- mas vale a ` +
+      `pena saber que a linha é menos firme do que parece quando os pontos são ` +
+      `poucos.`,
+    artigo: "tendencia-importa-mais",
+  };
+}
+
 /* ------------------------------------------------------------------ *
  * Reuniao
  * ------------------------------------------------------------------ */
@@ -387,14 +580,20 @@ export const MAX_INSIGHTS = 4;
  * pessoa naquele mes, e valem mais do que o ruido diario, que e verdade para
  * toda a gente que se pese.
  */
-export function insights(entries: Entry[]): Insight[] {
+export function insights(
+  entries: Entry[],
+  alturaCm: number | null = null,
+): Insight[] {
   if (entries.length === 0) return [];
 
-  const candidatos = [
+  const candidatos: ((e: Entry[]) => Insight | null)[] = [
     insightRecomposicao,
     insightPlanalto,
+    insightMovimento,
+    (e) => insightRacio(e, alturaCm),
     insightDentroDoDia,
     insightSemanal,
+    insightCadencia,
     insightRuido,
   ];
 

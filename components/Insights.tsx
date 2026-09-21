@@ -21,14 +21,24 @@ import { Card, SectionTitle } from "./ui";
  * Nenhum destes textos felicita nem alerta. A app nao sabe qual e o objetivo de
  * quem a usa -- e a mesma razao pela qual a variacao nao e verde nem vermelha.
  */
-export default function Insights({ entries }: { entries: Entry[] }) {
+export default function Insights({
+  entries,
+  alturaCm,
+}: {
+  entries: Entry[];
+  /** Do perfil. Sem ela, o racio cintura-altura nao se calcula. */
+  alturaCm: number | null;
+}) {
   const { mode } = useTheme();
   const chrome = CHROME[mode];
 
   // Sobre TODOS os registos, nao sobre o intervalo escolhido nos filtros: um
   // padrao semanal ou uma recomposicao precisam de meses, e desapareciam
   // sozinhos se alguem carregasse em "30 dias".
-  const lista = useMemo(() => insights(entries), [entries]);
+  const lista = useMemo(
+    () => insights(entries, alturaCm),
+    [entries, alturaCm],
+  );
 
   if (lista.length === 0) {
     return (
