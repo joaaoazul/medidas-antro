@@ -80,6 +80,12 @@ estado partilhado com o formulário vive em `lib/form-state.ts`.
 Três separadores, um por pergunta:
 
 **Hoje** — como estou, e já registei?
+- Um cartão de **novidades** no topo, com uma demonstração da linha de
+  tendência desenhada com as medições de quem está a ler, e os atalhos para
+  Aprender e Ferramentas. Fecha-se num toque e não volta até haver versão nova
+  (`NOVIDADES_VERSAO`, em `lib/novidades.ts` — subir o número fá-lo reaparecer a
+  toda a gente). O estado fica no browser, não no perfil: é uma conveniência de
+  leitura, e o preço é reaparecer uma vez em cada dispositivo novo.
 - O peso em grande, com a variação face a ~7 dias antes e uma mini-linha da
   fase recente; as outras sete métricas em cartões compactos.
 - Formulário com os três campos do dia-a-dia sempre à vista e os perímetros
@@ -257,6 +263,7 @@ app/
   globals.css        tokens de cor, claro e escuro
 lib/
   metrics.ts         definição das 8 métricas — único sítio a mexer para acrescentar uma
+  novidades.ts       versão do cartão de novidades e a chave que o guarda
   legal.ts           responsável pelo tratamento e versões dos documentos
   profile.ts         constantes, tipos e validação do perfil (sem código de servidor)
   profile-repo.ts    leitura e escrita de perfis e consentimentos
@@ -270,7 +277,7 @@ components/
   Dashboard.tsx      casca: cabeçalho, separadores e a vista ativa
   Nav.tsx            barra fixa no fundo (telemóvel) e separadores no cabeçalho (ecrã grande)
   ui.tsx             peças partilhadas: cartão, fichas, comutador, botões
-  TodayView          .. HeroCard, MetricCard, EntryForm
+  TodayView          .. Novidades, HeroCard, MetricCard, EntryForm
   TrendsView         .. MetricChart, RelativeChart
   HistoryView        .. HistoryList, DataTransfer
   theme.tsx          modo claro/escuro e o cromado dos gráficos em hex
@@ -327,6 +334,12 @@ da paleta, por isso ligar e desligar séries nunca repinta as que ficam. Os oito
 pares claro/escuro passam os limiares de daltonismo em pares adjacentes nos dois
 modos; a ordem dos slots é o mecanismo, não decoração. Trocar um hexadecimal
 isolado desfá-lo.
+
+**O que é novo esconde-se antes de ser pintado.** O cartão de novidades
+desaparece por CSS, pelo atributo que o script do layout carimba no `<html>` —
+a mesma técnica do tema, e pela mesma razão: decidido depois da hidratação, o
+cartão aparecia à vista e empurrava o resto da página para baixo em cada visita,
+mesmo a quem já o tinha fechado.
 
 **A tendência é uma leitura, os pontos é que são o dado.** A média móvel
 desenha-se primeiro, por baixo, esbatida e na cor da própria métrica — uma cor

@@ -115,3 +115,14 @@ body {
     transition-duration: 0.01ms !important;
   }
 }
+
+/*
+ * O cartao de novidades, escondido a quem ja o dispensou.
+ *
+ * Em CSS e pelo atributo que o script do layout carimba no <html>, e nao por
+ * estado do React: assim nunca chega a ser pintado, e quem ja o fechou nao ve
+ * a pagina a saltar em cada visita.
+ */
+:root[data-novidades="vistas"] [data-novidades-card] {
+  display: none;
+}

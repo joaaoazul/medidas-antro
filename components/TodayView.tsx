@@ -12,6 +12,7 @@ import {
 import type { Entry } from "@/lib/types";
 import EntryForm from "./EntryForm";
 import { HeroCard, MetricCard } from "./MetricCard";
+import Novidades from "./Novidades";
 import { CHROME, useTheme } from "./theme";
 import { Card } from "./ui";
 
@@ -58,6 +59,13 @@ export default function TodayView({
 
   return (
     <div className="flex flex-col gap-4">
+      {/*
+       * Acima do cartao do peso porque e o unico sitio onde se descobre sem ir
+       * procurar -- e sai do caminho ao primeiro toque no X. Nao disputa a
+       * figura heroi da vista: nao e um numero, e um aviso, e desaparece de vez.
+       */}
+      <Novidades points={series[HERO_METRIC]} />
+
       {entries.length === 0 ? (
         <Card className="p-6">
           <p

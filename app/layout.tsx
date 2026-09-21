@@ -1,5 +1,10 @@
 import type { Metadata, Viewport } from "next";
 import { Outfit } from "next/font/google";
+import {
+  NOVIDADES_ATTR,
+  NOVIDADES_KEY,
+  NOVIDADES_VERSAO,
+} from "@/lib/novidades";
 import "./globals.css";
 
 const outfit = Outfit({
@@ -33,6 +38,19 @@ try {
 `;
 
 /**
+ * Esconde o cartao de novidades antes da primeira pintura a quem ja o
+ * dispensou, pela mesma razao que o tema se aplica aqui: decidido depois da
+ * hidratacao, o cartao aparecia a vista e empurrava o resto da pagina para
+ * baixo em cada visita. Quem o esconde e o CSS -- ver globals.css.
+ */
+const novidadesScript = `
+try {
+  if (localStorage.getItem(${JSON.stringify(NOVIDADES_KEY)}) === ${JSON.stringify(NOVIDADES_VERSAO)})
+    document.documentElement.dataset[${JSON.stringify(NOVIDADES_ATTR)}] = "vistas";
+} catch (e) {}
+`;
+
+/**
  * O React 19 avisa ao renderizar uma `<script>` normal (nunca corre em
  * navegacao no cliente, so na carga inicial). O truque do tipo mantem o
  * comportamento -- so interessa a carga inicial, o tema fica no atributo do
@@ -55,6 +73,7 @@ export default function RootLayout({
     <html lang="pt-PT" className={outfit.variable} suppressHydrationWarning>
       <head>
         <InlineScript html={themeScript} />
+        <InlineScript html={novidadesScript} />
       </head>
       <body className="min-h-screen antialiased">{children}</body>
     </html>
