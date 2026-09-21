@@ -81,8 +81,8 @@ Três separadores, um por pergunta:
 
 **Hoje** — como estou, e já registei?
 - Um cartão de **novidades** no topo, com uma demonstração da linha de
-  tendência desenhada com as medições de quem está a ler, e os atalhos para
-  Aprender e Ferramentas. Fecha-se num toque e não volta até haver versão nova
+  tendência desenhada com as medições de quem está a ler, e os atalhos para a
+  Evolução, para Aprender e para Ferramentas. Fecha-se num toque e não volta até haver versão nova
   (`NOVIDADES_VERSAO`, em `lib/novidades.ts` — subir o número fá-lo reaparecer a
   toda a gente). O estado fica no browser, não no perfil: é uma conveniência de
   leitura, e o preço é reaparecer uma vez em cada dispositivo novo.

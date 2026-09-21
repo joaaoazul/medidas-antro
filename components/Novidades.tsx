@@ -162,7 +162,14 @@ function Atalho({
  * seguinte. Nao concorre com a figura heroi da vista: nao e um numero, e um
  * aviso, e desaparece de vez.
  */
-export default function Novidades({ points }: { points: Point[] }) {
+export default function Novidades({
+  points,
+  onAbrirEvolucao,
+}: {
+  points: Point[];
+  /** Leva ao separador onde a tendencia esta. */
+  onAbrirEvolucao: () => void;
+}) {
   const { mode } = useTheme();
   const chrome = CHROME[mode];
   const color = METRIC_BY_ID.peso.color[mode];
@@ -229,10 +236,23 @@ export default function Novidades({ points }: { points: Point[] }) {
             >
               Uma pesagem isolada diz pouco -- água, sal e sono movem a balança
               sem nada ter mudado. Os pontos continuam a ser as tuas medições; a
-              linha grossa diz para onde elas vão. Está no separador{" "}
-              <strong style={{ color: chrome.ink }}>Evolução</strong>, agrupado
-              por dia.
+              linha grossa diz para onde elas vão.
             </p>
+
+            {/* Um botao com altura de toque, e nao a palavra "Evolucao"
+                sublinhada no meio da frase: um alvo de uma palavra falha-se
+                com o polegar, e a regra dos 44px vale tambem aqui. */}
+            <button
+              type="button"
+              onClick={onAbrirEvolucao}
+              className="touch -ml-1 flex items-center gap-2 rounded-xl px-1 text-sm font-medium"
+              style={{ color: chrome.ink }}
+            >
+              Abrir a Evolução
+              <span aria-hidden style={{ color: chrome.muted }}>
+                &rarr;
+              </span>
+            </button>
           </div>
         </div>
 

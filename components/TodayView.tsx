@@ -30,12 +30,15 @@ export default function TodayView({
   editing,
   onCancelEdit,
   objetivoPeso,
+  onAbrirEvolucao,
 }: {
   entries: Entry[];
   editing: Entry | null;
   onCancelEdit: () => void;
   /** Peso pretendido, do perfil: mostra a distancia no cartao do Peso. */
   objetivoPeso: number | null;
+  /** Leva ao separador Evolucao -- o cartao de novidades fala dele. */
+  onAbrirEvolucao: () => void;
 }) {
   const { mode } = useTheme();
   const chrome = CHROME[mode];
@@ -64,7 +67,10 @@ export default function TodayView({
        * procurar -- e sai do caminho ao primeiro toque no X. Nao disputa a
        * figura heroi da vista: nao e um numero, e um aviso, e desaparece de vez.
        */}
-      <Novidades points={series[HERO_METRIC]} />
+      <Novidades
+        points={series[HERO_METRIC]}
+        onAbrirEvolucao={onAbrirEvolucao}
+      />
 
       {entries.length === 0 ? (
         <Card className="p-6">

@@ -85,6 +85,7 @@ export default function Dashboard({
             editing={editing}
             onCancelEdit={() => setEditing(null)}
             objetivoPeso={objetivoPeso}
+            onAbrirEvolucao={() => setTab("evolucao")}
           />
         ) : null}
         {tab === "evolucao" ? (
