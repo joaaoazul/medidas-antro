@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { ArticleBadge } from "@/components/ArticleIcon";
 import ArticleDisclaimer from "@/components/ArticleDisclaimer";
 import CaloriasMacrosCalculator from "@/components/calculators/CaloriasMacrosCalculator";
+import FfmiCalculator from "@/components/calculators/FfmiCalculator";
 import ImcCalculator from "@/components/calculators/ImcCalculator";
 import ProteinaCalculator from "@/components/calculators/ProteinaCalculator";
 import RacioCinturaAlturaCalculator from "@/components/calculators/RacioCinturaAlturaCalculator";
@@ -38,6 +39,7 @@ export default async function FerramentaPage({
   const entries = await listEntries();
   const peso = latestReading(entries, "peso")?.value ?? null;
   const abdomen = latestReading(entries, "abdomen")?.value ?? null;
+  const gordura = latestReading(entries, "gordura")?.value ?? null;
   const altura = viewer.profile?.alturaCm ?? null;
   const idade = viewer.profile?.dataNascimento
     ? idadeEm(viewer.profile.dataNascimento)
@@ -76,6 +78,9 @@ export default async function FerramentaPage({
             idadeInicial={idade}
             sexoInicial={sexo}
           />
+        ) : null}
+        {slug === "ffmi" ? (
+          <FfmiCalculator pesoInicial={peso} alturaInicial={altura} gorduraInicial={gordura} />
         ) : null}
       </div>
     </main>

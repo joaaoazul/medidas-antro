@@ -31,6 +31,11 @@ export const TOOLS: Tool[] = [
     titulo: "Calorias e macros",
     resumo: "Estimativa de gasto calórico e repartição em proteína, hidratos e gordura.",
   },
+  {
+    slug: "ffmi",
+    titulo: "FFMI",
+    resumo: "Índice de massa magra, a partir do peso, altura e gordura corporal.",
+  },
 ];
 
 export function getTool(slug: string): Tool | undefined {

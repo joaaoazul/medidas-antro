@@ -27,6 +27,12 @@ const PATHS: Record<string, React.ReactNode> = {
   "calorias-e-macros": (
     <path d="M12 3c2 3-1 5-1 8a1 1 0 002 0c0-1 1-2 2-3c1 2 1 4 1 5a4 4 0 01-8 0c0-4 2-6 4-10z" />
   ),
+  ffmi: (
+    <>
+      <circle cx="12" cy="15.5" r="6" />
+      <path d="M9 9.5V7a3 3 0 016 0v2.5" />
+    </>
+  ),
   "peso-nao-e-gordura": (
     <>
       <circle cx="9" cy="12" r="6" />

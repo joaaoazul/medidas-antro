@@ -28,10 +28,13 @@ export default function TodayView({
   entries,
   editing,
   onCancelEdit,
+  objetivoPeso,
 }: {
   entries: Entry[];
   editing: Entry | null;
   onCancelEdit: () => void;
+  /** Peso pretendido, do perfil: mostra a distancia no cartao do Peso. */
+  objetivoPeso: number | null;
 }) {
   const { mode } = useTheme();
   const chrome = CHROME[mode];
@@ -73,6 +76,7 @@ export default function TodayView({
             reading={latestReading(entries, HERO_METRIC)}
             delta={deltaOver(entries, HERO_METRIC, SHORT_WINDOW)}
             points={series[HERO_METRIC]}
+            objetivo={HERO_METRIC === "peso" ? objetivoPeso : null}
           />
 
           <p

@@ -98,6 +98,44 @@ function DeltaLine({ metric, delta }: { metric: Metric; delta: Delta | null }) {
 }
 
 /**
+ * Distancia ao objetivo, na mesma tinta neutra do DeltaLine e pela mesma
+ * razao: a seta diz para que lado fica o numero que a propria pessoa
+ * escolheu, nao se chegar la e bom ou mau.
+ */
+function ObjetivoLine({
+  metric,
+  reading,
+  objetivo,
+}: {
+  metric: Metric;
+  reading: Reading | null;
+  objetivo: number;
+}) {
+  const { mode } = useTheme();
+  const chrome = CHROME[mode];
+
+  if (!reading) return null;
+
+  const diferenca = reading.value - objetivo;
+  if (Math.abs(diferenca) < 0.05) {
+    return (
+      <span className="text-xs" style={{ color: chrome.muted }}>
+        Objetivo atingido
+      </span>
+    );
+  }
+
+  const arrow = diferenca > 0 ? "↓" : "↑";
+
+  return (
+    <span className="tabular text-xs" style={{ color: chrome.muted }}>
+      <span aria-hidden>{arrow}</span> {formatValue(metric.id, Math.abs(diferenca))}{" "}
+      {metric.unit} até ao objetivo ({formatValue(metric.id, objetivo)} {metric.unit})
+    </span>
+  );
+}
+
+/**
  * Numeros em figuras tabulares, inclusive o grande.
  *
  * A regra geral manda figuras proporcionais num valor grande isolado, porque a
@@ -112,11 +150,14 @@ export function HeroCard({
   reading,
   delta,
   points,
+  objetivo,
 }: {
   metric: Metric;
   reading: Reading | null;
   delta: Delta | null;
   points: Point[];
+  /** Peso pretendido, do perfil. So faz sentido quando a metrica heroi e o peso. */
+  objetivo?: number | null;
 }) {
   const { mode } = useTheme();
   const chrome = CHROME[mode];
@@ -163,6 +204,12 @@ export function HeroCard({
           </span>
         ) : null}
       </div>
+
+      {objetivo ? (
+        <div className="mt-1.5">
+          <ObjetivoLine metric={metric} reading={reading} objetivo={objetivo} />
+        </div>
+      ) : null}
     </Card>
   );
 }
