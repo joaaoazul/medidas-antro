@@ -57,6 +57,22 @@ export default function TrendsView({
     [ranged, selected, granularity],
   );
 
+  /*
+   * Ha algum dia com mais do que uma medicao no intervalo?
+   *
+   * O balde "dia" tambem faz media -- pesar-se de manha e a noite da um ponto,
+   * nao dois -- e este rodape garantia sem condicao nenhuma que cada ponto era
+   * uma medicao. Dizia-o precisamente a quem tinha o caso em que nao era.
+   */
+  const variasPorDia = useMemo(() => {
+    const vistos = new Set<string>();
+    for (const entry of ranged) {
+      if (vistos.has(entry.date)) return true;
+      vistos.add(entry.date);
+    }
+    return false;
+  }, [ranged]);
+
   const toggleSelected = (id: MetricId) =>
     setSelected((current) =>
       current.includes(id)
@@ -168,7 +184,9 @@ export default function TrendsView({
 
       <p className="px-1 text-xs" style={{ color: chrome.muted }}>
         {granularity === "dia"
-          ? "Cada ponto é uma medição."
+          ? variasPorDia
+            ? "Cada ponto é uma medição -- e a média do dia, nos dias em que há mais do que uma."
+            : "Cada ponto é uma medição."
           : `Cada ponto é a média das medições ${
               granularity === "semana" ? "da semana" : "do mês"
             }.`}

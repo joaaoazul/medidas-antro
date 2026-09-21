@@ -46,12 +46,25 @@ export default async function ArtigosPage() {
 
       {mostrarFerramentas ? (
         <>
-          <h2
-            className="mt-8 text-base font-semibold"
-            style={{ color: "var(--text-primary)" }}
-          >
-            Ferramentas
-          </h2>
+          {/* O titulo liga para o indice das ferramentas. Sem isto, /ferramentas
+              so se alcancava pelo "voltar" de dentro de uma ferramenta -- uma
+              pagina a que nenhuma ligacao levava, e que so aparecia depois de
+              ja la se ter estado. */}
+          <div className="mt-8 flex items-baseline justify-between gap-3">
+            <h2
+              className="text-base font-semibold"
+              style={{ color: "var(--text-primary)" }}
+            >
+              Ferramentas
+            </h2>
+            <Link
+              href="/ferramentas"
+              className="shrink-0 text-xs"
+              style={{ color: "var(--text-muted)" }}
+            >
+              Ver todas &rarr;
+            </Link>
+          </div>
           <ul className="mt-3 flex flex-col gap-3">
             {TOOLS.map((tool) => (
               <li key={tool.slug}>

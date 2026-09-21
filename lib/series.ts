@@ -238,3 +238,62 @@ export function niceScale(points: Point[], tickCount = 5): Scale {
 
   return { domain: [min, max], ticks };
 }
+
+export type TrendPoint = Point & { trend: number | null };
+
+/**
+ * Constante de tempo da media movel, em dias.
+ *
+ * Com 7, uma pesagem isolada move a tendencia cerca de 13% da sua distancia a
+ * ela: o ruido de um dia mau nao desvia a linha, mas tres dias seguidos no
+ * mesmo sentido ja a inclinam.
+ */
+const TREND_TAU_DAYS = 7;
+
+/** Pontos a menos do que isto nao chegam para uma tendencia significar algo. */
+export const MIN_TREND_POINTS = 6;
+
+/**
+ * Acrescenta a cada ponto a media movel exponencial da serie.
+ *
+ * Existe porque os artigos da propria app dizem que uma pesagem isolada conta
+ * pouco, e ate aqui a unica resposta que a app dava a isso era agrupar por
+ * semana -- que tira o ruido deitando fora a resolucao (90 pontos viram 13). A
+ * media movel poe as duas leituras no mesmo grafico: os pontos continuam a ser
+ * as medicoes reais, e a linha suave diz para onde elas vao.
+ *
+ * O peso de cada medicao depende do intervalo REAL ate a anterior, nao da sua
+ * posicao na lista: `1 - exp(-dias/tau)`. E o que torna a linha honesta depois
+ * de uma interrupcao -- ao fim de tres semanas sem medir, a medicao seguinte
+ * nao e mais uma amostra a somar a uma tendencia velha, e praticamente o novo
+ * ponto de partida. Com um peso fixo, a linha voltava com uma inclinacao
+ * inventada nos dias em que ninguem se pesou.
+ */
+export function withTrend(points: Point[]): TrendPoint[] {
+  const out: TrendPoint[] = [];
+  let anterior: { t: number; trend: number } | null = null;
+
+  for (const point of points) {
+    if (point.value === null) {
+      out.push({ ...point, trend: null });
+      continue;
+    }
+
+    if (anterior === null) {
+      anterior = { t: point.t, trend: point.value };
+      out.push({ ...point, trend: point.value });
+      continue;
+    }
+
+    const dias = Math.max(0, (point.t - anterior.t) / 86_400_000);
+    const peso = 1 - Math.exp(-dias / TREND_TAU_DAYS);
+    // A anotacao e necessaria: sem ela o TypeScript segue `anterior` ate a
+    // atribuicao da iteracao seguinte e ve uma inferencia circular.
+    const trend: number =
+      anterior.trend + peso * (point.value - anterior.trend);
+    anterior = { t: point.t, trend };
+    out.push({ ...point, trend });
+  }
+
+  return out;
+}

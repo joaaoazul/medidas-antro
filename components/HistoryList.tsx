@@ -115,7 +115,7 @@ export default function HistoryList({
     return (
       <Card className="p-6">
         <p className="text-center text-sm" style={{ color: chrome.muted }}>
-          Ainda não há medições neste intervalo.
+          Ainda não há medições registadas.
         </p>
       </Card>
     );

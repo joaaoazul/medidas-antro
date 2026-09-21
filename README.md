@@ -99,6 +99,10 @@ Três separadores, um por pergunta:
   **Cada ponto é a média das medições desse balde** — incluindo o balde "dia",
   quando há mais do que uma medição nesse dia. O tooltip diz de quantas medições
   é a média, para o número nunca passar por uma leitura única quando não é.
+- Agrupado por dia, uma **linha de tendência** (média móvel de ~7 dias) passa
+  por cima dos pontos, na mesma cor e esbatida. Os pontos continuam a ser as
+  medições reais; a linha responde à pergunta que uma pesagem isolada não
+  responde.
 - Vista **Comparar**, com as métricas escolhidas indexadas em % face à primeira
   medição do intervalo.
 
@@ -323,6 +327,16 @@ da paleta, por isso ligar e desligar séries nunca repinta as que ficam. Os oito
 pares claro/escuro passam os limiares de daltonismo em pares adjacentes nos dois
 modos; a ordem dos slots é o mecanismo, não decoração. Trocar um hexadecimal
 isolado desfá-lo.
+
+**A tendência é uma leitura, os pontos é que são o dado.** A média móvel
+desenha-se primeiro, por baixo, esbatida e na cor da própria métrica — uma cor
+própria faria dela uma segunda série, e não é: é a mesma medida, lida de outra
+maneira. O peso de cada medição depende do intervalo **real** até à anterior
+(`1 - exp(-dias/7)`), não da sua posição na lista: depois de três semanas sem
+medir, a medição seguinte é praticamente o novo ponto de partida, em vez de a
+linha voltar com uma inclinação inventada nos dias em que ninguém se pesou. Só
+aparece no agrupamento por dia: agrupado por semana ou mês, a média do balde já
+é a suavização, e suavizar por cima dela seria suavizar duas vezes.
 
 **A variação não é verde nem vermelha.** A app não sabe qual é o objetivo de
 quem a usa: descer 2 kg pode ser a meta ou o alarme. A direção está na seta e no

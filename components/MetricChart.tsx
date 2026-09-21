@@ -13,7 +13,7 @@ import {
 } from "recharts";
 import { msToISO, longLabel, shortLabel } from "@/lib/dates";
 import { formatValue, type Metric } from "@/lib/metrics";
-import { niceScale } from "@/lib/series";
+import { MIN_TREND_POINTS, niceScale, withTrend } from "@/lib/series";
 import type { Granularity, Point } from "@/lib/types";
 import { CHROME, useTheme } from "./theme";
 import { Card } from "./ui";
@@ -26,13 +26,15 @@ function bucketAt(t: number, granularity: Granularity): string {
   return granularity === "mes" ? iso.slice(0, 7) : iso;
 }
 
-type TooltipPayload = { payload: Point }[];
+type TooltipRow = Point & { trend?: number | null };
+type TooltipPayload = { payload: TooltipRow }[];
 
 function ChartTooltip({
   active,
   payload,
   metric,
   granularity,
+  showTrend,
   color,
   ink,
   muted,
@@ -42,6 +44,7 @@ function ChartTooltip({
   payload?: TooltipPayload;
   metric: Metric;
   granularity: Granularity;
+  showTrend: boolean;
   color: string;
   ink: string;
   muted: string;
@@ -77,9 +80,18 @@ function ChartTooltip({
         />
         <span className="text-xs">{longLabel(point.bucket)}</span>
       </div>
-      {granularity !== "dia" && point.samples > 1 ? (
+      {/* O aviso nao depende do agrupamento: o balde "dia" tambem faz media
+          quando ha mais do que uma pesagem nesse dia, e era exatamente ai que
+          a app mostrava uma media a fazer-se passar por uma leitura unica. */}
+      {point.samples > 1 ? (
         <div className="mt-0.5 text-xs" style={{ color: muted }}>
           média de {point.samples} medições
+          {granularity === "dia" ? " nesse dia" : ""}
+        </div>
+      ) : null}
+      {showTrend && point.trend != null ? (
+        <div className="tabular mt-0.5 text-xs" style={{ color: muted }}>
+          tendência {formatValue(metric.id, point.trend)} {metric.unit}
         </div>
       ) : null}
     </div>
@@ -101,6 +113,16 @@ export default function MetricChart({
   const { mode, mounted } = useTheme();
   const chrome = CHROME[mode];
   const color = metric.color[mode];
+
+  /*
+   * A tendencia so faz sentido sobre as medicoes cruas. Agrupado por semana ou
+   * mes, a media do balde ja e a suavizacao -- suavizar por cima dela seria
+   * suavizar duas vezes e afastar a linha dos dados sem nada em troca.
+   */
+  const showTrend = granularity === "dia" && points.length >= MIN_TREND_POINTS;
+  // A media movel e uma combinacao convexa dos valores, por isso nunca sai do
+  // intervalo deles: a escala continua a ser a dos pontos.
+  const data = showTrend ? withTrend(points) : points;
 
   const last = points.length > 0 ? points[points.length - 1] : null;
   // O objetivo entra na escala como se fosse um ponto: se ficasse de fora, uma
@@ -131,6 +153,28 @@ export default function MetricChart({
           <span className="text-base font-medium" style={{ color: chrome.ink }}>
             {metric.label}
           </span>
+          {/* Duas linhas no mesmo grafico pedem uma chave. Fica aqui, minima, e
+              nao numa caixa de legenda: sao a mesma metrica, nao duas series. */}
+          {showTrend ? (
+            <span
+              className="flex items-center gap-1.5 text-xs"
+              style={{ color: chrome.muted }}
+              title="Média móvel: cada medição pesa tanto menos quanto mais antiga for, com uma constante de tempo de 7 dias."
+            >
+              <span
+                aria-hidden
+                style={{
+                  display: "inline-block",
+                  width: 14,
+                  height: 4,
+                  borderRadius: 2,
+                  background: color,
+                  opacity: 0.35,
+                }}
+              />
+              tendência
+            </span>
+          ) : null}
         </span>
         <span className="text-xs" style={{ color: chrome.muted }}>
           {metric.unit}
@@ -141,7 +185,7 @@ export default function MetricChart({
         {mounted && points.length > 0 ? (
           <ResponsiveContainer width="100%" height="100%">
             <LineChart
-              data={points}
+              data={data}
               margin={{ top: 12, right: 52, bottom: 4, left: 0 }}
             >
               <CartesianGrid
@@ -181,6 +225,7 @@ export default function MetricChart({
                   <ChartTooltip
                     metric={metric}
                     granularity={granularity}
+                    showTrend={showTrend}
                     color={color}
                     ink={chrome.ink}
                     muted={chrome.muted}
@@ -188,6 +233,24 @@ export default function MetricChart({
                   />
                 }
               />
+              {showTrend ? (
+                /* Desenhada primeiro, para os pontos medidos ficarem por cima:
+                   a tendencia e leitura, os pontos e que sao o dado. Mesma cor
+                   e mesma metrica -- uma cor propria fa-la-ia passar por outra
+                   serie -- e esbatida, como o traco das mini-linhas. */
+                <Line
+                  type="linear"
+                  dataKey="trend"
+                  stroke={color}
+                  strokeOpacity={0.35}
+                  strokeWidth={5}
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  isAnimationActive={false}
+                  dot={false}
+                  activeDot={false}
+                />
+              ) : null}
               <Line
                 // Linear, nao suavizada: uma curva entre duas pesagens desenha
                 // dias que nunca foram medidos.
