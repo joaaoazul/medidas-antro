@@ -397,19 +397,6 @@ export default function AccountSettings({
         </Card>
 
         <Card className="p-5">
-          <SectionTitle hint="Notas gerais sobre medidas e o corpo -- não é aconselhamento médico.">
-            Artigos
-          </SectionTitle>
-          <Link
-            href="/artigos"
-            className="text-sm"
-            style={{ color: chrome.inkSecondary }}
-          >
-            Ver artigos
-          </Link>
-        </Card>
-
-        <Card className="p-5">
           <SectionTitle hint="Leva os teus dados contigo, em formatos abertos, quando quiseres.">
             Os teus registos
           </SectionTitle>

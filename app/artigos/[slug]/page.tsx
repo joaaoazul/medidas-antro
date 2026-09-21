@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { ArticleBadge } from "@/components/ArticleIcon";
 import ArticleDisclaimer from "@/components/ArticleDisclaimer";
 import { ARTICLES, getArticle } from "@/lib/articles";
 
@@ -37,12 +38,15 @@ export default async function ArtigoPage({
         &larr; Artigos
       </Link>
 
-      <h1
-        className="mt-6 text-2xl font-semibold"
-        style={{ color: "var(--text-primary)" }}
-      >
-        {article.titulo}
-      </h1>
+      <div className="mt-6 flex items-center gap-4">
+        <ArticleBadge slug={article.slug} size={56} />
+        <h1
+          className="text-2xl font-semibold"
+          style={{ color: "var(--text-primary)" }}
+        >
+          {article.titulo}
+        </h1>
+      </div>
 
       <div className="mt-5">
         <ArticleDisclaimer />

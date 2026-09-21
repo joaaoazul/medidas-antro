@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { ArticleBadge } from "@/components/ArticleIcon";
 import ArticleDisclaimer from "@/components/ArticleDisclaimer";
 import { ARTICLES } from "@/lib/articles";
 
@@ -39,21 +40,24 @@ export default function ArtigosPage() {
           <li key={article.slug}>
             <Link
               href={`/artigos/${article.slug}`}
-              className="block rounded-2xl border p-5 transition-colors"
+              className="flex gap-4 rounded-2xl border p-5 transition-colors"
               style={{ borderColor: "var(--border)" }}
             >
-              <h2
-                className="text-base font-semibold"
-                style={{ color: "var(--text-primary)" }}
-              >
-                {article.titulo}
-              </h2>
-              <p
-                className="mt-1.5 text-sm leading-relaxed"
-                style={{ color: "var(--text-secondary)" }}
-              >
-                {article.resumo}
-              </p>
+              <ArticleBadge slug={article.slug} />
+              <div className="min-w-0">
+                <h2
+                  className="text-base font-semibold"
+                  style={{ color: "var(--text-primary)" }}
+                >
+                  {article.titulo}
+                </h2>
+                <p
+                  className="mt-1.5 text-sm leading-relaxed"
+                  style={{ color: "var(--text-secondary)" }}
+                >
+                  {article.resumo}
+                </p>
+              </div>
             </Link>
           </li>
         ))}
