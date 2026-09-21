@@ -61,8 +61,8 @@ export default function TodayView({
             className="text-center text-sm"
             style={{ color: chrome.inkSecondary }}
           >
-            Ainda nao ha nada registado. Preenche as medidas de hoje aqui em
-            baixo -- basta uma para comecar.
+            Ainda não há nada registado. Preenche as medidas de hoje aqui em
+            baixo -- basta uma para começar.
           </p>
         </Card>
       ) : (
@@ -82,10 +82,10 @@ export default function TodayView({
             }}
           >
             {registosDeHoje === 0
-              ? "Ainda nao registaste hoje."
+              ? "Ainda não registaste hoje."
               : registosDeHoje === 1
-                ? "Ja registaste uma medicao hoje."
-                : `Ja registaste ${registosDeHoje} medicoes hoje.`}
+                ? "Já registaste uma medição hoje."
+                : `Já registaste ${registosDeHoje} medições hoje.`}
           </p>
 
           {others.length > 0 ? (

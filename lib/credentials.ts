@@ -8,7 +8,7 @@ import { z } from "zod";
  * lado do campo.
  */
 export const credentialsSchema = z.object({
-  email: z.string().trim().min(1, "Escreve o email.").email("Email invalido."),
+  email: z.string().trim().min(1, "Escreve o email.").email("Email inválido."),
   password: z
     .string()
     .min(8, "A palavra-passe tem de ter pelo menos 8 caracteres."),

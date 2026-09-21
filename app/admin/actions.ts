@@ -47,7 +47,7 @@ export async function createAccount(
   });
 
   if (!parsed.success) {
-    return { status: "erro", message: "Email invalido." };
+    return { status: "erro", message: "Email inválido." };
   }
 
   const admin = createAdminClient();
@@ -60,14 +60,14 @@ export async function createAccount(
   });
 
   if (error) return { status: "erro", message: error.message };
-  if (!data.user) return { status: "erro", message: "A conta nao foi criada." };
+  if (!data.user) return { status: "erro", message: "A conta não foi criada." };
 
   await marcarTemporaria(data.user.id);
   revalidatePath("/admin");
 
   return {
     status: "ok",
-    message: `Conta criada para ${parsed.data.email}. Entrega esta palavra-passe; ela tera de a mudar na primeira entrada.`,
+    message: `Conta criada para ${parsed.data.email}. Entrega esta palavra-passe; ela terá de a mudar na primeira entrada.`,
     segredo: password,
   };
 }
@@ -86,7 +86,7 @@ export async function resetPassword(userId: string): Promise<AdminState> {
 
   return {
     status: "ok",
-    message: "Palavra-passe reposta. Entrega-a; tera de a mudar a seguir.",
+    message: "Palavra-passe reposta. Entrega-a; terá de a mudar a seguir.",
     segredo: password,
   };
 }
@@ -99,7 +99,7 @@ export async function deleteAccount(userId: string): Promise<AdminState> {
   if (userId === viewer.id) {
     return {
       status: "erro",
-      message: "Nao podes apagar a tua propria conta aqui.",
+      message: "Não podes apagar a tua própria conta aqui.",
     };
   }
 

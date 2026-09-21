@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
+
 /**
  * Pecas partilhadas do desenho.
  *
@@ -7,6 +9,43 @@
  * regista uma pesagem, de manha, com uma mao. O ecra grande e a adaptacao, nao
  * o contrario.
  */
+
+/**
+ * Desvanece o fim de uma tira que desliza na horizontal, so enquanto houver
+ * mais para ver -- desaparece ao chegar ao fim do scroll. Sem isto, uma tira
+ * cortada pela borda do cartao parece um erro de layout, nao um convite a
+ * deslizar.
+ */
+function useScrollFade<T extends HTMLElement>() {
+  const ref = useRef<T>(null);
+  const [canScrollMore, setCanScrollMore] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const update = () => {
+      setCanScrollMore(el.scrollWidth - el.scrollLeft - el.clientWidth > 4);
+    };
+    update();
+    el.addEventListener("scroll", update, { passive: true });
+    const observer = new ResizeObserver(update);
+    observer.observe(el);
+    return () => {
+      el.removeEventListener("scroll", update);
+      observer.disconnect();
+    };
+  }, []);
+
+  const style = canScrollMore
+    ? {
+        maskImage: "linear-gradient(to right, black calc(100% - 28px), transparent 100%)",
+        WebkitMaskImage:
+          "linear-gradient(to right, black calc(100% - 28px), transparent 100%)",
+      }
+    : undefined;
+
+  return { ref, style };
+}
 
 export function Card({
   children,
@@ -61,20 +100,46 @@ export function SectionTitle({
 export function ChipRow({
   label,
   inline = false,
+  wrap = false,
   children,
 }: {
   label: string;
   /** Rotulo a esquerda das fichas em vez de por cima, quando o espaco vertical
       e o recurso escasso -- que num telemovel e sempre. */
   inline?: boolean;
+  /** Quebra para varias linhas em vez de deslizar. Para tiras curtas o
+      suficiente para nao empurrarem o resto do ecra -- ver o Métrica/Métricas
+      no separador Evolução, onde ver as oito de uma vez vale mais do que a
+      linha extra que ocupam. */
+  wrap?: boolean;
   children: React.ReactNode;
 }) {
+  const { ref, style } = useScrollFade<HTMLDivElement>();
+
+  if (wrap) {
+    return (
+      <div>
+        <span
+          className="mb-1.5 block text-xs font-medium"
+          style={{ color: "var(--text-muted)" }}
+        >
+          {label}
+        </span>
+        <div role="group" aria-label={label} className="flex flex-wrap gap-2">
+          {children}
+        </div>
+      </div>
+    );
+  }
+
   if (inline) {
     return (
       <div
+        ref={ref}
         role="group"
         aria-label={label}
         className="scroll-x -mx-4 flex items-center gap-2 px-4 sm:mx-0 sm:flex-wrap sm:px-0"
+        style={style}
       >
         <span
           className="shrink-0 text-xs font-medium"
@@ -96,9 +161,11 @@ export function ChipRow({
         {label}
       </span>
       <div
+        ref={ref}
         role="group"
         aria-label={label}
         className="scroll-x -mx-4 flex gap-2 px-4 pb-1 sm:mx-0 sm:flex-wrap sm:px-0"
+        style={style}
       >
         {children}
       </div>

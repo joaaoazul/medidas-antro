@@ -14,8 +14,8 @@ function Submit({ compact }: { compact: boolean }) {
       <button
         type="submit"
         disabled={pending}
-        aria-label="Terminar sessao"
-        title="Terminar sessao"
+        aria-label="Terminar sessão"
+        title="Terminar sessão"
         className="flex h-11 w-11 items-center justify-center rounded-xl border disabled:opacity-55"
         style={{ borderColor: "var(--border)", color: chrome.inkSecondary }}
       >
@@ -44,7 +44,7 @@ function Submit({ compact }: { compact: boolean }) {
       className="touch rounded-xl border px-3.5 text-sm font-medium disabled:opacity-55"
       style={{ borderColor: "var(--border)", color: chrome.inkSecondary }}
     >
-      {pending ? "A sair..." : "Terminar sessao"}
+      {pending ? "A sair..." : "Terminar sessão"}
     </button>
   );
 }

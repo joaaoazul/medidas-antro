@@ -81,7 +81,7 @@ function DeltaLine({ metric, delta }: { metric: Metric; delta: Delta | null }) {
   if (!delta) {
     return (
       <span className="text-xs" style={{ color: chrome.muted }}>
-        Sem comparacao
+        Sem comparação
       </span>
     );
   }

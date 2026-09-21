@@ -13,7 +13,7 @@ export async function POST(request: Request) {
     body = await request.json();
   } catch {
     return Response.json(
-      { error: "O ficheiro nao e JSON valido." },
+      { error: "O ficheiro não é JSON válido." },
       { status: 400 },
     );
   }

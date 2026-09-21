@@ -23,7 +23,7 @@ export function createAdminClient() {
 
   if (!key) {
     throw new Error(
-      "Falta SUPABASE_SERVICE_ROLE_KEY. A area de administracao precisa dela; o resto da app nao.",
+      "Falta SUPABASE_SERVICE_ROLE_KEY. A área de administração precisa dela; o resto da app não.",
     );
   }
 

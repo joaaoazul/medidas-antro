@@ -11,7 +11,7 @@ const outfit = Outfit({
 export const metadata: Metadata = {
   title: "Medidas",
   description:
-    "Registo diario de metricas antropometricas com a evolucao por dias, semanas e meses.",
+    "Registo diário de métricas antropométricas com a evolução por dias, semanas e meses.",
 };
 
 export const viewport: Viewport = {
@@ -32,13 +32,29 @@ try {
 } catch (e) {}
 `;
 
+/**
+ * O React 19 avisa ao renderizar uma `<script>` normal (nunca corre em
+ * navegacao no cliente, so na carga inicial). O truque do tipo mantem o
+ * comportamento -- so interessa a carga inicial, o tema fica no atributo do
+ * `<html>` depois disso -- sem o aviso na consola.
+ */
+function InlineScript({ html }: { html: string }) {
+  return (
+    <script
+      type={typeof window === "undefined" ? "text/javascript" : "text/plain"}
+      suppressHydrationWarning
+      dangerouslySetInnerHTML={{ __html: html }}
+    />
+  );
+}
+
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="pt-PT" className={outfit.variable} suppressHydrationWarning>
       <head>
-        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+        <InlineScript html={themeScript} />
       </head>
       <body className="min-h-screen antialiased">{children}</body>
     </html>

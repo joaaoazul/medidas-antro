@@ -5,6 +5,7 @@ import { useActionState } from "react";
 import { signIn } from "@/app/auth/actions";
 import { IDLE } from "@/lib/form-state";
 import { RESPONSAVEL } from "@/lib/legal";
+import { LogoMark } from "./Logo";
 import { CHROME, useTheme } from "./theme";
 import { Button, Card } from "./ui";
 
@@ -30,13 +31,14 @@ export default function AuthForm() {
 
   return (
     <div className="mx-auto flex min-h-screen max-w-sm flex-col justify-center px-4 py-10">
-      <div className="mb-6 text-center">
+      <div className="mb-6 flex flex-col items-center gap-2 text-center">
+        <LogoMark size={64} />
         <h1 className="text-2xl font-semibold" style={{ color: chrome.ink }}>
           Medidas
         </h1>
         <p className="mt-1 text-sm" style={{ color: chrome.muted }}>
-          As tuas medidas ficam so tuas: cada registo esta preso a tua conta na
-          propria base de dados.
+          As tuas medidas ficam só tuas: cada registo está preso à tua conta na
+          própria base de dados.
         </p>
       </div>
 
@@ -104,14 +106,17 @@ export default function AuthForm() {
           <span style={{ color: chrome.inkSecondary }}>
             {RESPONSAVEL.email}
           </span>
-          . As contas desta aplicacao sao criadas pelo administrador.
+          . As contas desta aplicação são criadas pelo administrador.
         </p>
         <p className="flex justify-center gap-4">
           <Link href="/termos" style={{ color: chrome.inkSecondary }}>
-            Termos de Servico
+            Termos de Serviço
           </Link>
           <Link href="/privacidade" style={{ color: chrome.inkSecondary }}>
-            Politica de Privacidade
+            Política de Privacidade
+          </Link>
+          <Link href="/artigos" style={{ color: chrome.inkSecondary }}>
+            Artigos
           </Link>
         </p>
       </div>

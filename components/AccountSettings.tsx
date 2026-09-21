@@ -31,7 +31,7 @@ function DadosPessoais({ profile }: { profile: Profile | null }) {
 
   return (
     <Card className="p-5">
-      <SectionTitle hint="Podes mudar tudo isto quando quiseres. O peso pretendido aparece como linha de referencia no grafico do peso.">
+      <SectionTitle hint="Podes mudar tudo isto quando quiseres. O peso pretendido aparece como linha de referência no gráfico do peso.">
         Os teus dados
       </SectionTitle>
 
@@ -151,7 +151,7 @@ function DadosPessoais({ profile }: { profile: Profile | null }) {
             rows={3}
             maxLength={500}
             defaultValue={profile?.notas ?? ""}
-            placeholder="Lesoes, restricoes, o que quiseres deixar registado."
+            placeholder="Lesões, restrições, o que quiseres deixar registado."
             className="rounded-xl border px-3 py-2 text-base"
             style={fieldStyle}
           />
@@ -207,9 +207,9 @@ function ApagarRegistos({ total }: { total: number }) {
       ) : (
         <div className="flex flex-col gap-3">
           <p className="text-sm" style={{ color: chrome.inkSecondary }}>
-            Isto apaga {total} {total === 1 ? "registo" : "registos"} e nao tem
+            Isto apaga {total} {total === 1 ? "registo" : "registos"} e não tem
             desfazer. A conta fica, e podes voltar a registar. Exporta antes, se
-            houver alguma hipotese de quereres isto de volta.
+            houver alguma hipótese de quereres isto de volta.
           </p>
           <label className="flex flex-col gap-1.5">
             <span className="text-xs" style={{ color: chrome.muted }}>
@@ -296,7 +296,7 @@ export default function AccountSettings({
           className="mt-4 text-xl font-semibold"
           style={{ color: chrome.ink }}
         >
-          Definicoes da conta
+          Definições da conta
         </h1>
       </header>
 
@@ -338,8 +338,8 @@ export default function AccountSettings({
             <span style={{ color: chrome.inkSecondary }}>
               {RESPONSAVEL.email}
             </span>
-            . Sao coisas que nao se desfazem, por isso nao ficam a um toque de
-            distancia.
+            . São coisas que não se desfazem, por isso não ficam a um toque de
+            distância.
           </p>
 
           <div className="mt-4 flex flex-wrap items-center gap-4">
@@ -350,7 +350,7 @@ export default function AccountSettings({
                 className="text-sm"
                 style={{ color: chrome.inkSecondary }}
               >
-                Administracao
+                Administração
               </Link>
             ) : null}
           </div>
@@ -374,11 +374,11 @@ export default function AccountSettings({
                 >
                   <span style={{ color: chrome.ink }}>
                     {c.documento === "termos"
-                      ? "Termos de Servico"
-                      : "Politica de Privacidade"}
+                      ? "Termos de Serviço"
+                      : "Política de Privacidade"}
                   </span>
                   <span className="text-xs" style={{ color: chrome.muted }}>
-                    versao {c.versao} &middot; aceite a{" "}
+                    versão {c.versao} &middot; aceite a{" "}
                     {longLabel(c.aceite_em.slice(0, 10))}
                   </span>
                 </li>
@@ -391,9 +391,22 @@ export default function AccountSettings({
               Ler os Termos
             </Link>
             <Link href="/privacidade" style={{ color: chrome.inkSecondary }}>
-              Ler a Politica de Privacidade
+              Ler a Política de Privacidade
             </Link>
           </div>
+        </Card>
+
+        <Card className="p-5">
+          <SectionTitle hint="Notas gerais sobre medidas e o corpo -- não é aconselhamento médico.">
+            Artigos
+          </SectionTitle>
+          <Link
+            href="/artigos"
+            className="text-sm"
+            style={{ color: chrome.inkSecondary }}
+          >
+            Ver artigos
+          </Link>
         </Card>
 
         <Card className="p-5">

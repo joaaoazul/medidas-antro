@@ -92,7 +92,7 @@ export default function Onboarding({ email }: { email: string }) {
           Bem-vindo
         </h1>
         <p className="mt-1 text-sm" style={{ color: chrome.muted }}>
-          Tres passos rapidos e ficas a usar. Sessao iniciada como {email}.
+          Três passos rápidos e ficas a usar. Sessão iniciada como {email}.
         </p>
       </header>
 
@@ -122,12 +122,12 @@ export default function Onboarding({ email }: { email: string }) {
             escrito, por isso voltar atras nunca apaga nada. */}
         <Card className={passo === 0 ? "p-5" : "hidden"}>
           <h2 className="text-base font-medium" style={{ color: chrome.ink }}>
-            Antes de comecares
+            Antes de começares
           </h2>
           <p className="mt-2 text-sm" style={{ color: chrome.muted }}>
-            Esta aplicacao guarda dados sobre o teu corpo. O Regulamento Geral
-            sobre a Protecao de Dados trata-os como categoria especial, e exige
-            que digas que sim de forma expressa -- por isso sao duas caixas, e
+            Esta aplicação guarda dados sobre o teu corpo. O Regulamento Geral
+            sobre a Proteção de Dados trata-os como categoria especial, e exige
+            que digas que sim de forma expressa -- por isso são duas caixas, e
             nenhuma vem marcada.
           </p>
 
@@ -144,7 +144,7 @@ export default function Onboarding({ email }: { email: string }) {
                 className="underline"
                 style={{ color: chrome.ink }}
               >
-                Termos de Servico
+                Termos de Serviço
               </Link>{" "}
               e a{" "}
               <Link
@@ -153,7 +153,7 @@ export default function Onboarding({ email }: { email: string }) {
                 className="underline"
                 style={{ color: chrome.ink }}
               >
-                Politica de Privacidade
+                Política de Privacidade
               </Link>
               .
             </Caixa>
@@ -163,16 +163,16 @@ export default function Onboarding({ email }: { email: string }) {
               checked={aceitaSaude}
               onChange={setAceitaSaude}
             >
-              Consinto expressamente que os meus dados de saude -- peso, gordura
-              corporal, massa muscular e perimetros -- sejam tratados para me
-              mostrarem a minha evolucao. Posso retirar este consentimento
+              Consinto expressamente que os meus dados de saúde -- peso, gordura
+              corporal, massa muscular e perímetros -- sejam tratados para me
+              mostrarem a minha evolução. Posso retirar este consentimento
               quando quiser.
             </Caixa>
           </div>
 
           <p className="mt-4 text-xs" style={{ color: chrome.muted }}>
-            Esta aplicacao nao presta aconselhamento medico. Os numeros que
-            registas sao um registo do que mediste, nao um diagnostico.
+            Esta aplicação não presta aconselhamento médico. Os números que
+            registas são um registo do que mediste, não um diagnóstico.
           </p>
         </Card>
 
@@ -231,8 +231,8 @@ export default function Onboarding({ email }: { email: string }) {
               </ChipRow>
               <input type="hidden" name="sexo" value={sexo ?? ""} />
               <p className="mt-1.5 text-xs" style={{ color: chrome.muted }}>
-                As faixas de referencia de composicao corporal diferem. Se
-                preferires nao dizer, nao digas.
+                As faixas de referência de composição corporal diferem. Se
+                preferires não dizer, não digas.
               </p>
             </div>
 
@@ -257,7 +257,7 @@ export default function Onboarding({ email }: { email: string }) {
             Objetivos
           </h2>
           <p className="mt-1 text-sm" style={{ color: chrome.muted }}>
-            Tudo opcional, e tudo alteravel depois.
+            Tudo opcional, e tudo alterável depois.
           </p>
 
           <div className="mt-4 flex flex-col gap-4">
@@ -316,7 +316,7 @@ export default function Onboarding({ email }: { email: string }) {
                 name="notas"
                 rows={3}
                 maxLength={500}
-                placeholder="Lesoes, restricoes, o que quiseres deixar registado."
+                placeholder="Lesões, restrições, o que quiseres deixar registado."
                 className="rounded-xl border px-3 py-2 text-base"
                 style={fieldStyle}
               />
@@ -325,7 +325,7 @@ export default function Onboarding({ email }: { email: string }) {
 
           <p className="mt-4 text-xs" style={{ color: chrome.muted }}>
             Se disseres o peso pretendido, ele aparece como uma linha de
-            referencia no grafico do peso.
+            referência no gráfico do peso.
           </p>
         </Card>
 
@@ -350,7 +350,7 @@ export default function Onboarding({ email }: { email: string }) {
           ) : (
             <div className="flex-1">
               <Button type="submit" variant="primary" disabled={pending} full>
-                {pending ? "A guardar..." : "Comecar"}
+                {pending ? "A guardar..." : "Começar"}
               </Button>
             </div>
           )}

@@ -4,7 +4,7 @@ import { todayISO } from "./dates";
 
 const dateSchema = z
   .string()
-  .regex(/^\d{4}-\d{2}-\d{2}$/, "Data invalida (usa AAAA-MM-DD).")
+  .regex(/^\d{4}-\d{2}-\d{2}$/, "Data inválida (usa AAAA-MM-DD).")
   .refine((value) => {
     // O regex deixa passar 2025-02-31; so a normalizacao apanha isso.
     const parsed = new Date(`${value}T00:00:00Z`);
@@ -12,10 +12,10 @@ const dateSchema = z
       !Number.isNaN(parsed.getTime()) &&
       parsed.toISOString().slice(0, 10) === value
     );
-  }, "Essa data nao existe no calendario.")
+  }, "Essa data não existe no calendário.")
   .refine(
     (value) => value <= todayISO(),
-    "Nao da para registar datas futuras.",
+    "Não dá para registar datas futuras.",
   );
 
 /** Uma medida ausente e null, nao 0: 0 kg seria uma leitura, a ausencia nao e. */
@@ -40,7 +40,7 @@ const horaSchema = z
   .transform((v) => (v === undefined || v === "" ? null : v))
   .refine(
     (v) => v === null || /^([01]\d|2[0-3]):[0-5]\d$/.test(v),
-    "Hora invalida (usa HH:MM).",
+    "Hora inválida (usa HH:MM).",
   );
 
 export const entrySchema = z
@@ -63,5 +63,5 @@ export type EntryInput = z.infer<typeof entrySchema>;
 
 /** Primeira mensagem de erro legivel, para devolver ao formulario. */
 export function firstError(error: z.ZodError): string {
-  return error.issues[0]?.message ?? "Dados invalidos.";
+  return error.issues[0]?.message ?? "Dados inválidos.";
 }

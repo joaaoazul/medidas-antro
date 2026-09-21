@@ -10,6 +10,9 @@ const PUBLIC_PATHS = [
   // quem ja aceitou nao serve para nada.
   "/termos",
   "/privacidade",
+  // Conteudo informativo geral, sem dados de ninguem -- nao ha razao para
+  // ficar atras de sessao, e um endereco publico tambem se pode enviar.
+  "/artigos",
 ];
 
 /**

@@ -3,7 +3,7 @@ import AdminPanel, { type Conta } from "@/components/AdminPanel";
 import { requireAdmin } from "@/lib/session";
 import { createAdminClient } from "@/lib/supabase/admin";
 
-export const metadata: Metadata = { title: "Administracao - Medidas" };
+export const metadata: Metadata = { title: "Administração - Medidas" };
 export const dynamic = "force-dynamic";
 
 export default async function AdminPage() {
@@ -15,7 +15,7 @@ export default async function AdminPage() {
   const { data, error } = await admin.auth.admin.listUsers({ perPage: 200 });
 
   if (error)
-    throw new Error(`Nao foi possivel listar as contas: ${error.message}`);
+    throw new Error(`Não foi possível listar as contas: ${error.message}`);
 
   // Estado das contas numa so leitura, em vez de uma por conta.
   const { data: estados } = await admin

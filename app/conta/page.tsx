@@ -4,7 +4,7 @@ import { getConsents } from "@/lib/profile-repo";
 import { listEntries } from "@/lib/repo";
 import { requireReadyViewer } from "@/lib/session";
 
-export const metadata: Metadata = { title: "Definicoes - Medidas" };
+export const metadata: Metadata = { title: "Definições - Medidas" };
 export const dynamic = "force-dynamic";
 
 export default async function ContaPage() {

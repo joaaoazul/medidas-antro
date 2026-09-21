@@ -71,11 +71,11 @@ export default function TrendsView({
   return (
     <div className="flex flex-col gap-4">
       {/*
-       * Os controlos ficam acima do grafico, mas comprimidos ao minimo: num
-       * telemovel, quatro filas de fichas empurravam o grafico inteiro para
-       * fora do ecra, e o grafico e que e o conteudo. A escolha de vista virou
-       * um comutador, as metricas ficaram numa fila deslizante e o intervalo e
-       * o agrupamento partilham uma linha com os rotulos ao lado.
+       * Os controlos ficam acima do grafico, mas comprimidos ao minimo: a
+       * escolha de vista virou um comutador, as metricas quebram para a linha
+       * seguinte em vez de deslizar -- ve-las todas de uma vez vale a linha
+       * extra -- e o intervalo e o agrupamento partilham uma linha com os
+       * rotulos ao lado.
        */}
       {/* No ecra grande o comutador nao precisa de 1200px: a largura total e
           para o polegar, nao para o rato. */}
@@ -85,13 +85,13 @@ export default function TrendsView({
           value={mode}
           onChange={setMode}
           options={[
-            { key: "individual", label: "Uma metrica" },
+            { key: "individual", label: "Uma métrica" },
             { key: "comparar", label: "Comparar" },
           ]}
         />
       </div>
 
-      <ChipRow label={mode === "individual" ? "Metrica" : "Metricas"}>
+      <ChipRow label={mode === "individual" ? "Métrica" : "Métricas"} wrap>
         {METRICS.map((metric) => (
           <Chip
             key={metric.id}
@@ -168,9 +168,9 @@ export default function TrendsView({
 
       <p className="px-1 text-xs" style={{ color: chrome.muted }}>
         {granularity === "dia"
-          ? "Cada ponto e uma medicao."
-          : `Cada ponto e a media das medicoes ${
-              granularity === "semana" ? "da semana" : "do mes"
+          ? "Cada ponto é uma medição."
+          : `Cada ponto é a média das medições ${
+              granularity === "semana" ? "da semana" : "do mês"
             }.`}
       </p>
     </div>

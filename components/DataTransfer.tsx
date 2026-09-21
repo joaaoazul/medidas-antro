@@ -25,14 +25,14 @@ export default function DataTransfer({ count }: { count: number }) {
       const payload = await response.json();
       if (!response.ok) {
         setError(true);
-        setMessage(payload.error ?? "Nao foi possivel importar.");
+        setMessage(payload.error ?? "Não foi possível importar.");
         return;
       }
       setMessage(`${payload.imported} registos importados.`);
       router.refresh();
     } catch {
       setError(true);
-      setMessage("Nao foi possivel ler o ficheiro.");
+      setMessage("Não foi possível ler o ficheiro.");
     } finally {
       if (inputRef.current) inputRef.current.value = "";
     }
@@ -40,8 +40,8 @@ export default function DataTransfer({ count }: { count: number }) {
 
   return (
     <Card className="p-5">
-      <SectionTitle hint="Os dados ficam num ficheiro SQLite nesta maquina. Exporta de vez em quando -- e tambem a forma de os levar para outro lado.">
-        Copia de seguranca
+      <SectionTitle hint="Os dados ficam na base de dados, na Supabase. Exporta de vez em quando -- é também a forma de os levar para outro lado.">
+        Cópia de segurança
       </SectionTitle>
 
       <div className="flex flex-wrap items-center gap-2 text-sm">

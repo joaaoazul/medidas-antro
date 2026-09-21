@@ -145,11 +145,11 @@ export default function EntryForm({
       <SectionTitle
         hint={
           editing
-            ? "Estas a alterar uma medicao ja gravada."
-            : "Deixa em branco o que nao mediste. Podes registar mais do que uma medicao no mesmo dia -- e a hora que as distingue."
+            ? "Estás a alterar uma medição já gravada."
+            : "Deixa em branco o que não mediste. Podes registar mais do que uma medição no mesmo dia -- é a hora que as distingue."
         }
       >
-        {editing ? "Editar medicao" : "Registar medidas"}
+        {editing ? "Editar medição" : "Registar medidas"}
       </SectionTitle>
 
       <form ref={formRef} action={formAction}>
@@ -244,7 +244,7 @@ export default function EntryForm({
 
         <div className="mt-3 sm:max-w-xs">
           <Disclosure open={showAll} onToggle={() => setShowAll((o) => !o)}>
-            {showAll ? "Menos campos" : "Perimetros e nota"}
+            {showAll ? "Menos campos" : "Perímetros e nota"}
           </Disclosure>
         </div>
 
@@ -254,19 +254,19 @@ export default function EntryForm({
               {pending
                 ? "A guardar..."
                 : editing
-                  ? "Guardar alteracoes"
+                  ? "Guardar alterações"
                   : "Guardar"}
             </Button>
           </div>
           {editing ? (
-            <Button onClick={onCancelEdit}>Cancelar edicao</Button>
+            <Button onClick={onCancelEdit}>Cancelar edição</Button>
           ) : null}
         </div>
 
         {editing ? (
           <p className="mt-2 text-xs" style={{ color: chrome.muted }}>
-            A editar a medicao de {longLabel(editing.date)}
-            {editing.hora ? ` as ${editing.hora}` : ""}.
+            A editar a medição de {longLabel(editing.date)}
+            {editing.hora ? ` às ${editing.hora}` : ""}.
           </p>
         ) : null}
 

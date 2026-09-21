@@ -56,7 +56,7 @@ async function requireUser() {
     error,
   } = await supabase.auth.getUser();
 
-  if (error || !user) throw new Error("Sem sessao iniciada.");
+  if (error || !user) throw new Error("Sem sessão iniciada.");
 
   return { supabase, userId: user.id };
 }
@@ -85,7 +85,7 @@ export async function listEntries(): Promise<Entry[]> {
     .eq("user_id", userId);
 
   if (error)
-    throw new Error(`Nao foi possivel ler os registos: ${error.message}`);
+    throw new Error(`Não foi possível ler os registos: ${error.message}`);
 
   return (data as unknown as Row[]).map(rowToEntry).sort(porOrdemCronologica);
 }
@@ -101,7 +101,7 @@ export async function getEntry(id: string): Promise<Entry | null> {
     .maybeSingle();
 
   if (error)
-    throw new Error(`Nao foi possivel ler a medicao: ${error.message}`);
+    throw new Error(`Não foi possível ler a medição: ${error.message}`);
   return data ? rowToEntry(data as unknown as Row) : null;
 }
 
@@ -141,9 +141,9 @@ export async function saveEntry(input: EntryInput): Promise<Entry> {
     // duas vezes as 08:00 do mesmo dia e quase sempre engano, e vale a pena
     // dize-lo em vez de deixar passar o codigo cru do Postgres.
     if (error.code === "23505") {
-      throw new Error("Ja existe uma medicao nesse dia a essa hora.");
+      throw new Error("Já existe uma medição nesse dia a essa hora.");
     }
-    throw new Error(`Nao foi possivel guardar: ${error.message}`);
+    throw new Error(`Não foi possível guardar: ${error.message}`);
   }
 
   return rowToEntry(data as unknown as Row);
@@ -159,7 +159,7 @@ export async function deleteEntry(id: string): Promise<boolean> {
     .eq("id", id)
     .select("id");
 
-  if (error) throw new Error(`Nao foi possivel apagar: ${error.message}`);
+  if (error) throw new Error(`Não foi possível apagar: ${error.message}`);
 
   return (data?.length ?? 0) > 0;
 }
@@ -185,14 +185,14 @@ export async function importEntries(entries: EntryInput[]): Promise<number> {
       comId.map((e) => ({ id: e.id, ...toRow(e, userId) })),
       { onConflict: "id" },
     );
-    if (error) throw new Error(`Nao foi possivel importar: ${error.message}`);
+    if (error) throw new Error(`Não foi possível importar: ${error.message}`);
   }
 
   if (semId.length > 0) {
     const { error } = await supabase
       .from("entries")
       .insert(semId.map((e) => toRow(e, userId)));
-    if (error) throw new Error(`Nao foi possivel importar: ${error.message}`);
+    if (error) throw new Error(`Não foi possível importar: ${error.message}`);
   }
 
   return entries.length;
@@ -214,7 +214,7 @@ export async function deleteAllEntries(): Promise<number> {
     .eq("user_id", userId)
     .select("id");
 
-  if (error) throw new Error(`Nao foi possivel apagar: ${error.message}`);
+  if (error) throw new Error(`Não foi possível apagar: ${error.message}`);
 
   return data?.length ?? 0;
 }

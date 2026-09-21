@@ -38,14 +38,14 @@ export async function completeOnboarding(
   if (formData.get("aceita_documentos") !== "sim") {
     return {
       status: "erro",
-      message: "Tens de aceitar os Termos e a Politica de Privacidade.",
+      message: "Tens de aceitar os Termos e a Política de Privacidade.",
     };
   }
   if (formData.get("aceita_saude") !== "sim") {
     return {
       status: "erro",
       message:
-        "Sem o consentimento para tratar dados de saude nao ha como guardar medidas.",
+        "Sem o consentimento para tratar dados de saúde não há como guardar medidas.",
     };
   }
 
@@ -54,7 +54,7 @@ export async function completeOnboarding(
   const treinos = numero(formData.get("treinosPorSemana"));
 
   if (altura === "erro" || objetivoPeso === "erro" || treinos === "erro") {
-    return { status: "erro", message: "Ha um numero mal escrito." };
+    return { status: "erro", message: "Há um número mal escrito." };
   }
 
   const parsed = profileSchema.safeParse({

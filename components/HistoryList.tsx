@@ -27,7 +27,7 @@ const PREVIEW = 10;
 /** "19 set 2026 as 08:15", ou so a data quando nao ha hora. */
 function quando(entry: Entry): string {
   return entry.hora
-    ? `${longLabel(entry.date)} as ${entry.hora}`
+    ? `${longLabel(entry.date)} às ${entry.hora}`
     : longLabel(entry.date);
 }
 
@@ -50,7 +50,7 @@ function Accoes({
         onClick={() => onEdit(entry)}
         className="text-xs"
         style={{ color: chrome.inkSecondary }}
-        aria-label={`Editar a medicao de ${quando(entry)}`}
+        aria-label={`Editar a medição de ${quando(entry)}`}
       >
         Editar
       </button>
@@ -86,7 +86,7 @@ function Accoes({
           onClick={() => setConfirming(true)}
           className="text-xs"
           style={{ color: chrome.muted }}
-          aria-label={`Apagar a medicao de ${quando(entry)}`}
+          aria-label={`Apagar a medição de ${quando(entry)}`}
         >
           Apagar
         </button>
@@ -115,7 +115,7 @@ export default function HistoryList({
     return (
       <Card className="p-6">
         <p className="text-center text-sm" style={{ color: chrome.muted }}>
-          Ainda nao ha medicoes neste intervalo.
+          Ainda não há medições neste intervalo.
         </p>
       </Card>
     );
@@ -199,7 +199,7 @@ export default function HistoryList({
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <caption className="sr-only">
-              Medicoes registadas, da mais recente para a mais antiga
+              Medições registadas, da mais recente para a mais antiga
             </caption>
             <thead>
               <tr style={{ color: chrome.muted }}>
@@ -231,7 +231,7 @@ export default function HistoryList({
                   </th>
                 ))}
                 <th scope="col" className="px-4 py-3 text-right">
-                  <span className="sr-only">Accoes</span>
+                  <span className="sr-only">Ações</span>
                 </th>
               </tr>
             </thead>
@@ -294,8 +294,8 @@ export default function HistoryList({
         <div className="mt-3">
           <Button onClick={() => setExpanded((open) => !open)} full>
             {expanded
-              ? `Mostrar so as ultimas ${PREVIEW}`
-              : `Mostrar as ${rows.length} medicoes`}
+              ? `Mostrar só as últimas ${PREVIEW}`
+              : `Mostrar as ${rows.length} medições`}
           </Button>
         </div>
       ) : null}

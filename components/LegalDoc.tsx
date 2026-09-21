@@ -34,7 +34,7 @@ export default function LegalDoc({
         {titulo}
       </h1>
       <p className="mt-1 text-sm" style={{ color: "var(--text-muted)" }}>
-        Versao {versao}
+        Versão {versao}
       </p>
 
       <div
@@ -45,9 +45,9 @@ export default function LegalDoc({
       </div>
 
       <p className="mt-12 text-xs" style={{ color: "var(--text-muted)" }}>
-        Este documento descreve o funcionamento real desta aplicacao. Se alguma
-        coisa aqui escrita nao corresponder ao que a app faz, e o documento que
-        esta errado -- avisa o responsavel pelo contacto acima.
+        Este documento descreve o funcionamento real desta aplicação. Se alguma
+        coisa aqui escrita não corresponder ao que a app faz, é o documento que
+        está errado -- avisa o responsável pelo contacto acima.
       </p>
     </main>
   );

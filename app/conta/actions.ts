@@ -32,7 +32,7 @@ export async function updateProfile(
   const treinos = numero(formData.get("treinosPorSemana"));
 
   if (altura === "erro" || objetivoPeso === "erro" || treinos === "erro") {
-    return { status: "erro", message: "Ha um numero mal escrito." };
+    return { status: "erro", message: "Há um número mal escrito." };
   }
 
   const parsed = profileSchema.safeParse({
@@ -75,7 +75,7 @@ export async function eraseEntries(): Promise<ActionState> {
     status: "ok",
     message:
       apagados === 0
-        ? "Nao havia registos para apagar."
+        ? "Não havia registos para apagar."
         : `${apagados} ${apagados === 1 ? "registo apagado" : "registos apagados"}.`,
   };
 }

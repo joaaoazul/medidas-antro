@@ -41,7 +41,7 @@ export async function getProfile(userId: string): Promise<Profile | null> {
     .eq("user_id", userId)
     .maybeSingle();
 
-  if (error) throw new Error(`Nao foi possivel ler o perfil: ${error.message}`);
+  if (error) throw new Error(`Não foi possível ler o perfil: ${error.message}`);
   return data ? rowToProfile(data as unknown as ProfileRow) : null;
 }
 
@@ -77,7 +77,7 @@ export async function saveProfile(
   );
 
   if (error)
-    throw new Error(`Nao foi possivel guardar o perfil: ${error.message}`);
+    throw new Error(`Não foi possível guardar o perfil: ${error.message}`);
 }
 
 export async function getConsents(userId: string): Promise<Consent[]> {
@@ -89,7 +89,7 @@ export async function getConsents(userId: string): Promise<Consent[]> {
     .order("aceite_em", { ascending: false });
 
   if (error)
-    throw new Error(`Nao foi possivel ler os consentimentos: ${error.message}`);
+    throw new Error(`Não foi possível ler os consentimentos: ${error.message}`);
   return (data ?? []) as Consent[];
 }
 
@@ -108,6 +108,6 @@ export async function recordConsent(userId: string): Promise<void> {
 
   if (error)
     throw new Error(
-      `Nao foi possivel registar o consentimento: ${error.message}`,
+      `Não foi possível registar o consentimento: ${error.message}`,
     );
 }

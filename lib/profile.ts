@@ -13,7 +13,7 @@ import { IDADE_MINIMA, VERSAO_PRIVACIDADE, VERSAO_TERMOS } from "./legal";
 
 export const OBJETIVOS = [
   { key: "perder_gordura", label: "Perder gordura" },
-  { key: "ganhar_musculo", label: "Ganhar musculo" },
+  { key: "ganhar_musculo", label: "Ganhar músculo" },
   { key: "manter", label: "Manter" },
   { key: "desempenho", label: "Desempenho" },
   { key: "outro", label: "Outro" },
@@ -23,7 +23,7 @@ export const SEXOS = [
   { key: "feminino", label: "Feminino" },
   { key: "masculino", label: "Masculino" },
   { key: "outro", label: "Outro" },
-  { key: "nao_dizer", label: "Prefiro nao dizer" },
+  { key: "nao_dizer", label: "Prefiro não dizer" },
 ] as const;
 
 export type Objetivo = (typeof OBJETIVOS)[number]["key"];
@@ -59,8 +59,8 @@ export const profileSchema = z.object({
   nome: z.string().trim().min(1, "Escreve o teu nome.").max(80),
   dataNascimento: z
     .string()
-    .regex(/^\d{4}-\d{2}-\d{2}$/, "Data de nascimento invalida.")
-    .refine((v) => v < todayISO(), "Essa data ainda nao aconteceu.")
+    .regex(/^\d{4}-\d{2}-\d{2}$/, "Data de nascimento inválida.")
+    .refine((v) => v < todayISO(), "Essa data ainda não aconteceu.")
     .refine(
       (v) => idadeEm(v) >= IDADE_MINIMA,
       `Tens de ter pelo menos ${IDADE_MINIMA} anos para teres conta.`,

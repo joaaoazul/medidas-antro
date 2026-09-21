@@ -79,7 +79,7 @@ function ChartTooltip({
       </div>
       {granularity !== "dia" && point.samples > 1 ? (
         <div className="mt-0.5 text-xs" style={{ color: muted }}>
-          media de {point.samples} medicoes
+          média de {point.samples} medições
         </div>
       ) : null}
     </div>
@@ -259,7 +259,7 @@ export default function MetricChart({
             className="flex h-full items-center justify-center text-sm"
             style={{ color: chrome.muted }}
           >
-            {mounted ? "Sem medicoes neste intervalo." : ""}
+            {mounted ? "Sem medições neste intervalo." : ""}
           </div>
         )}
       </div>

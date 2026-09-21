@@ -7,141 +7,141 @@ import {
   identificacaoResponsavel,
 } from "@/lib/legal";
 
-export const metadata: Metadata = { title: "Termos de Servico - Medidas" };
+export const metadata: Metadata = { title: "Termos de Serviço - Medidas" };
 
 export default function TermosPage() {
   return (
-    <LegalDoc titulo="Termos de Servico" versao={VERSAO_TERMOS}>
-      <Seccao numero={1} titulo="Quem fornece o servico">
+    <LegalDoc titulo="Termos de Serviço" versao={VERSAO_TERMOS}>
+      <Seccao numero={1} titulo="Quem fornece o serviço">
         <p>
-          A aplicacao Medidas e fornecida por {identificacaoResponsavel()}.
+          A aplicação Medidas é fornecida por {identificacaoResponsavel()}.
           Contacto: <strong>{RESPONSAVEL.email}</strong>.
         </p>
         <p>
           Ao aceitares estes termos celebras um contrato com essa entidade. Se
-          nao concordares com eles, nao uses a aplicacao.
+          não concordares com eles, não uses a aplicação.
         </p>
       </Seccao>
 
-      <Seccao numero={2} titulo="O que a aplicacao faz">
+      <Seccao numero={2} titulo="O que a aplicação faz">
         <p>
-          A aplicacao serve para registares as tuas medidas corporais ao longo
-          do tempo -- peso, perimetros, gordura corporal e massa muscular -- e
+          A aplicação serve para registares as tuas medidas corporais ao longo
+          do tempo -- peso, perímetros, gordura corporal e massa muscular -- e
           para veres como evoluem por dias, semanas e meses.
         </p>
       </Seccao>
 
-      <Seccao numero={3} titulo="O que a aplicacao nao e">
+      <Seccao numero={3} titulo="O que a aplicação não é">
         <p>
           <strong>
-            Esta aplicacao nao presta cuidados de saude nem aconselhamento
-            medico.
+            Esta aplicação não presta cuidados de saúde nem aconselhamento
+            médico.
           </strong>{" "}
-          Os numeros que registas e os graficos que vES sao um registo do que tu
-          proprio mediste, e nada mais. Nao sao um diagnostico, nao sao uma
-          avaliacao clinica e nao substituem a opiniao de um medico, de um
-          nutricionista ou de outro profissional de saude.
+          Os números que registas e os gráficos que vês são um registo do que tu
+          próprio mediste, e nada mais. Não são um diagnóstico, não são uma
+          avaliação clínica e não substituem a opinião de um médico, de um
+          nutricionista ou de outro profissional de saúde.
         </p>
         <p>
-          Nao tomes decisoes sobre alimentacao, medicacao, treino ou tratamento
-          com base apenas no que aqui vES. Se tens uma condicao de saude, ou se
+          Não tomes decisões sobre alimentação, medicação, treino ou tratamento
+          com base apenas no que aqui vês. Se tens uma condição de saúde, ou se
           alguma coisa nos teus valores te preocupa, fala com um profissional.
         </p>
         <p>
-          A aplicacao nao faz alertas clinicos: nao te avisa se um valor for
-          preocupante, porque nao tem como saber o que e preocupante para ti.
+          A aplicação não faz alertas clínicos: não te avisa se um valor for
+          preocupante, porque não tem como saber o que é preocupante para ti.
         </p>
       </Seccao>
 
       <Seccao numero={4} titulo="A tua conta">
         <Lista
           itens={[
-            "Esta aplicacao e de acesso restrito. Nao ha registo publico: as contas sao criadas pelo responsavel, a pedido ou por convite.",
-            "A tua conta e pessoal e intransmissivel. Nao a partilhes nem deixes a tua palavra-passe acessivel a outras pessoas.",
-            "Quando a conta e criada, ou quando a palavra-passe e reposta, recebes uma palavra-passe temporaria. Tens de a mudar na primeira entrada, e a aplicacao nao te deixa avancar sem isso.",
-            "O responsavel nao consegue ver a tua palavra-passe, nem antes nem depois de a mudares. Se a perderes, a unica via e pedir que seja reposta.",
+            "Esta aplicação é de acesso restrito. Não há registo público: as contas são criadas pelo responsável, a pedido ou por convite.",
+            "A tua conta é pessoal e intransmissível. Não a partilhes nem deixes a tua palavra-passe acessível a outras pessoas.",
+            "Quando a conta é criada, ou quando a palavra-passe é reposta, recebes uma palavra-passe temporária. Tens de a mudar na primeira entrada, e a aplicação não te deixa avançar sem isso.",
+            "O responsável não consegue ver a tua palavra-passe, nem antes nem depois de a mudares. Se a perderes, a única via é pedir que seja reposta.",
             `Para teres conta tens de ter pelo menos ${IDADE_MINIMA} anos.`,
-            "Avisa de imediato o responsavel se suspeitares que alguem entrou na tua conta.",
+            "Avisa de imediato o responsável se suspeitares que alguém entrou na tua conta.",
           ]}
         />
       </Seccao>
 
-      <Seccao numero={5} titulo="Uso aceitavel">
-        <p>Ao usar a aplicacao, comprometes-te a nao:</p>
+      <Seccao numero={5} titulo="Uso aceitável">
+        <p>Ao usar a aplicação, comprometes-te a não:</p>
         <Lista
           itens={[
-            "tentar aceder a dados de outra pessoa, ou a partes da aplicacao a que a tua conta nao da acesso;",
+            "tentar aceder a dados de outra pessoa, ou a partes da aplicação a que a tua conta não dá acesso;",
             "registar dados de outra pessoa sem o consentimento dela;",
-            "tentar interromper, sobrecarregar ou contornar os mecanismos de seguranca do servico;",
-            "usar a aplicacao para fins ilegais.",
+            "tentar interromper, sobrecarregar ou contornar os mecanismos de segurança do serviço;",
+            "usar a aplicação para fins ilegais.",
           ]}
         />
       </Seccao>
 
       <Seccao numero={6} titulo="Os dados que registas">
         <p>
-          Os dados que introduzes sao teus. O tratamento que lhes e dado esta
-          descrito na Politica de Privacidade, que faz parte integrante destes
+          Os dados que introduzes são teus. O tratamento que lhes é dado está
+          descrito na Política de Privacidade, que faz parte integrante destes
           termos.
         </p>
         <p>
           Podes exportar tudo o que registaste, a qualquer momento, em JSON ou
-          em CSV, a partir do separador Historico.
+          em CSV, a partir do separador Histórico.
         </p>
       </Seccao>
 
       <Seccao numero={7} titulo="Disponibilidade">
         <p>
-          O servico e fornecido tal como esta, sem garantia de funcionamento
-          ininterrupto. Pode haver periodos de indisponibilidade por manutencao,
+          O serviço é fornecido tal como está, sem garantia de funcionamento
+          ininterrupto. Pode haver períodos de indisponibilidade por manutenção,
           avaria ou falha de fornecedores.
         </p>
         <p>
-          Faz as tuas proprias copias de seguranca, exportando os dados de vez
-          em quando. E a forma de nao ficares dependente da disponibilidade
-          deste servico.
+          Faz as tuas próprias cópias de segurança, exportando os dados de vez
+          em quando. É a forma de não ficares dependente da disponibilidade
+          deste serviço.
         </p>
       </Seccao>
 
       <Seccao numero={8} titulo="Responsabilidade">
         <p>
-          Na medida maxima permitida pela lei aplicavel, o responsavel nao
+          Na medida máxima permitida pela lei aplicável, o responsável não
           responde por danos indiretos, perda de lucros ou perda de dados
-          decorrentes do uso ou da impossibilidade de uso da aplicacao.
+          decorrentes do uso ou da impossibilidade de uso da aplicação.
         </p>
         <p>
-          Nada nestes termos exclui ou limita a responsabilidade que a lei nao
+          Nada nestes termos exclui ou limita a responsabilidade que a lei não
           permita excluir ou limitar, designadamente por dolo ou culpa grave,
           nem prejudica os direitos que a lei te confere enquanto consumidor.
         </p>
       </Seccao>
 
-      <Seccao numero={9} titulo="Suspensao e fim do servico">
+      <Seccao numero={9} titulo="Suspensão e fim do serviço">
         <p>
-          Podes deixar de usar a aplicacao quando quiseres e pedir o apagamento
+          Podes deixar de usar a aplicação quando quiseres e pedir o apagamento
           da conta pelo contacto indicado. O apagamento leva consigo o perfil e
           todas as medidas.
         </p>
         <p>
-          O responsavel pode suspender ou encerrar uma conta que viole estes
-          termos, ou descontinuar o servico, avisando com antecedencia razoavel
+          O responsável pode suspender ou encerrar uma conta que viole estes
+          termos, ou descontinuar o serviço, avisando com antecedência razoável
           e dando oportunidade de exportar os dados antes disso.
         </p>
       </Seccao>
 
-      <Seccao numero={10} titulo="Alteracoes a estes termos">
+      <Seccao numero={10} titulo="Alterações a estes termos">
         <p>
-          Se estes termos mudarem de forma substantiva, a versao muda tambem e
-          ser-te-a pedido que os aceites de novo na entrada seguinte. Se nao
+          Se estes termos mudarem de forma substantiva, a versão muda também e
+          ser-te-á pedido que os aceites de novo na entrada seguinte. Se não
           aceitares, podes exportar os dados e pedir o apagamento da conta.
         </p>
       </Seccao>
 
-      <Seccao numero={11} titulo="Lei aplicavel">
+      <Seccao numero={11} titulo="Lei aplicável">
         <p>
           Aplica-se a lei portuguesa. Enquanto consumidor, mantens o direito de
-          recorrer aos tribunais do teu lugar de residencia e as entidades de
-          resolucao alternativa de litigios de consumo.
+          recorrer aos tribunais do teu lugar de residência e às entidades de
+          resolução alternativa de litígios de consumo.
         </p>
       </Seccao>
 

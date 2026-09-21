@@ -32,7 +32,7 @@ export async function saveEntry(
     if (parsed === "erro") {
       return {
         status: "erro",
-        message: `${METRIC_BY_ID[id as MetricId].label}: valor nao e um numero.`,
+        message: `${METRIC_BY_ID[id as MetricId].label}: valor não é um número.`,
       };
     }
     values[id] = parsed;
@@ -61,21 +61,21 @@ export async function saveEntry(
     return {
       status: "erro",
       message:
-        erro instanceof Error ? erro.message : "Nao foi possivel guardar.",
+        erro instanceof Error ? erro.message : "Não foi possível guardar.",
     };
   }
 
   revalidatePath("/");
 
   const quando = parsedEntry.data.hora
-    ? `${parsedEntry.data.date} as ${parsedEntry.data.hora}`
+    ? `${parsedEntry.data.date} às ${parsedEntry.data.hora}`
     : parsedEntry.data.date;
 
   return {
     status: "ok",
     message: parsedEntry.data.id
-      ? `Medicao de ${quando} atualizada.`
-      : `Medicao de ${quando} guardada.`,
+      ? `Medição de ${quando} atualizada.`
+      : `Medição de ${quando} guardada.`,
     savedDate: parsedEntry.data.date,
   };
 }
@@ -85,6 +85,6 @@ export async function removeEntry(id: string): Promise<ActionState> {
   revalidatePath("/");
 
   return removed
-    ? { status: "ok", message: "Medicao apagada." }
-    : { status: "erro", message: "Essa medicao ja nao existe." };
+    ? { status: "ok", message: "Medição apagada." }
+    : { status: "erro", message: "Essa medição já não existe." };
 }

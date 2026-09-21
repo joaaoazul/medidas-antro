@@ -106,7 +106,7 @@ export default function RelativeChart({
     <Card className="p-4 sm:p-5" as="figure">
       <figcaption className="mb-1">
         <h2 className="text-base font-medium" style={{ color: chrome.ink }}>
-          Evolucao relativa
+          Evolução relativa
         </h2>
         {/*
           A razao completa vive no README e no comentario de buildRelativeRows:
@@ -117,8 +117,8 @@ export default function RelativeChart({
           do ecra, e um grafico que nao se ve nao explica nada.
         */}
         <p className="mt-0.5 text-xs" style={{ color: chrome.muted }}>
-          Cada metrica em % face a primeira medicao do intervalo, para caberem
-          todas num unico eixo.
+          Cada métrica em % face à primeira medição do intervalo, para caberem
+          todas num único eixo.
         </p>
       </figcaption>
 
@@ -214,7 +214,7 @@ export default function RelativeChart({
             className="flex h-full items-center justify-center text-sm"
             style={{ color: chrome.muted }}
           >
-            {mounted ? "Escolhe pelo menos uma metrica com medicoes." : ""}
+            {mounted ? "Escolhe pelo menos uma métrica com medições." : ""}
           </div>
         )}
       </div>

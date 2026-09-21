@@ -19,7 +19,7 @@ export const RANGES: { key: RangeKey; label: string; days: number | null }[] = [
 export const GRANULARITIES: { key: Granularity; label: string }[] = [
   { key: "dia", label: "Dia" },
   { key: "semana", label: "Semana" },
-  { key: "mes", label: "Mes" },
+  { key: "mes", label: "Mês" },
 ];
 
 /** Recorta os registos ao intervalo escolhido (inclusivo nas duas pontas). */

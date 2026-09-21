@@ -46,8 +46,8 @@ export const METRICS: Metric[] = [
   },
   {
     id: "abdomen",
-    label: "Perimetro abdominal",
-    short: "Abdomen",
+    label: "Perímetro abdominal",
+    short: "Abdómen",
     unit: "cm",
     decimals: 1,
     min: 30,
@@ -67,7 +67,7 @@ export const METRICS: Metric[] = [
   {
     id: "musculo",
     label: "Massa muscular",
-    short: "Musculo",
+    short: "Músculo",
     unit: "kg",
     decimals: 1,
     min: 5,
@@ -96,8 +96,8 @@ export const METRICS: Metric[] = [
   },
   {
     id: "braco",
-    label: "Braco",
-    short: "Braco",
+    label: "Braço",
+    short: "Braço",
     unit: "cm",
     decimals: 1,
     min: 15,

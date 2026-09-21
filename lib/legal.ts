@@ -7,7 +7,7 @@
  * preencher num documento legal.
  */
 export const RESPONSAVEL = {
-  nome: "Joao Azul",
+  nome: "João Azul",
   email: "cybersec.joao@proton.me",
   /** Opcional. Reforca a identificacao, sobretudo se isto passar a servico pago. */
   morada: "",
@@ -26,7 +26,7 @@ export function identificacaoResponsavel(): string {
   const partes: string[] = [RESPONSAVEL.nome];
 
   if (RESPONSAVEL.morada) partes.push(`com morada em ${RESPONSAVEL.morada}`);
-  if (RESPONSAVEL.nif) partes.push(`contribuinte n.o ${RESPONSAVEL.nif}`);
+  if (RESPONSAVEL.nif) partes.push(`contribuinte n.º ${RESPONSAVEL.nif}`);
   partes.push(`em ${RESPONSAVEL.pais}`);
 
   return partes.join(", ");

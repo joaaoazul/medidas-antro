@@ -59,7 +59,7 @@ function Segredo({ valor }: { valor: string }) {
         {copiado ? "Copiado" : "Copiar"}
       </button>
       <span className="text-xs" style={{ color: chrome.muted }}>
-        So aparece agora.
+        Só aparece agora.
       </span>
     </div>
   );
@@ -176,18 +176,18 @@ export default function AdminPanel({
           className="mt-4 text-xl font-semibold"
           style={{ color: chrome.ink }}
         >
-          Administracao
+          Administração
         </h1>
         <p className="mt-1 text-sm" style={{ color: chrome.muted }}>
-          Gestao de contas. Esta pagina nao da acesso as medidas nem aos perfis
-          de ninguem: a base de dados recusa esse acesso, e nao e uma questao de
-          politica interna.
+          Gestão de contas. Esta página não dá acesso às medidas nem aos perfis
+          de ninguém: a base de dados recusa esse acesso, e não é uma questão de
+          política interna.
         </p>
       </header>
 
       <div className="flex flex-col gap-4">
         <Card className="p-5">
-          <SectionTitle hint="A conta e criada com uma palavra-passe temporaria que so aparece uma vez. Quem a receber tem de a mudar na primeira entrada.">
+          <SectionTitle hint="A conta é criada com uma palavra-passe temporária que só aparece uma vez. Quem a receber tem de a mudar na primeira entrada.">
             Criar conta
           </SectionTitle>
 
@@ -214,7 +214,7 @@ export default function AdminPanel({
 
         <Card className="p-5">
           <SectionTitle
-            hint={`${contas.length} ${contas.length === 1 ? "conta" : "contas"} nesta aplicacao.`}
+            hint={`${contas.length} ${contas.length === 1 ? "conta" : "contas"} nesta aplicação.`}
           >
             Contas
           </SectionTitle>
@@ -254,8 +254,8 @@ export default function AdminPanel({
                 <p className="mt-1 text-xs" style={{ color: chrome.muted }}>
                   Criada a {longLabel(conta.criadaEm)} &middot;{" "}
                   {conta.ultimaEntrada
-                    ? `ultima entrada a ${longLabel(conta.ultimaEntrada)}`
-                    : "ainda nao entrou"}
+                    ? `última entrada a ${longLabel(conta.ultimaEntrada)}`
+                    : "ainda não entrou"}
                 </p>
 
                 <AccoesDaConta conta={conta} euId={euId} />

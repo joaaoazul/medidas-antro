@@ -30,7 +30,7 @@ export default function PasswordForm({
       <SectionTitle
         hint={
           obrigatoria
-            ? "A palavra-passe que tens agora foi criada pelo administrador, que a conhece. Escolhe uma so tua antes de continuares."
+            ? "A palavra-passe que tens agora foi criada pelo administrador, que a conhece. Escolhe uma só tua antes de continuares."
             : "Escolhe uma palavra-passe nova."
         }
       >

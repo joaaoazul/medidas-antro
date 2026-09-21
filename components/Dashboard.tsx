@@ -4,6 +4,7 @@ import { useState } from "react";
 import { longLabel, todayISO } from "@/lib/dates";
 import type { Entry } from "@/lib/types";
 import HistoryView from "./HistoryView";
+import { LogoMark } from "./Logo";
 import { BottomNav, SettingsLink, type Tab, ThemeButton, TopTabs } from "./Nav";
 import { CHROME, useTheme } from "./theme";
 import TodayView from "./TodayView";
@@ -51,12 +52,21 @@ export default function Dashboard({
         }}
       >
         <div className="mx-auto flex max-w-5xl items-center gap-4 px-4 py-3 sm:px-6">
-          <div className="min-w-0 flex-1">
-            <h1
-              className="text-lg leading-tight font-semibold"
+          <div className="flex shrink-0 items-center gap-2">
+            <LogoMark size={22} />
+            <span
+              className="hidden text-sm font-semibold tracking-tight sm:inline"
               style={{ color: chrome.ink }}
             >
-              {nome ? `Ola, ${nome}` : "Medidas"}
+              Medidas
+            </span>
+          </div>
+          <div className="min-w-0 flex-1">
+            <h1
+              className="truncate text-lg leading-tight font-semibold"
+              style={{ color: chrome.ink }}
+            >
+              {nome ? `Olá, ${nome}` : "Medidas"}
             </h1>
             <p className="truncate text-xs" style={{ color: chrome.muted }}>
               {longLabel(todayISO())}

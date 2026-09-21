@@ -25,11 +25,11 @@ function translate(message: string): string {
   const known: Record<string, string> = {
     "Invalid login credentials": "Email ou palavra-passe errados.",
     "Email not confirmed": "Confirma o email antes de entrares.",
-    "User already registered": "Ja existe uma conta com este email.",
+    "User already registered": "Já existe uma conta com este email.",
     "New password should be different from the old password.":
       "A palavra-passe nova tem de ser diferente da antiga.",
     "Signups not allowed for this instance":
-      "O registo esta fechado. Pede uma conta ao administrador.",
+      "O registo está fechado. Pede uma conta ao administrador.",
     /*
      * email_provider_disabled. A mensagem da Supabase fala em registo, mas o
      * interruptor que a dispara ("Enable email provider") governa o registo E o
@@ -37,11 +37,11 @@ function translate(message: string): string {
      * conseguir entrar, e a mensagem original manda-o procurar no sitio errado.
      */
     "Email logins are disabled":
-      "O login por email esta desligado no projeto Supabase. Liga 'Enable email provider'; o que fecha o registo e outro interruptor.",
+      "O login por email está desligado no projeto Supabase. Liga 'Enable email provider'; o que fecha o registo é outro interruptor.",
     "Email signups are disabled":
-      "O login por email esta desligado no projeto Supabase. Liga 'Enable email provider'; o que fecha o registo e outro interruptor.",
+      "O login por email está desligado no projeto Supabase. Liga 'Enable email provider'; o que fecha o registo é outro interruptor.",
     "Password should be at least 6 characters.":
-      "A palavra-passe e demasiado curta.",
+      "A palavra-passe é demasiado curta.",
   };
   return known[message] ?? message;
 }
@@ -89,7 +89,7 @@ const passwordSchema = z
     confirmacao: z.string(),
   })
   .refine((v) => v.password === v.confirmacao, {
-    message: "As duas palavras-passe nao sao iguais.",
+    message: "As duas palavras-passe não são iguais.",
   });
 
 /**
@@ -118,7 +118,7 @@ export async function changePassword(
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user) return { status: "erro", message: "Sem sessao iniciada." };
+  if (!user) return { status: "erro", message: "Sem sessão iniciada." };
 
   // Saber se era a mudanca obrigatoria decide para onde se vai a seguir: quem
   // veio da entrada quer chegar a app, quem veio das definicoes quer ficar nas
@@ -142,7 +142,7 @@ export async function changePassword(
   if (rpcError) {
     return {
       status: "erro",
-      message: `A palavra-passe mudou, mas o estado da conta nao: ${rpcError.message}`,
+      message: `A palavra-passe mudou, mas o estado da conta não: ${rpcError.message}`,
     };
   }
 

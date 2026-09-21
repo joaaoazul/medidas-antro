@@ -6,8 +6,8 @@ export type Tab = "hoje" | "evolucao" | "historico";
 
 export const TABS: { key: Tab; label: string }[] = [
   { key: "hoje", label: "Hoje" },
-  { key: "evolucao", label: "Evolucao" },
-  { key: "historico", label: "Historico" },
+  { key: "evolucao", label: "Evolução" },
+  { key: "historico", label: "Histórico" },
 ];
 
 function Icon({ tab }: { tab: Tab }) {
@@ -64,7 +64,7 @@ export function BottomNav({
 }) {
   return (
     <nav
-      aria-label="Seccoes"
+      aria-label="Secções"
       className="fixed inset-x-0 bottom-0 z-20 border-t sm:hidden"
       style={{
         background: "var(--surface-1)",
@@ -105,7 +105,7 @@ export function TopTabs({
   onChange: (tab: Tab) => void;
 }) {
   return (
-    <nav aria-label="Seccoes" className="hidden sm:block">
+    <nav aria-label="Secções" className="hidden sm:block">
       <ul
         className="flex rounded-xl border p-1"
         style={{ borderColor: "var(--border)", background: "var(--surface-1)" }}
@@ -186,8 +186,8 @@ export function SettingsLink() {
   return (
     <Link
       href="/conta"
-      aria-label="Definicoes da conta"
-      title="Definicoes da conta"
+      aria-label="Definições da conta"
+      title="Definições da conta"
       className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border"
       style={{ borderColor: "var(--border)", color: "var(--text-secondary)" }}
     >
