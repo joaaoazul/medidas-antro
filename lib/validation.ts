@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { METRICS, METRIC_BY_ID, type MetricId } from "./metrics";
-import { todayISO } from "./dates";
+import { addDaysISO, todayISO } from "./dates";
 
 const dateSchema = z
   .string()
@@ -13,8 +13,20 @@ const dateSchema = z
       parsed.toISOString().slice(0, 10) === value
     );
   }, "Essa data não existe no calendário.")
+  /*
+   * Um dia de folga, e nao zero.
+   *
+   * Esta validacao corre no servidor, e "hoje" e o dia do relogio de quem a
+   * corre. Com o servidor em UTC -- o que a Vercel usa por omissao -- entre a
+   * meia-noite e a uma da manha em Lisboa, no verao, o browser ja esta no dia
+   * seguinte e o servidor ainda nao: a pesagem de hoje era recusada como data
+   * futura durante uma hora por noite. O campo de data do formulario continua
+   * a ter `max` no dia de hoje LOCAL, por isso ninguem escolhe amanha por
+   * engano; isto e uma guarda de sanidade, e um dia de desfasamento de fuso
+   * nao e o que ela existe para apanhar.
+   */
   .refine(
-    (value) => value <= todayISO(),
+    (value) => value <= addDaysISO(todayISO(), 1),
     "Não dá para registar datas futuras.",
   );
 

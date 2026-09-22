@@ -6,6 +6,7 @@ import type { Entry } from "@/lib/types";
 import HistoryView from "./HistoryView";
 import { LogoMark } from "./Logo";
 import { BottomNav, SettingsLink, type Tab, ThemeButton, TopTabs } from "./Nav";
+import { useFila } from "./fila";
 import { CHROME, useTheme } from "./theme";
 import TodayView from "./TodayView";
 import TrendsView from "./TrendsView";
@@ -19,11 +20,18 @@ import TrendsView from "./TrendsView";
  * toque num filtro.
  */
 export default function Dashboard({
+  userId,
   entries,
   nome,
   objetivoPeso,
   alturaCm,
 }: {
+  /**
+   * Quem esta autenticado. So serve para dar nome a fila offline: sem ele, o
+   * que uma pessoa guardou sem rede seria enviado para a conta de quem entrasse
+   * a seguir no mesmo telemovel.
+   */
+  userId: string;
   entries: Entry[];
   nome: string | null;
   /** Peso pretendido, do perfil: vira linha de referencia no grafico do peso. */
@@ -38,6 +46,9 @@ export default function Dashboard({
   // formulario esta noutro separador: escolher "editar" no historico tem de
   // levar a pessoa ao formulario com aquela medicao carregada.
   const [editing, setEditing] = useState<Entry | null>(null);
+  // Aqui, e nao no separador Hoje: a casca esta sempre montada, por isso a
+  // rede a voltar e ouvida seja qual for o separador aberto.
+  const fila = useFila(userId);
 
   function editar(entry: Entry) {
     setEditing(entry);
@@ -89,6 +100,7 @@ export default function Dashboard({
             onCancelEdit={() => setEditing(null)}
             objetivoPeso={objetivoPeso}
             onAbrirEvolucao={() => setTab("evolucao")}
+            fila={fila}
           />
         ) : null}
         {tab === "evolucao" ? (

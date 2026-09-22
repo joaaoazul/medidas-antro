@@ -1,6 +1,7 @@
 import { METRIC_IDS, type MetricId } from "./metrics";
 import { createClient } from "./supabase/server";
 import type { Entry } from "./types";
+import { MEDICAO_DUPLICADA } from "./form-state";
 import type { EntryInput } from "./validation";
 
 /**
@@ -140,9 +141,7 @@ export async function saveEntry(input: EntryInput): Promise<Entry> {
     // O indice unico (user_id, date, hora) so dispara quando ha hora: gravar
     // duas vezes as 08:00 do mesmo dia e quase sempre engano, e vale a pena
     // dize-lo em vez de deixar passar o codigo cru do Postgres.
-    if (error.code === "23505") {
-      throw new Error("Já existe uma medição nesse dia a essa hora.");
-    }
+    if (error.code === "23505") throw new Error(MEDICAO_DUPLICADA);
     throw new Error(`Não foi possível guardar: ${error.message}`);
   }
 
@@ -162,6 +161,18 @@ export async function deleteEntry(id: string): Promise<boolean> {
   if (error) throw new Error(`Não foi possível apagar: ${error.message}`);
 
   return (data?.length ?? 0) > 0;
+}
+
+/**
+ * O mesmo indice unico (dia, hora) que o saveEntry traduz, traduzido aqui
+ * tambem. A importacao e o caminho da fila offline: uma pesagem das 08:00
+ * guardada sem rede, enviada depois de outra das 08:00 ja ter sido gravada com
+ * rede, bate aqui -- e tem de chegar a pessoa como frase, e ao endpoint como
+ * conflito, nao como o codigo cru do Postgres.
+ */
+function falhaDeImportacao(error: { code?: string; message: string }): never {
+  if (error.code === "23505") throw new Error(MEDICAO_DUPLICADA);
+  throw new Error(`Não foi possível importar: ${error.message}`);
 }
 
 /**
@@ -185,14 +196,14 @@ export async function importEntries(entries: EntryInput[]): Promise<number> {
       comId.map((e) => ({ id: e.id, ...toRow(e, userId) })),
       { onConflict: "id" },
     );
-    if (error) throw new Error(`Não foi possível importar: ${error.message}`);
+    if (error) falhaDeImportacao(error);
   }
 
   if (semId.length > 0) {
     const { error } = await supabase
       .from("entries")
       .insert(semId.map((e) => toRow(e, userId)));
-    if (error) throw new Error(`Não foi possível importar: ${error.message}`);
+    if (error) falhaDeImportacao(error);
   }
 
   return entries.length;

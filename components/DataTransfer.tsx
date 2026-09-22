@@ -22,6 +22,13 @@ export default function DataTransfer({ count }: { count: number }) {
         headers: { "content-type": "application/json" },
         body: await file.text(),
       });
+      // Sessao expirada: o middleware redireciona para /entrar e o fetch
+      // segue. Nao e o ficheiro que esta mal, e isso tem de ficar dito.
+      if (response.redirected) {
+        setError(true);
+        setMessage("A sessão expirou. Entra outra vez e repete a importação.");
+        return;
+      }
       const payload = await response.json();
       if (!response.ok) {
         setError(true);

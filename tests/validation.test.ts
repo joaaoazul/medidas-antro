@@ -35,8 +35,17 @@ describe("entrySchema", () => {
 
   it("recusa datas futuras", () => {
     expect(
-      entrySchema.safeParse({ ...base, date: addDaysISO(todayISO(), 1) }).success,
+      entrySchema.safeParse({ ...base, date: addDaysISO(todayISO(), 2) }).success,
     ).toBe(false);
+  });
+
+  it("tolera um dia de desfasamento de fuso entre o browser e o servidor", () => {
+    // As 00:30 em Lisboa, no verao, o browser ja esta no dia seguinte e um
+    // servidor em UTC ainda nao. Sem esta folga, a pesagem de hoje era
+    // recusada como futura durante uma hora por noite.
+    expect(
+      entrySchema.safeParse({ ...base, date: addDaysISO(todayISO(), 1) }).success,
+    ).toBe(true);
   });
 
   it("aceita uma medicao sem hora -- copias antigas nao tinham", () => {

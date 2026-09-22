@@ -28,3 +28,13 @@ export const IDLE: ActionState = { status: "idle", message: "" };
 export type AdminState = ActionState & { segredo?: string };
 
 export const ADMIN_IDLE: AdminState = { status: "idle", message: "" };
+
+/**
+ * A mensagem de uma medicao igual ja gravada (mesmo dia, mesma hora).
+ *
+ * Constante partilhada porque tres sitios a usam e um deles decide por ela: o
+ * endpoint de importacao responde 409 -- e nao 500 -- quando e esta, e a fila
+ * offline sabe por isso que nao vale a pena reenviar. Uma copia do texto que
+ * divergisse passava um conflito a "falha passageira", reenviada para sempre.
+ */
+export const MEDICAO_DUPLICADA = "Já existe uma medição nesse dia a essa hora.";

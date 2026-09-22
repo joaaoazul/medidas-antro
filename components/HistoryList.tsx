@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { removeEntry } from "@/app/actions";
+import { eErroDeRede } from "@/lib/fila-offline";
 import { longLabel } from "@/lib/dates";
 import { METRICS, formatValue } from "@/lib/metrics";
 import type { Entry } from "@/lib/types";
@@ -42,6 +43,7 @@ function Accoes({
   const chrome = CHROME[mode];
   const [pending, startTransition] = useTransition();
   const [confirming, setConfirming] = useState(false);
+  const [erro, setErro] = useState<string | null>(null);
 
   return (
     <span className="flex items-center gap-3">
@@ -62,8 +64,28 @@ function Accoes({
             disabled={pending}
             onClick={() =>
               startTransition(async () => {
-                await removeEntry(entry.id);
-                setConfirming(false);
+                /*
+                 * Sem este try, apagar sem rede fazia a server action rejeitar
+                 * dentro da transicao, o erro subia ate ao limite de erro do Next
+                 * e a app inteira caia.
+                 *
+                 * Apagar NAO vai para a fila offline, de proposito: e a unica
+                 * accao que nao se desfaz, e com rede intermitente a ordem entre
+                 * "apagar esta" e "gravar outra" deixava de ser garantida. Diz-se
+                 * que nao apagou, e a pessoa repete com ligacao.
+                 */
+                try {
+                  const r = await removeEntry(entry.id);
+                  if (r.status === "erro") setErro(r.message);
+                  setConfirming(false);
+                } catch (e) {
+                  setErro(
+                    eErroDeRede(e)
+                      ? "Sem rede: não foi apagada. Tenta outra vez com ligação."
+                      : "Não foi possível apagar.",
+                  );
+                  setConfirming(false);
+                }
               })
             }
             className="text-xs font-medium"
@@ -80,6 +102,18 @@ function Accoes({
             Cancelar
           </button>
         </>
+      ) : erro ? (
+        <span role="alert" className="flex items-center gap-2 text-xs" style={{ color: "#d03b3b" }}>
+          {erro}
+          <button
+            type="button"
+            onClick={() => setErro(null)}
+            className="underline"
+            style={{ color: chrome.muted }}
+          >
+            OK
+          </button>
+        </span>
       ) : (
         <button
           type="button"

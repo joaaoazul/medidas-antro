@@ -12,6 +12,8 @@ import {
 } from "@/lib/series";
 import type { Entry } from "@/lib/types";
 import EntryForm from "./EntryForm";
+import type { Fila } from "./fila";
+import FilaPendente from "./FilaPendente";
 import { HeroCard, MetricCard } from "./MetricCard";
 import Novidades from "./Novidades";
 import { CHROME, useTheme } from "./theme";
@@ -32,6 +34,7 @@ export default function TodayView({
   onCancelEdit,
   objetivoPeso,
   onAbrirEvolucao,
+  fila,
 }: {
   entries: Entry[];
   editing: Entry | null;
@@ -40,6 +43,7 @@ export default function TodayView({
   objetivoPeso: number | null;
   /** Leva ao separador Evolucao -- o cartao de novidades fala dele. */
   onAbrirEvolucao: () => void;
+  fila: Fila;
 }) {
   const { mode } = useTheme();
   const chrome = CHROME[mode];
@@ -65,6 +69,10 @@ export default function TodayView({
 
   return (
     <div className="flex flex-col gap-4">
+      {/* Primeiro de tudo: uma pesagem que ainda nao chegou ao servidor nao
+          aparece nos cartoes, e sem isto pareceria perdida. */}
+      <FilaPendente fila={fila} />
+
       {/*
        * Acima do cartao do peso porque e o unico sitio onde se descobre sem ir
        * procurar -- e sai do caminho ao primeiro toque no X. Nao disputa a
@@ -126,7 +134,12 @@ export default function TodayView({
         </>
       )}
 
-      <EntryForm editing={editing} onCancelEdit={onCancelEdit} />
+      <EntryForm
+        editing={editing}
+        onCancelEdit={onCancelEdit}
+        guardarNoAparelho={fila.guardar}
+        aposGravar={fila.enviarAgora}
+      />
     </div>
   );
 }

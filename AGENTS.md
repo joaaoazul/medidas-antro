@@ -18,8 +18,9 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 - Antes de mexer em cores ou eixos dos gráficos, ler a secção "Notas sobre os
   gráficos" do README: a paleta e a regra do eixo único são deliberadas.
 - `npm run lint`, `npm test` e `npm run build` têm de passar limpos.
-- Os testes (`tests/`, Vitest) cobrem só a lógica pura de `lib/`: séries,
-  insights, datas, validação e as invariantes da paleta. É aí que estão as
+- Os testes (`tests/`, Vitest) cobrem a lógica pura de `lib/` -- séries,
+  insights, datas, validação, fila offline, invariantes da paleta -- e o
+  contrato de `/api/import`, de que a fila offline depende. É aí que estão as
   regras subtis que se partem em silêncio -- a folga da escala, a tolerância da
   variação, os limiares de cada insight. Mexer numa dessas funções sem correr
   os testes é a forma mais rápida de desfazer uma decisão documentada sem dar
@@ -62,3 +63,23 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 - A data e um dia de calendario (`date`) e a hora e uma coluna a parte, de
   proposito: com um `timestamptz`, uma pesagem as 23:30 em Lisboa cairia no dia
   seguinte em UTC e apareceria no dia errado no grafico.
+- A fila offline (`lib/fila-offline.ts`) guarda medicoes no aparelho por conta:
+  a chave leva o id de quem a encheu. Nunca a tornar global -- a medicao de uma
+  pessoa seria enviada para a conta de quem entrasse a seguir no mesmo
+  telemovel.
+- Uma medicao so sai da fila com `{ imported: n }` na resposta. Nunca confiar em
+  `response.ok`: com a sessao expirada o middleware redireciona para /entrar e o
+  `fetch` segue -- acaba num 405, ou num 200 com HTML, e a fila apagava a unica
+  copia. O contrato de /api/import (200 `{imported}`, 4xx `{error}` definitivo,
+  5xx `{error}` passageiro) esta preso em `tests/import-route.test.ts`.
+- O formulario de registo submete por `onSubmit` + `startTransition`, e nao pela
+  prop `action`. Com `action`, o React 19 limpa os campos nao controlados mesmo
+  quando a accao devolve um erro de validacao, e quem se engana num campo perde
+  tudo o que escreveu. Quem limpa o formulario e o efeito que corre so depois de
+  gravar com sucesso.
+- `/manifest.webmanifest` esta em `PUBLIC_PATHS` do middleware porque o browser o
+  pede sem cookies. Atras da sessao, era sempre redirecionado e a app nao se
+  instalava.
+- A validacao da data aceita ate amanha, de proposito: corre no servidor, em
+  UTC, e entre a meia-noite e a uma em Lisboa (verao) o browser ja esta no dia
+  seguinte. Nao "corrigir" para `<= hoje`.

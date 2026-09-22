@@ -17,6 +17,13 @@ export const metadata: Metadata = {
   title: "Medidas",
   description:
     "Registo diário de métricas antropométricas com a evolução por dias, semanas e meses.",
+  // O iOS nao le o `display` do manifest: sem isto, "Adicionar ao ecra
+  // principal" abre a app com a barra do Safari.
+  appleWebApp: {
+    capable: true,
+    title: "Medidas",
+    statusBarStyle: "default",
+  },
 };
 
 export const viewport: Viewport = {

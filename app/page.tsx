@@ -16,6 +16,7 @@ export default async function Home() {
   return (
     <main>
       <Dashboard
+        userId={viewer.id}
         entries={entries}
         nome={viewer.profile?.nome ?? null}
         objetivoPeso={viewer.profile?.objetivoPeso ?? null}

@@ -13,6 +13,11 @@ const PUBLIC_PATHS = [
   // Conteudo informativo geral, sem dados de ninguem -- nao ha razao para
   // ficar atras de sessao, e um endereco publico tambem se pode enviar.
   "/artigos",
+  // O browser pede o manifest SEM cookies (o <link rel="manifest"> usa
+  // credentials "omit" por omissao). Atras da sessao, era sempre redirecionado
+  // para /entrar, e a app nunca se instalava. Nao tem nada de ninguem: nome,
+  // cores e icones.
+  "/manifest.webmanifest",
 ];
 
 /**

@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  startTransition,
   useActionState,
   useCallback,
   useEffect,
@@ -9,7 +10,10 @@ import {
 } from "react";
 import { saveEntry } from "@/app/actions";
 import { horaAgora, longLabel, todayISO } from "@/lib/dates";
-import { IDLE } from "@/lib/form-state";
+import { eErroDeRede, type Pendente } from "@/lib/fila-offline";
+import { lerMedicao } from "@/lib/form-entry";
+import { IDLE, type ActionState } from "@/lib/form-state";
+import type { EntryInput } from "@/lib/validation";
 import { METRICS, type Metric, type MetricId } from "@/lib/metrics";
 import type { Entry } from "@/lib/types";
 import { CHROME, useTheme } from "./theme";
@@ -64,13 +68,67 @@ export default function EntryForm({
   /** Medicao a editar; nulo quando o formulario cria uma nova. */
   editing,
   onCancelEdit,
+  guardarNoAparelho,
+  aposGravar,
 }: {
   editing: Entry | null;
   onCancelEdit: () => void;
+  /** Guarda na fila offline. Lanca se o aparelho recusar. */
+  guardarNoAparelho: (entrada: EntryInput) => Pendente;
+  /** Chamado depois de uma gravacao com rede: aproveita para enviar a fila. */
+  aposGravar: () => void;
 }) {
   const { mode } = useTheme();
   const chrome = CHROME[mode];
-  const [state, formAction, pending] = useActionState(saveEntry, IDLE);
+
+  /*
+   * A server action, com rede; a fila no aparelho, sem ela.
+   *
+   * Antes disto, submeter sem rede fazia a server action rejeitar, o erro subia
+   * ate ao limite de erro do Next, e a app inteira caia para um ecra generico
+   * em ingles -- levando com ela o que estava escrito nos campos.
+   *
+   * Sem rede, a medicao e lida e validada aqui, com o mesmo codigo do servidor
+   * (lib/form-entry.ts): um "82,4" mal escrito e apontado na hora, e nao so
+   * quando a rede voltar e ja ninguem se lembrar do que era.
+   */
+  const acao = useCallback(
+    async (anterior: ActionState, formData: FormData): Promise<ActionState> => {
+      const semRede = typeof navigator !== "undefined" && navigator.onLine === false;
+      if (!semRede) {
+        try {
+          const resultado = await saveEntry(anterior, formData);
+          if (resultado.status === "ok") aposGravar();
+          return resultado;
+        } catch (erro) {
+          // So a falta de rede cai para a fila. Qualquer outro erro continua a
+          // ser um erro -- esconde-lo na fila era trocar um bug por silencio.
+          if (!eErroDeRede(erro)) throw erro;
+        }
+      }
+
+      const leitura = lerMedicao(formData);
+      if (!leitura.ok) return { status: "erro", message: leitura.message };
+
+      try {
+        guardarNoAparelho(leitura.entrada);
+      } catch {
+        return {
+          status: "erro",
+          message:
+            "Sem rede, e este aparelho não deixou guardá-la. Não saias desta página e tenta outra vez quando tiveres ligação.",
+        };
+      }
+      return {
+        status: "ok",
+        message:
+          "Sem rede: ficou guardada neste aparelho e segue sozinha quando voltar a ligação.",
+        savedDate: leitura.entrada.date,
+      };
+    },
+    [aposGravar, guardarNoAparelho],
+  );
+  const [state, formAction, pending] = useActionState(acao, IDLE);
   const [showAll, setShowAll] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
 
@@ -152,7 +210,24 @@ export default function EntryForm({
         {editing ? "Editar medição" : "Registar medidas"}
       </SectionTitle>
 
-      <form ref={formRef} action={formAction}>
+      {/*
+       * onSubmit e nao `action`, de proposito.
+       *
+       * Com `<form action>`, o React 19 limpa os campos nao controlados sempre
+       * que a accao termina sem lancar -- e devolver um erro de validacao conta
+       * como terminar. Quem escrevia "82,4" no peso e se enganava no abdomen
+       * recebia a mensagem de erro e perdia o peso e tudo o resto que tinha
+       * escrito. Despachada a mao, a accao nao limpa nada: quem limpa e o
+       * efeito acima, e so depois de gravar com sucesso.
+       */}
+      <form
+        ref={formRef}
+        onSubmit={(event) => {
+          event.preventDefault();
+          const dados = new FormData(event.currentTarget);
+          startTransition(() => formAction(dados));
+        }}
+      >
         {/* Sem id, a gravacao cria uma medicao nova; com id, altera aquela. */}
         <input type="hidden" name="id" value={editing?.id ?? ""} />
 

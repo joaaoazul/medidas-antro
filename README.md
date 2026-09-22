@@ -71,9 +71,10 @@ npm run lint
 npm test                     # Vitest, só a lógica de lib/
 ```
 
-Os testes vivem em `tests/` e cobrem **só a lógica pura**: agregação de séries,
+Os testes vivem em `tests/` e cobrem **a lógica pura**: agregação de séries,
 escala dos eixos, média móvel, ritmo e projeção, os oito insights com as suas
-guardas, datas, validação e as invariantes da paleta. É aí que estão as regras
+guardas, datas, validação, a fila offline e as invariantes da paleta — e ainda
+o contrato do endpoint de importação, de que a fila depende ao pormenor. É aí que estão as regras
 que se partem em silêncio -- nenhuma delas dá erro de compilação quando é
 desfeita. A interface exercita-se no browser, que é onde os erros dela aparecem.
 
@@ -109,6 +110,14 @@ Três separadores, um por pergunta:
   telemóvel. Cada gravação cria uma medição nova; corrigir uma já existente
   faz-se pelo **Editar** no histórico. Campos em branco ficam por medir
   (`null`), não a zero.
+- **Gravar sem rede.** Numa casa de banho com Wi-Fi mau, a medição fica guardada
+  no aparelho e segue sozinha quando a ligação volta — ao reabrir a app, ou no
+  momento em que a rede regressa. Um aviso no topo do Hoje diz quantas estão à
+  espera, e porquê: sem rede espera-se; com a sessão expirada, esperar não
+  resolve, e o aviso oferece entrar outra vez. É validada no aparelho com o mesmo
+  código do servidor, por isso um "82,4" mal escrito é apontado na hora.
+- Um erro de validação **não apaga o que foi escrito**: corrige-se o campo errado
+  e grava-se outra vez, sem voltar a escrever o resto.
 
 **Evolução** — o que mudou, e em que ritmo?
 - Um gráfico de cada vez, com a métrica escolhida numa fila de fichas.
@@ -163,6 +172,38 @@ do dia-a-dia.
 consentimento. O email é a identidade de entrada e mudá-lo pela app exigiria
 confirmação por email, que esta app não envia; apagar a conta não tem desfazer e
 leva as medidas todas. Ficam a um pedido de distância, não a um toque.
+
+## No telemóvel, como uma app
+
+A app instala-se no ecrã inicial ("Adicionar ao ecrã principal" no iOS,
+"Instalar app" no Android e no Chrome) e abre sem a barra do browser. Os ícones
+são de fundo inteiro, com o desenho dentro da zona segura que o Android recorta.
+
+**Gravar sem rede, e o que isso exigiu.** Antes, submeter sem rede não perdia só
+a medição: a app inteira caía para um ecrã de erro, e o que estava escrito ia
+com ela. Apagar sem rede, o mesmo. Agora a medição vai para uma fila no
+aparelho, e quatro decisões protegem-na:
+
+1. **A fila é por conta.** Sem isso, a medição que A guardou sem rede era enviada
+   para a conta de B, se B entrasse a seguir no mesmo telemóvel.
+2. **O id nasce no aparelho**, e o envio passa pelo endpoint de importação, que
+   reconcilia pelo id: reenviar depois de uma resposta perdida não duplica.
+3. **Só sai da fila com prova de que chegou.** Uma sessão expirada não dá erro —
+   o middleware redireciona para `/entrar`, o `fetch` segue, e acaba num 405 ou
+   num 200 com HTML. Confiar no código de estado apagava a única cópia.
+4. **Recusa e falha não são a mesma coisa.** Um 4xx (uma medição igual já
+   gravada) não melhora com tempo: fica à vista, com a razão, até a pessoa a
+   descartar. Um 5xx ou a rede em baixo tentam-se outra vez.
+
+**Apagar não vai para a fila**, de propósito: é a única acção que não se desfaz,
+e com rede intermitente a ordem entre "apagar esta" e "gravar outra" deixava de
+ser garantida. Sem rede, diz que não apagou.
+
+**Não há service worker**, e por isso abrir a app sem rede nenhuma continua a não
+funcionar — resolveu-se gravar sem rede com a app já aberta, que é o caso real.
+Um service worker que guardasse as páginas guardava também as medidas de quem
+as viu, no aparelho, depois de sair da conta. É uma decisão que merece ser
+tomada de propósito, não de passagem.
 
 ## Contas, consentimento e onboarding
 
@@ -304,12 +345,15 @@ lib/
   validation.ts      esquemas zod, partilhados pelo formulário e pela importação
   series.ts          intervalos, agregação, variações, indexação relativa e escala Y
   texto.ts           comparação de texto sem acentos, para a pesquisa
+  form-entry.ts      do formulário a uma medição validada — partilhado pela action e pela fila
+  fila-offline.ts    medições guardadas no aparelho enquanto não há rede
   dates.ts           dias de calendário em AAAA-MM-DD, sem fusos horários
 components/
   Dashboard.tsx      casca: cabeçalho, separadores e a vista ativa
   Nav.tsx            barra fixa no fundo (telemóvel) e separadores no cabeçalho (ecrã grande)
   ui.tsx             peças partilhadas: cartão, fichas, comutador, botões
-  TodayView          .. Novidades, HeroCard, MetricCard, EntryForm
+  TodayView          .. FilaPendente, Novidades, HeroCard, MetricCard, EntryForm
+  fila.tsx           a fila offline vista do React (useSyncExternalStore)
   TrendsView         .. MetricChart, RelativeChart, Insights
   HistoryView        .. HistoryList, DataTransfer
   theme.tsx          modo claro/escuro e o cromado dos gráficos em hex
