@@ -98,9 +98,12 @@ function Accoes({
 export default function HistoryList({
   entries,
   onEdit,
+  aFiltrar = false,
 }: {
   entries: Entry[];
   onEdit: (entry: Entry) => void;
+  /** Ha filtros postos? Muda o que dizer quando nao aparece nada. */
+  aFiltrar?: boolean;
 }) {
   const { mode } = useTheme();
   const chrome = CHROME[mode];
@@ -115,7 +118,9 @@ export default function HistoryList({
     return (
       <Card className="p-6">
         <p className="text-center text-sm" style={{ color: chrome.muted }}>
-          Ainda não há medições registadas.
+          {aFiltrar
+            ? "Nenhuma medição com estes filtros."
+            : "Ainda não há medições registadas."}
         </p>
       </Card>
     );

@@ -137,6 +137,12 @@ Três separadores, um por pergunta:
   medição do intervalo.
 
 **Histórico** — o que é que eu registei no dia 12?
+- **Filtros**: intervalo, "com medida de" (só as medições em que aquela métrica
+  foi mesmo preenchida) e pesquisa nas notas — insensível a acentos e a
+  maiúsculas, porque quem escreveu "férias" procura "ferias" com a mesma
+  probabilidade. A pesquisa também aceita uma data ou um prefixo dela
+  (`2026-03`), que é a forma mais rápida de chegar a um mês sem inventar um
+  seletor de datas para isso.
 - Uma ficha por medição no telemóvel, tabela no ecrã grande, com editar e
   apagar. Editar leva a medição ao formulário, no separador Hoje.
 - Exportar JSON/CSV e importar JSON, para cópias de segurança e para levar os
@@ -297,6 +303,7 @@ lib/
   repo.ts            fronteira de acesso às medidas
   validation.ts      esquemas zod, partilhados pelo formulário e pela importação
   series.ts          intervalos, agregação, variações, indexação relativa e escala Y
+  texto.ts           comparação de texto sem acentos, para a pesquisa
   dates.ts           dias de calendário em AAAA-MM-DD, sem fusos horários
 components/
   Dashboard.tsx      casca: cabeçalho, separadores e a vista ativa
