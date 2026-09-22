@@ -2,8 +2,8 @@
 
 import { revalidatePath } from "next/cache";
 import type { ActionState } from "@/lib/form-state";
-import { profileSchema } from "@/lib/profile";
-import { saveProfile } from "@/lib/profile-repo";
+import { lerObjetivos, profileSchema } from "@/lib/profile";
+import { saveObjetivos, saveProfile } from "@/lib/profile-repo";
 import { deleteAllEntries } from "@/lib/repo";
 import { requireReadyViewer } from "@/lib/session";
 import { firstError } from "@/lib/validation";
@@ -50,9 +50,26 @@ export async function updateProfile(
     return { status: "erro", message: firstError(parsed.error) };
   }
 
-  // Sem concluirOnboarding: a data de entrada e a original, e nao a desta
-  // gravacao.
-  await saveProfile(viewer.id, parsed.data);
+  // Os objetivos por medida so vem no formulario quando a coluna existe (ver
+  // a migracao 0004). Sem a marca, nao se lhes toca -- e a gravacao do resto
+  // do perfil continua a funcionar com a migracao por aplicar.
+  const comObjetivos = formData.has("objetivos_por_medida");
+  const objetivos = comObjetivos ? lerObjetivos(formData) : null;
+  if (objetivos && !objetivos.ok) {
+    return { status: "erro", message: objetivos.message };
+  }
+
+  try {
+    // Sem concluirOnboarding: a data de entrada e a original, e nao a desta
+    // gravacao.
+    await saveProfile(viewer.id, parsed.data);
+    if (objetivos?.ok) await saveObjetivos(viewer.id, objetivos.valores);
+  } catch (erro) {
+    return {
+      status: "erro",
+      message: erro instanceof Error ? erro.message : "Não foi possível guardar.",
+    };
+  }
   revalidatePath("/", "layout");
 
   return { status: "ok", message: "Dados guardados." };

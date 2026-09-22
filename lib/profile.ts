@@ -9,6 +9,8 @@
  */
 import { z } from "zod";
 import { todayISO } from "./dates";
+import { parseNumber } from "./form-entry";
+import { METRICS, comArtigo, type MetricId } from "./metrics";
 import { IDADE_MINIMA, VERSAO_PRIVACIDADE, VERSAO_TERMOS } from "./legal";
 
 export const OBJETIVOS = [
@@ -116,4 +118,78 @@ export function faltaConsentimento(consents: Consent[]): boolean {
     !aceitou("termos", VERSAO_TERMOS) ||
     !aceitou("privacidade", VERSAO_PRIVACIDADE)
   );
+}
+
+/**
+ * Objetivo por metrica.
+ *
+ * O peso guarda-se em `objetivo_peso` e o resto na coluna `objetivos` (ver a
+ * migracao 0004), mas no codigo e um mapa so: nenhum componente tem de saber
+ * qual das metricas e a especial -- era isso que obrigava a um `=== "peso"` em
+ * cada sitio que desenhava um objetivo.
+ */
+export type Objetivos = Partial<Record<MetricId, number>>;
+
+/**
+ * O que se le da coluna `objetivos`. Vive aqui, e nao em profile-repo.ts,
+ * porque as definicoes -- um componente de cliente -- precisam do tipo, e este
+ * ficheiro e o que se pode importar dos dois lados sem arrastar o cliente de
+ * servidor para o browser.
+ */
+export type ObjetivosExtra = {
+  /** A coluna existe? Falso enquanto a migracao 0004 nao for aplicada. */
+  disponivel: boolean;
+  valores: Objetivos;
+};
+
+/** As metricas cujo objetivo vive na coluna `objetivos`: todas menos o peso. */
+export const METRICAS_OBJETIVO_EXTRA = METRICS.filter((m) => m.id !== "peso");
+
+/**
+ * O que vem da coluna `objetivos`, limpo.
+ *
+ * E JSON sem esquema na base de dados -- qualquer coisa pode la estar, de uma
+ * edicao a mao no SQL Editor a uma metrica que um dia deixe de existir. Fica
+ * so o que e uma metrica conhecida com um numero dentro dos limites dela.
+ */
+export function limparObjetivos(bruto: unknown): Objetivos {
+  if (!bruto || typeof bruto !== "object" || Array.isArray(bruto)) return {};
+  const out: Objetivos = {};
+  for (const m of METRICAS_OBJETIVO_EXTRA) {
+    const v = (bruto as Record<string, unknown>)[m.id];
+    if (typeof v === "number" && Number.isFinite(v) && v >= m.min && v <= m.max) {
+      out[m.id] = v;
+    }
+  }
+  return out;
+}
+
+/** O mapa completo, com o peso vindo da sua coluna propria. */
+export function juntarObjetivos(
+  objetivoPeso: number | null | undefined,
+  extra: Objetivos,
+): Objetivos {
+  return objetivoPeso == null ? { ...extra } : { ...extra, peso: objetivoPeso };
+}
+
+/** Le os campos `objetivo_<metrica>` do formulario das definicoes. */
+export function lerObjetivos(
+  formData: FormData,
+): { ok: true; valores: Objetivos } | { ok: false; message: string } {
+  const valores: Objetivos = {};
+  for (const m of METRICAS_OBJETIVO_EXTRA) {
+    const n = parseNumber(formData.get(`objetivo_${m.id}`));
+    if (n === "erro") {
+      return { ok: false, message: `O objetivo para ${comArtigo(m.id)} não é um número.` };
+    }
+    if (n === null) continue;
+    if (n < m.min || n > m.max) {
+      return {
+        ok: false,
+        message: `O objetivo para ${comArtigo(m.id)} tem de estar entre ${m.min} e ${m.max} ${m.unit}.`,
+      };
+    }
+    valores[m.id] = n;
+  }
+  return { ok: true, valores };
 }

@@ -1,18 +1,31 @@
 "use client";
 
 import Link from "next/link";
-import { useActionState, useState, useTransition } from "react";
+import { startTransition, useActionState, useState, useTransition } from "react";
 import { eraseEntries, updateProfile } from "@/app/conta/actions";
 import { longLabel } from "@/lib/dates";
 import { IDLE, type ActionState } from "@/lib/form-state";
 import { RESPONSAVEL } from "@/lib/legal";
-import { OBJETIVOS, SEXOS, type Consent, type Profile } from "@/lib/profile";
+import {
+  METRICAS_OBJETIVO_EXTRA,
+  OBJETIVOS,
+  SEXOS,
+  type Consent,
+  type ObjetivosExtra,
+  type Profile,
+} from "@/lib/profile";
 import PasswordForm from "./PasswordForm";
 import SignOutButton from "./SignOutButton";
 import { CHROME, useTheme } from "./theme";
 import { Button, Card, Chip, ChipRow, SectionTitle } from "./ui";
 
-function DadosPessoais({ profile }: { profile: Profile | null }) {
+function DadosPessoais({
+  profile,
+  objetivos,
+}: {
+  profile: Profile | null;
+  objetivos: ObjetivosExtra;
+}) {
   const { mode } = useTheme();
   const chrome = CHROME[mode];
   const [state, formAction, pending] = useActionState(updateProfile, IDLE);
@@ -31,11 +44,21 @@ function DadosPessoais({ profile }: { profile: Profile | null }) {
 
   return (
     <Card className="p-5">
-      <SectionTitle hint="Podes mudar tudo isto quando quiseres. O peso pretendido aparece como linha de referência no gráfico do peso.">
+      <SectionTitle hint="Podes mudar tudo isto quando quiseres. Cada objetivo aparece como linha de referência no gráfico da sua medida, e a distância até ele no cartão.">
         Os teus dados
       </SectionTitle>
 
-      <form action={formAction} className="flex flex-col gap-4">
+      {/* onSubmit e nao `action`: com `action`, o React 19 repunha todos os
+          campos no valor guardado sempre que a gravacao devolvia um erro de
+          validacao, e o que a pessoa tinha acabado de mudar perdia-se. */}
+      <form
+        className="flex flex-col gap-4"
+        onSubmit={(event) => {
+          event.preventDefault();
+          const dados = new FormData(event.currentTarget);
+          startTransition(() => formAction(dados));
+        }}
+      >
         <div className="grid gap-4 sm:grid-cols-2">
           <label className="flex flex-col gap-1.5">
             <span className={rotulo} style={{ color: chrome.inkSecondary }}>
@@ -141,6 +164,38 @@ function DadosPessoais({ profile }: { profile: Profile | null }) {
             />
           </label>
         </div>
+
+        {/*
+         * So com a coluna na base de dados (migracao 0004). Antes disso a
+         * seccao nao aparece, em vez de aparecer e falhar ao gravar -- e a marca
+         * escondida diz ao servidor que estes campos vieram mesmo.
+         */}
+        {objetivos.disponivel ? (
+          <fieldset className="flex flex-col gap-2">
+            <legend className={rotulo} style={{ color: chrome.inkSecondary }}>
+              Objetivos por medida (opcional)
+            </legend>
+            <input type="hidden" name="objetivos_por_medida" value="1" />
+            <div className="mt-1.5 grid grid-cols-2 gap-3 sm:grid-cols-4">
+              {METRICAS_OBJETIVO_EXTRA.map((m) => (
+                <label key={m.id} className="flex flex-col gap-1">
+                  <span className="text-xs" style={{ color: chrome.muted }}>
+                    {m.short} ({m.unit})
+                  </span>
+                  <input
+                    type="text"
+                    name={`objetivo_${m.id}`}
+                    inputMode="decimal"
+                    placeholder="--"
+                    defaultValue={objetivos.valores[m.id] ?? ""}
+                    className={`${field} tabular`}
+                    style={fieldStyle}
+                  />
+                </label>
+              ))}
+            </div>
+          </fieldset>
+        ) : null}
 
         <label className="flex flex-col gap-1.5">
           <span className={rotulo} style={{ color: chrome.inkSecondary }}>
@@ -273,12 +328,14 @@ function ApagarRegistos({ total }: { total: number }) {
 export default function AccountSettings({
   email,
   profile,
+  objetivos,
   consents,
   admin,
   totalRegistos,
 }: {
   email: string;
   profile: Profile | null;
+  objetivos: ObjetivosExtra;
   consents: Consent[];
   admin: boolean;
   totalRegistos: number;
@@ -301,7 +358,7 @@ export default function AccountSettings({
       </header>
 
       <div className="flex flex-col gap-4">
-        <DadosPessoais profile={profile} />
+        <DadosPessoais profile={profile} objetivos={objetivos} />
 
         <Card className="p-5">
           <PasswordForm obrigatoria={false} embutido />

@@ -176,6 +176,9 @@ quando, e algumas não se desfazem, por isso não convém tê-las ao lado do reg
 do dia-a-dia.
 - Editar nome, data de nascimento, sexo, altura, objetivo, peso pretendido,
   treinos por semana e notas.
+- **Objetivos por medida** — abdómen, gordura, músculo, perímetros —, cada um
+  com a sua linha de referência no gráfico e a distância no cartão do Hoje. Só
+  aparecem depois de aplicada a migração `0004` (ver abaixo).
 - Mudar a palavra-passe.
 - Ver os consentimentos dados, com versão e data.
 - Exportar os registos e apagá-los todos (com confirmação escrita).
@@ -361,6 +364,7 @@ lib/
   form-entry.ts      do formulário a uma medição validada — partilhado pela action e pela fila
   fila-offline.ts    medições guardadas no aparelho enquanto não há rede
   csv.ts             ler e escrever CSV, e separar o novo do que já existe
+  esquema.ts         reconhecer uma coluna que a migração ainda não criou
   dates.ts           dias de calendário em AAAA-MM-DD, sem fusos horários
 components/
   Dashboard.tsx      casca: cabeçalho, separadores e a vista ativa
@@ -373,6 +377,20 @@ components/
   theme.tsx          modo claro/escuro e o cromado dos gráficos em hex
 exemplo/             conjunto de dados de demonstração e imagens do README
 ```
+
+## Migrações que o código aguenta por aplicar
+
+`0004_objetivos_por_metrica.sql` acrescenta a coluna `objetivos` a `profiles`.
+O código foi feito para chegar a produção **antes** dela: a coluna nunca entra
+na leitura do perfil que corre em todos os pedidos (onde uma coluna em falta
+deitava abaixo todas as páginas), lê-se à parte, e o erro de coluna inexistente
+(`42703`) quer dizer só "ainda não disponível". As definições não mostram os
+campos novos até a coluna existir. A ordem do deploy não importa: aplica-se no
+SQL Editor quando se quiser, e a funcionalidade aparece.
+
+O peso pretendido continua na sua coluna `objetivo_peso`. No código, os
+objetivos são um mapa único por métrica (`Objetivos`, em `lib/profile.ts`) —
+nenhum componente tem de saber qual é a métrica especial.
 
 ## Acrescentar uma métrica
 

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { longLabel, todayISO } from "@/lib/dates";
+import type { Objetivos } from "@/lib/profile";
 import type { Entry } from "@/lib/types";
 import HistoryView from "./HistoryView";
 import { LogoMark } from "./Logo";
@@ -23,7 +24,7 @@ export default function Dashboard({
   userId,
   entries,
   nome,
-  objetivoPeso,
+  objetivos,
   alturaCm,
 }: {
   /**
@@ -34,8 +35,8 @@ export default function Dashboard({
   userId: string;
   entries: Entry[];
   nome: string | null;
-  /** Peso pretendido, do perfil: vira linha de referencia no grafico do peso. */
-  objetivoPeso: number | null;
+  /** Objetivo por metrica, do perfil: linha de referencia e distancia. */
+  objetivos: Objetivos;
   /** Altura, do perfil: sem ela nao ha racio cintura-altura a calcular. */
   alturaCm: number | null;
 }) {
@@ -98,7 +99,7 @@ export default function Dashboard({
             entries={entries}
             editing={editing}
             onCancelEdit={() => setEditing(null)}
-            objetivoPeso={objetivoPeso}
+            objetivos={objetivos}
             onAbrirEvolucao={() => setTab("evolucao")}
             fila={fila}
           />
@@ -106,7 +107,7 @@ export default function Dashboard({
         {tab === "evolucao" ? (
           <TrendsView
             entries={entries}
-            objetivoPeso={objetivoPeso}
+            objetivos={objetivos}
             alturaCm={alturaCm}
           />
         ) : null}

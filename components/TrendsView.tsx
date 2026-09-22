@@ -10,6 +10,7 @@ import {
   filterByRange,
   notasPorBalde,
 } from "@/lib/series";
+import type { Objetivos } from "@/lib/profile";
 import type { Entry, Granularity, RangeKey } from "@/lib/types";
 import Insights from "./Insights";
 import MetricChart from "./MetricChart";
@@ -31,11 +32,11 @@ const DEFAULT_SELECTION: MetricId[] = ["peso", "abdomen", "gordura"];
 
 export default function TrendsView({
   entries,
-  objetivoPeso,
+  objetivos,
   alturaCm,
 }: {
   entries: Entry[];
-  objetivoPeso: number | null;
+  objetivos: Objetivos;
   alturaCm: number | null;
 }) {
   const { mode: theme } = useTheme();
@@ -178,10 +179,9 @@ export default function TrendsView({
           metric={METRIC_BY_ID[focused]}
           points={points}
           granularity={granularity}
-          // A linha de referencia so faz sentido na metrica a que o objetivo
-          // diz respeito: um peso pretendido desenhado sobre o perimetro do
-          // braco seria uma marca sem significado nenhum.
-          objetivo={focused === "peso" ? objetivoPeso : null}
+          // Cada metrica com o seu objetivo, se o tiver -- e so o seu. O do peso
+          // desenhado sobre o braco seria uma marca sem significado nenhum.
+          objetivo={objetivos[focused] ?? null}
           notas={notas}
         />
       ) : (

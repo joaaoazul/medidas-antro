@@ -1,6 +1,16 @@
+import { colunaEmFalta } from "./esquema";
 import { createClient } from "./supabase/server";
 import { VERSAO_PRIVACIDADE, VERSAO_TERMOS } from "./legal";
-import type { Consent, Objetivo, Profile, ProfileInput, Sexo } from "./profile";
+import {
+  limparObjetivos,
+  type Consent,
+  type Objetivo,
+  type Objetivos,
+  type ObjetivosExtra,
+  type Profile,
+  type ProfileInput,
+  type Sexo,
+} from "./profile";
 
 /** Leitura e escrita de perfis e consentimentos. Sempre com a sessao de quem navega. */
 
@@ -78,6 +88,47 @@ export async function saveProfile(
 
   if (error)
     throw new Error(`Não foi possível guardar o perfil: ${error.message}`);
+}
+
+/**
+ * Os objetivos das metricas que nao o peso.
+ *
+ * Lidos a parte, e NAO em PROFILE_COLUMNS, de proposito: o perfil e lido em
+ * todos os pedidos, e uma coluna que ainda nao existe ali deitava abaixo todas
+ * as paginas no intervalo entre o deploy e a migracao. Aqui, a coluna em falta
+ * e so "ainda nao disponivel".
+ */
+export async function getObjetivosExtra(userId: string): Promise<ObjetivosExtra> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("profiles")
+    .select("objetivos")
+    .eq("user_id", userId)
+    .maybeSingle();
+
+  if (error) {
+    if (colunaEmFalta(error)) return { disponivel: false, valores: {} };
+    throw new Error(`Não foi possível ler os objetivos: ${error.message}`);
+  }
+  return {
+    disponivel: true,
+    valores: limparObjetivos((data as { objetivos?: unknown } | null)?.objetivos),
+  };
+}
+
+export async function saveObjetivos(userId: string, valores: Objetivos): Promise<void> {
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("profiles")
+    .update({ objetivos: limparObjetivos(valores) })
+    .eq("user_id", userId);
+
+  if (error) {
+    if (colunaEmFalta(error)) {
+      throw new Error("Os objetivos por medida ainda não estão disponíveis.");
+    }
+    throw new Error(`Não foi possível guardar os objetivos: ${error.message}`);
+  }
 }
 
 export async function getConsents(userId: string): Promise<Consent[]> {

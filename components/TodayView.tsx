@@ -10,6 +10,7 @@ import {
   latestReading,
   ritmo,
 } from "@/lib/series";
+import type { Objetivos } from "@/lib/profile";
 import type { Entry } from "@/lib/types";
 import EntryForm from "./EntryForm";
 import type { Fila } from "./fila";
@@ -32,15 +33,15 @@ export default function TodayView({
   entries,
   editing,
   onCancelEdit,
-  objetivoPeso,
+  objetivos,
   onAbrirEvolucao,
   fila,
 }: {
   entries: Entry[];
   editing: Entry | null;
   onCancelEdit: () => void;
-  /** Peso pretendido, do perfil: mostra a distancia no cartao do Peso. */
-  objetivoPeso: number | null;
+  /** Objetivo por metrica, do perfil: a distancia aparece em cada cartao. */
+  objetivos: Objetivos;
   /** Leva ao separador Evolucao -- o cartao de novidades fala dele. */
   onAbrirEvolucao: () => void;
   fila: Fila;
@@ -101,7 +102,7 @@ export default function TodayView({
             reading={latestReading(entries, HERO_METRIC)}
             delta={deltaOver(entries, HERO_METRIC, SHORT_WINDOW)}
             points={series[HERO_METRIC]}
-            objetivo={HERO_METRIC === "peso" ? objetivoPeso : null}
+            objetivo={objetivos[HERO_METRIC] ?? null}
             ritmo={ritmoHeroi}
           />
 
@@ -127,6 +128,7 @@ export default function TodayView({
                   reading={latestReading(entries, metric.id)}
                   delta={deltaOver(entries, metric.id, SHORT_WINDOW)}
                   points={series[metric.id]}
+                  objetivo={objetivos[metric.id] ?? null}
                 />
               ))}
             </div>

@@ -106,10 +106,13 @@ function ObjetivoLine({
   metric,
   reading,
   objetivo,
+  compacto = false,
 }: {
   metric: Metric;
   reading: Reading | null;
   objetivo: number;
+  /** Nos cartoes pequenos, sem o valor do objetivo: nao cabe em meia largura. */
+  compacto?: boolean;
 }) {
   const { mode } = useTheme();
   const chrome = CHROME[mode];
@@ -130,7 +133,8 @@ function ObjetivoLine({
   return (
     <span className="tabular text-xs" style={{ color: chrome.muted }}>
       <span aria-hidden>{arrow}</span> {formatValue(metric.id, Math.abs(diferenca))}{" "}
-      {metric.unit} até ao objetivo ({formatValue(metric.id, objetivo)} {metric.unit})
+      {metric.unit} até ao objetivo
+      {compacto ? null : ` (${formatValue(metric.id, objetivo)} ${metric.unit})`}
     </span>
   );
 }
@@ -293,11 +297,14 @@ export function MetricCard({
   reading,
   delta,
   points,
+  objetivo = null,
 }: {
   metric: Metric;
   reading: Reading | null;
   delta: Delta | null;
   points: Point[];
+  /** Objetivo desta metrica, se a pessoa o definiu. */
+  objetivo?: number | null;
 }) {
   const { mode } = useTheme();
   const chrome = CHROME[mode];
@@ -343,6 +350,13 @@ export function MetricCard({
       <div className="mt-1.5">
         <DeltaLine metric={metric} delta={delta} />
       </div>
+
+      {/* So quando ha objetivo: um cartao sem ele nao cresce uma linha vazia. */}
+      {objetivo !== null ? (
+        <div className="mt-1">
+          <ObjetivoLine metric={metric} reading={reading} objetivo={objetivo} compacto />
+        </div>
+      ) : null}
     </Card>
   );
 }

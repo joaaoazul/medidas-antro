@@ -83,3 +83,12 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 - A validacao da data aceita ate amanha, de proposito: corre no servidor, em
   UTC, e entre a meia-noite e a uma em Lisboa (verao) o browser ja esta no dia
   seguinte. Nao "corrigir" para `<= hoje`.
+- Uma coluna nova NUNCA entra em `PROFILE_COLUMNS` (nem em nenhuma leitura que
+  corra em todos os pedidos) enquanto a migracao que a cria puder estar por
+  aplicar em producao: le-se a parte, e `colunaEmFalta` (`lib/esquema.ts`) trata
+  o erro como "ainda nao disponivel". Foi assim que a coluna `objetivos` entrou.
+  O deploy na Vercel sai do `main` sozinho; a migracao aplica-se a mao.
+- Os objetivos sao um mapa por metrica (`Objetivos`). O do peso vive em
+  `objetivo_peso` e os outros em `objetivos`; so `app/page.tsx` junta os dois.
+  Nenhum componente deve voltar a ter um `=== "peso"` para decidir se desenha um
+  objetivo.
