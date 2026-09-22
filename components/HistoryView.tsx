@@ -111,8 +111,9 @@ export default function HistoryView({
       </div>
 
       <HistoryList entries={filtradas} onEdit={onEdit} aFiltrar={aFiltrar} />
-      {/* O total, e nao o filtrado: a copia de seguranca leva tudo. */}
-      <DataTransfer count={entries.length} />
+      {/* Todas, e nao as filtradas: a copia de seguranca leva tudo, e a
+          importacao de CSV compara com tudo o que ja existe. */}
+      <DataTransfer entries={entries} />
     </div>
   );
 }

@@ -1,4 +1,5 @@
-import { METRICS, METRIC_IDS } from "@/lib/metrics";
+import { escreverCsv } from "@/lib/csv";
+import { METRICS } from "@/lib/metrics";
 import { listEntries } from "@/lib/repo";
 
 /**
@@ -14,17 +15,9 @@ export async function GET(request: Request) {
   const stamp = new Date().toISOString().slice(0, 10);
 
   if (format === "csv") {
-    const header = ["data", "hora", ...METRIC_IDS, "nota"].join(",");
-    const lines = entries.map((entry) =>
-      [
-        entry.date,
-        entry.hora ?? "",
-        ...METRIC_IDS.map((id) => entry.values[id] ?? ""),
-        csvField(entry.nota ?? ""),
-      ].join(","),
-    );
-
-    return new Response([header, ...lines].join("\n"), {
+    // O escritor vive em lib/csv.ts, ao lado do leitor: o que se exporta e,
+    // por construcao e por teste, o que a importacao sabe ler.
+    return new Response(escreverCsv(entries), {
       headers: {
         "content-type": "text/csv; charset=utf-8",
         "content-disposition": `attachment; filename="medidas-${stamp}.csv"`,
@@ -41,10 +34,4 @@ export async function GET(request: Request) {
       },
     },
   );
-}
-
-/** Aspas e virgulas numa nota partiriam a linha do CSV. */
-function csvField(value: string): string {
-  if (!/[",\n]/.test(value)) return value;
-  return `"${value.replace(/"/g, '""')}"`;
 }

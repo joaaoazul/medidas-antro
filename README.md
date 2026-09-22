@@ -73,7 +73,8 @@ npm test                     # Vitest, só a lógica de lib/
 
 Os testes vivem em `tests/` e cobrem **a lógica pura**: agregação de séries,
 escala dos eixos, média móvel, ritmo e projeção, os oito insights com as suas
-guardas, datas, validação, a fila offline e as invariantes da paleta — e ainda
+guardas, datas, validação, a fila offline, o CSV (ida e volta incluída) e as
+invariantes da paleta — e ainda
 o contrato do endpoint de importação, de que a fila depende ao pormenor. É aí que estão as regras
 que se partem em silêncio -- nenhuma delas dá erro de compilação quando é
 desfeita. A interface exercita-se no browser, que é onde os erros dela aparecem.
@@ -154,8 +155,20 @@ Três separadores, um por pergunta:
   seletor de datas para isso.
 - Uma ficha por medição no telemóvel, tabela no ecrã grande, com editar e
   apagar. Editar leva a medição ao formulário, no separador Hoje.
-- Exportar JSON/CSV e importar JSON, para cópias de segurança e para levar os
-  dados para outro lado.
+- Exportar JSON/CSV e importar JSON ou CSV, para cópias de segurança e para
+  trazer dados de outro lado.
+- **Importar CSV** foi pensado para o caso real em Portugal: uma folha de Excel
+  guardada como CSV, com `;`, vírgula decimal e datas `22/09/2026`. Lê também o
+  CSV da própria app, cabeçalhos com unidades (`Peso (kg)`, `% Gordura`) e
+  sinónimos comuns (`cintura`, `weight`). **Antes de importar, mostra o que vai
+  entrar**: quantas medições novas e de quando a quando, quantas já existem, que
+  linhas têm erros e porquê, que colunas ficaram de fora. Uma linha é igual a
+  uma medição existente se cada valor que traz coincidir — uma folha que só
+  regista o peso não contradiz a gordura que a balança pôs na app, tem menos.
+  Reimportar o próprio CSV não traz nada de novo. As datas sem ser ISO lêem-se
+  com o dia primeiro: `03/04/2026` é 3 de abril.
+- O CSV exportado começa com o BOM de UTF-8, sem o qual o Excel abre os acentos
+  estragados.
 
 **Definições** (`/conta`, pela engrenagem no cabeçalho) — tudo o que é da conta.
 Ficam fora dos separadores de propósito: são coisas que se visitam de vez em
@@ -347,6 +360,7 @@ lib/
   texto.ts           comparação de texto sem acentos, para a pesquisa
   form-entry.ts      do formulário a uma medição validada — partilhado pela action e pela fila
   fila-offline.ts    medições guardadas no aparelho enquanto não há rede
+  csv.ts             ler e escrever CSV, e separar o novo do que já existe
   dates.ts           dias de calendário em AAAA-MM-DD, sem fusos horários
 components/
   Dashboard.tsx      casca: cabeçalho, separadores e a vista ativa
