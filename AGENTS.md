@@ -17,7 +17,14 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
   diretamente fora dessa fronteira.
 - Antes de mexer em cores ou eixos dos gráficos, ler a secção "Notas sobre os
   gráficos" do README: a paleta e a regra do eixo único são deliberadas.
-- `npm run lint` e `npm run build` têm de passar limpos.
+- `npm run lint`, `npm test` e `npm run build` têm de passar limpos.
+- Os testes (`tests/`, Vitest) cobrem só a lógica pura de `lib/`: séries,
+  insights, datas, validação e as invariantes da paleta. É aí que estão as
+  regras subtis que se partem em silêncio -- a folga da escala, a tolerância da
+  variação, os limiares de cada insight. Mexer numa dessas funções sem correr
+  os testes é a forma mais rápida de desfazer uma decisão documentada sem dar
+  por isso. Componentes não se testam aqui: exercitam-se no browser, pela razão
+  abaixo.
 - `app/actions.ts` tem `"use server"`: so pode exportar funcoes assincronas.
   Tudo o que um modulo desses exporta vira um ponto de entrada chamavel a partir
   do cliente, por isso exportar de la uma constante compila, passa no lint e

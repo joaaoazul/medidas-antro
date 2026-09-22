@@ -68,7 +68,14 @@ escolhe `exemplo/medidas-exemplo.json` (240 dias de dados fictícios, gerados).
 ```bash
 npm run build && npm start   # produção
 npm run lint
+npm test                     # Vitest, só a lógica de lib/
 ```
+
+Os testes vivem em `tests/` e cobrem **só a lógica pura**: agregação de séries,
+escala dos eixos, média móvel, ritmo e projeção, os oito insights com as suas
+guardas, datas, validação e as invariantes da paleta. É aí que estão as regras
+que se partem em silêncio -- nenhuma delas dá erro de compilação quando é
+desfeita. A interface exercita-se no browser, que é onde os erros dela aparecem.
 
 Uma nota para quem mexer no código: `app/actions.ts` é um módulo `"use server"`
 e só pode exportar funções assíncronas — exportar uma constante de lá compila,
