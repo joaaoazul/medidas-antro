@@ -295,8 +295,16 @@ Verificado no próprio projeto, numa transação revertida no fim:
 | A lê o perfil de B | não vê nada |
 | A lê os consentimentos de B | não vê nada |
 | A tenta reescrever um consentimento já dado | não altera nada |
+| A grava os próprios objetivos por medida | a política deixa passar |
+| A tenta gravar os objetivos de B | não altera nada |
+| Os objetivos gravados como lista e não objeto | recusado pela restrição |
 
-O *security advisor* da Supabase está limpo (zero alertas).
+O *security advisor* da Supabase não aponta nada às políticas nem às tabelas.
+Tem dois avisos (verificado a 2026-09-22): a função
+`limpar_password_temporaria` é `SECURITY DEFINER` e chamável por qualquer
+utilizador autenticado — e, de facto, não confirma que a palavra-passe mudou
+antes de limpar a marca (ver *Pendentes*, abaixo) —, e a proteção contra
+palavras-passe divulgadas (HaveIBeenPwned) está desligada na Auth.
 
 **Cópias de segurança.** A Supabase faz as suas, mas a exportação da app
 (JSON/CSV) é a tua — e é também a forma de levar os dados para outro lado. O
@@ -380,8 +388,9 @@ exemplo/             conjunto de dados de demonstração e imagens do README
 
 ## Migrações que o código aguenta por aplicar
 
-`0004_objetivos_por_metrica.sql` acrescenta a coluna `objetivos` a `profiles`.
-O código foi feito para chegar a produção **antes** dela: a coluna nunca entra
+`0004_objetivos_por_metrica.sql` acrescenta a coluna `objetivos` a `profiles`
+(aplicada a 2026-09-22). O código foi feito para chegar a produção **antes**
+dela, e o padrão fica para as próximas: a coluna nunca entra
 na leitura do perfil que corre em todos os pedidos (onde uma coluna em falta
 deitava abaixo todas as páginas), lê-se à parte, e o erro de coluna inexistente
 (`42703`) quer dizer só "ainda não disponível". As definições não mostram os
@@ -399,6 +408,23 @@ livre da paleta e o `genero` do rótulo — "o perímetro abdominal" mas "a mass
 muscular", e qualquer frase que nomeie a métrica precisa de concordar. O formulário, os cartões, os gráficos, a tabela, a exportação e
 as consultas seguem daí. Falta só a coluna na base de dados: uma migração nova
 em `supabase/migrations/` com `alter table public.entries add column ...`.
+
+## Pendentes
+
+**A mudança obrigatória da palavra-passe pode ser saltada.** A função
+`limpar_password_temporaria` limpa a marca de palavra-passe temporária de quem
+a chama, mas não confirma que a palavra-passe mudou de facto. A app só a chama
+depois de uma mudança bem sucedida — mas quem tem a temporária pode chamar
+`POST /rest/v1/rpc/limpar_password_temporaria` diretamente e ficar com ela, que
+o administrador viu e que foi enviada por mensagem. Não dá acesso aos dados de
+ninguém: só a pessoa a salta, e só para a própria conta. Mas a garantia de que
+o administrador deixa de conhecer a palavra-passe de quem entrou não está, hoje,
+imposta pela base de dados.
+
+A correção é a base de dados verificar o que hoje presume: guardar, quando o
+administrador define a temporária, uma impressão do `encrypted_password` de
+`auth.users`, e a função só limpar a marca se o valor atual for outro. Mexe
+na autenticação em produção, por isso fica aqui descrita e não aplicada.
 
 ## Nota legal
 

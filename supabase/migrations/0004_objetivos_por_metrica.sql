@@ -1,4 +1,5 @@
 -- Objetivos por metrica.
+-- Aplicado no projeto em 2026-09-22 (versao 20260922212515).
 --
 -- O peso pretendido continua em `objetivo_peso`: o onboarding escreve-o, tem a
 -- sua restricao de intervalo, e mexer-lhe obrigava a migrar dados sem ganho
