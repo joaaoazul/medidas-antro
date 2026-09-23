@@ -16,6 +16,7 @@ import EntryForm from "./EntryForm";
 import type { Fila } from "./fila";
 import FilaPendente from "./FilaPendente";
 import { HeroCard, MetricCard } from "./MetricCard";
+import type { Tab } from "./Nav";
 import Novidades from "./Novidades";
 import { CHROME, useTheme } from "./theme";
 import { Card } from "./ui";
@@ -34,7 +35,8 @@ export default function TodayView({
   editing,
   onCancelEdit,
   objetivos,
-  onAbrirEvolucao,
+  onAbrir,
+  alturaCm,
   fila,
 }: {
   entries: Entry[];
@@ -42,8 +44,10 @@ export default function TodayView({
   onCancelEdit: () => void;
   /** Objetivo por metrica, do perfil: a distancia aparece em cada cartao. */
   objetivos: Objetivos;
-  /** Leva ao separador Evolucao -- o cartao de novidades fala dele. */
-  onAbrirEvolucao: () => void;
+  /** Muda de separador -- o cartao de novidades leva a cada novidade. */
+  onAbrir: (tab: Tab) => void;
+  /** Para o insight de exemplo das novidades usar o racio, se o houver. */
+  alturaCm: number | null;
   fila: Fila;
 }) {
   const { mode } = useTheme();
@@ -80,8 +84,9 @@ export default function TodayView({
        * figura heroi da vista: nao e um numero, e um aviso, e desaparece de vez.
        */}
       <Novidades
-        points={series[HERO_METRIC]}
-        onAbrirEvolucao={onAbrirEvolucao}
+        entries={entries}
+        alturaCm={alturaCm}
+        onAbrir={onAbrir}
       />
 
       {entries.length === 0 ? (

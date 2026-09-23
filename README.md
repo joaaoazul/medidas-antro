@@ -89,9 +89,11 @@ estado partilhado com o formulário vive em `lib/form-state.ts`.
 Três separadores, um por pergunta:
 
 **Hoje** — como estou, e já registei?
-- Um cartão de **novidades** no topo, com uma demonstração da linha de
-  tendência desenhada com as medições de quem está a ler, e os atalhos para a
-  Evolução, para Aprender e para Ferramentas. Fecha-se num toque e não volta até haver versão nova
+- Um cartão de **novidades** no topo. A demonstração é um insight real, tirado
+  dos registos de quem está a ler — mostrar o que a app leu prova mais do que
+  dizer que ela lê. O resto é uma linha curta por novidade, cada uma a levar ao
+  sítio onde a funcionalidade está, e o cartão tem de deixar o peso a espreitar
+  por baixo. Fecha-se num toque e não volta até haver versão nova
   (`NOVIDADES_VERSAO`, em `lib/novidades.ts` — subir o número fá-lo reaparecer a
   toda a gente). O estado fica no browser, não no perfil: é uma conveniência de
   leitura, e o preço é reaparecer uma vez em cada dispositivo novo.

@@ -10,7 +10,7 @@
  * cada dispositivo novo, que e barato ao pe de uma migracao e de uma escrita
  * na base de dados por cada toque num X.
  */
-export const NOVIDADES_VERSAO = "1";
+export const NOVIDADES_VERSAO = "2";
 
 export const NOVIDADES_KEY = "medidas-novidades";
 

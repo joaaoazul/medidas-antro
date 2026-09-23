@@ -111,7 +111,8 @@ export default function Dashboard({
             editing={editing}
             onCancelEdit={() => setEditing(null)}
             objetivos={objetivos}
-            onAbrirEvolucao={() => setTab("evolucao")}
+            onAbrir={setTab}
+            alturaCm={alturaCm}
             fila={fila}
           />
         ) : null}
