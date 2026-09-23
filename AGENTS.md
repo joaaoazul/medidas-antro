@@ -104,4 +104,9 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 - A marca `medidas-utilizador` (id da conta, no localStorage) e escrita pelo
   painel e apagada pelo botao de sair. E so por ela que a pagina offline sabe
   em que fila guardar; sem ela, nao deixa registar.
-
+- A mudanca obrigatoria da palavra-passe e imposta pela base de dados (migracao
+  0005): ao marcar a conta como temporaria, um trigger guarda uma impressao do
+  hash em `auth.users`, e `limpar_password_temporaria` recusa enquanto for o
+  mesmo. Por isso, em `app/admin/actions.ts`, marcar a conta vem SEMPRE depois
+  de mudar a palavra-passe. As impressoes vivem no schema `privado`: nunca o
+  expor na API nem dar-lhe permissoes a `anon`/`authenticated`.

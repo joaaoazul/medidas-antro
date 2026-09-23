@@ -241,6 +241,9 @@ sem isso, uma página nova ficava para sempre na versão antiga nos telemóveis.
 temporária que aparece **uma só vez** no ecrã — não fica guardada legível em
 lado nenhum, nem na base de dados nem em registos. Quem a receber é obrigado a
 mudá-la na primeira entrada, antes de chegar a qualquer outra parte da app.
+A base de dados impõe-no: a marca de temporária só sai quando a palavra-passe
+em `auth.users` já não é a que lá estava quando a conta foi marcada (migração
+`0005`, abaixo). Chamar a API diretamente não salta o passo.
 
 **Não há recuperação automática de palavra-passe.** Quem se esquecer pede ao
 administrador, que repõe uma nova temporária. A página de entrada diz isso em
@@ -306,6 +309,11 @@ Verificado no próprio projeto, numa transação revertida no fim:
 | A escreve na própria conta | a política deixa passar |
 | A tenta promover-se a administrador | bloqueado |
 | A tenta limpar a marca de palavra-passe temporária | não altera nada |
+| A, com a temporária, chama `limpar_password_temporaria` sem a mudar | recusado ("ainda é a temporária") |
+| O administrador repõe duas vezes seguidas e A tenta limpar | recusado (vale a impressão da última) |
+| A tenta ler as impressões guardadas | recusado (schema `privado`, sem permissões) |
+| A muda mesmo a palavra-passe e a app limpa a marca | limpa, e a impressão é apagada |
+| Visitante sem sessão chama a função | recusado |
 | A lê o perfil de B | não vê nada |
 | A lê os consentimentos de B | não vê nada |
 | A tenta reescrever um consentimento já dado | não altera nada |
@@ -314,11 +322,20 @@ Verificado no próprio projeto, numa transação revertida no fim:
 | Os objetivos gravados como lista e não objeto | recusado pela restrição |
 
 O *security advisor* da Supabase não aponta nada às políticas nem às tabelas.
-Tem dois avisos (verificado a 2026-09-22): a função
-`limpar_password_temporaria` é `SECURITY DEFINER` e chamável por qualquer
-utilizador autenticado — e, de facto, não confirma que a palavra-passe mudou
-antes de limpar a marca (ver *Pendentes*, abaixo) —, e a proteção contra
-palavras-passe divulgadas (HaveIBeenPwned) está desligada na Auth.
+Os avisos que restam (verificado a 2026-09-23) são conhecidos:
+
+- `limpar_password_temporaria` é `SECURITY DEFINER` e chamável por qualquer
+  utilizador autenticado. É de propósito: é a própria pessoa que a chama depois
+  de mudar a palavra-passe, e a tabela onde vive a marca não aceita escritas de
+  utilizadores. Desde a `0005`, a função confirma que a palavra-passe mudou
+  antes de limpar — chamá-la à mão não serve de nada.
+- `privado.password_temporaria_marcas` tem RLS ligado e nenhuma política
+  (nível INFO). Também de propósito: ninguém a lê pela API; só as duas funções
+  da `0005` lhe tocam.
+- A proteção contra palavras-passe divulgadas (HaveIBeenPwned) está desligada
+  na Auth. Não se liga por SQL: é um interruptor no painel da Supabase, em
+  *Authentication → Sign In / Providers → Email → Prevent use of leaked
+  passwords* (disponível no plano Pro).
 
 **Cópias de segurança.** A Supabase faz as suas, mas a exportação da app
 (JSON/CSV) é a tua — e é também a forma de levar os dados para outro lado. O
@@ -426,22 +443,26 @@ muscular", e qualquer frase que nomeie a métrica precisa de concordar. O formul
 as consultas seguem daí. Falta só a coluna na base de dados: uma migração nova
 em `supabase/migrations/` com `alter table public.entries add column ...`.
 
-## Pendentes
+## A mudança obrigatória da palavra-passe
 
-**A mudança obrigatória da palavra-passe pode ser saltada.** A função
-`limpar_password_temporaria` limpa a marca de palavra-passe temporária de quem
-a chama, mas não confirma que a palavra-passe mudou de facto. A app só a chama
-depois de uma mudança bem sucedida — mas quem tem a temporária pode chamar
-`POST /rest/v1/rpc/limpar_password_temporaria` diretamente e ficar com ela, que
-o administrador viu e que foi enviada por mensagem. Não dá acesso aos dados de
-ninguém: só a pessoa a salta, e só para a própria conta. Mas a garantia de que
-o administrador deixa de conhecer a palavra-passe de quem entrou não está, hoje,
-imposta pela base de dados.
+Até à migração `0005`, a função `limpar_password_temporaria` limpava a marca de
+temporária de quem a chamasse sem confirmar que a palavra-passe tinha mudado. A
+app só a chamava depois de uma mudança bem sucedida — mas quem tinha a
+temporária podia chamar `POST /rest/v1/rpc/limpar_password_temporaria`
+diretamente e ficar com ela, que o administrador viu e que foi enviada por
+mensagem.
 
-A correção é a base de dados verificar o que hoje presume: guardar, quando o
-administrador define a temporária, uma impressão do `encrypted_password` de
-`auth.users`, e a função só limpar a marca se o valor atual for outro. Mexe
-na autenticação em produção, por isso fica aqui descrita e não aplicada.
+`0005_impor_mudanca_de_password.sql` (aplicada a 2026-09-23) faz a base de
+dados verificar o que antes presumia. Quando uma conta é marcada como
+temporária, um trigger guarda uma impressão (sha256) do `encrypted_password`
+de `auth.users`; a função só limpa a marca se o valor atual for outro. As
+impressões vivem no schema `privado`, que a API não expõe e a que `anon` e
+`authenticated` não têm acesso nenhum.
+
+Depende de uma ordem que `app/admin/actions.ts` cumpre: criar conta e repor a
+palavra-passe mudam **primeiro** a palavra-passe e **só depois** marcam a conta.
+Marcar antes de mudar guardava a impressão da palavra-passe antiga, e a pessoa
+podia limpar a marca sem tocar na nova.
 
 ## Nota legal
 

@@ -22,7 +22,14 @@ function palavraPasseTemporaria(): string {
   return `${grupo()}-${grupo()}-${grupo()}`;
 }
 
-/** Marca a conta como tendo palavra-passe posta pelo administrador. */
+/**
+ * Marca a conta como tendo palavra-passe posta pelo administrador.
+ *
+ * Chamar SEMPRE depois de mudar a palavra-passe, nunca antes. Ao marcar, a base
+ * de dados guarda uma impressao da palavra-passe que esta em auth.users
+ * (migracao 0005), e so deixa limpar a marca quando ela for outra. Marcar antes
+ * guardava a impressao da antiga, e a temporaria ficava por proteger.
+ */
 async function marcarTemporaria(userId: string) {
   const admin = createAdminClient();
   const { error } = await admin

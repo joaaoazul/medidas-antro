@@ -97,8 +97,10 @@ const passwordSchema = z
  *
  * Usada tanto na mudanca obrigatoria da palavra-passe temporaria como numa
  * mudanca voluntaria. A marca de temporaria e limpa por uma funcao da base de
- * dados, porque a tabela onde vive nao aceita escritas de utilizadores -- e e
- * isso que impede alguem de fingir que ja a mudou.
+ * dados, porque a tabela onde vive nao aceita escritas de utilizadores. E a
+ * funcao que impede alguem de fingir que ja a mudou: recusa enquanto a
+ * palavra-passe for a que estava quando a conta foi marcada (migracao 0005).
+ * Chama-la sem passar por aqui -- direto na API -- nao serve de nada.
  */
 export async function changePassword(
   _prev: ActionState,
