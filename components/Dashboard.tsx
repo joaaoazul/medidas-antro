@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { MARCA_UTILIZADOR } from "@/lib/fila-offline";
 import { longLabel, todayISO } from "@/lib/dates";
 import type { Objetivos } from "@/lib/profile";
 import type { Entry } from "@/lib/types";
@@ -50,6 +51,16 @@ export default function Dashboard({
   // Aqui, e nao no separador Hoje: a casca esta sempre montada, por isso a
   // rede a voltar e ouvida seja qual for o separador aberto.
   const fila = useFila(userId);
+
+  // A pagina offline e estatica e nao ve a sessao: e por esta marca que sabe
+  // em que fila guardar. O botao de sair apaga-a.
+  useEffect(() => {
+    try {
+      localStorage.setItem(MARCA_UTILIZADOR, userId);
+    } catch {
+      // Sem armazenamento, a pagina offline diz que ainda nao da para registar.
+    }
+  }, [userId]);
 
   function editar(entry: Entry) {
     setEditing(entry);

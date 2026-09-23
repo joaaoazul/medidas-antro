@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="pt-PT">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sem rede - Medidas</title>
+<!--
+  A pagina que o service worker (public/sw.js) mostra quando se abre a app
+  sem rede.
+
+  E estatica e igual para toda a gente DE PROPOSITO. O service worker so guarda
+  esta pagina: nenhuma pagina da app, nenhuma resposta da API. As paginas da app
+  trazem as medidas todas la dentro, e guarda-las no aparelho era deixar dados
+  de saude de alguem la ficar depois de sair da conta.
+
+  Nao depende do runtime do Next nem de nada que precise de rede: CSS e JS
+  estao aqui dentro. Deixa registar o gesto do dia -- peso, abdomen, gordura --
+  para a mesma fila por conta que a app usa, e a app envia-a quando abrir com
+  rede.
+
+  Os valores partilhados com a app estao no bloco JSON abaixo, e
+  tests/offline-page.test.ts compara-os com lib/: a chave da fila, a marca do
+  utilizador, o tema e os limites de cada medida. Mudar isto obriga tambem a
+  mudar a VERSAO em public/sw.js -- o teste obriga a isso.
+-->
+<script type="application/json" id="configuracao">
+{
+  "filaPrefixo": "medidas-fila:",
+  "marcaUtilizador": "medidas-utilizador",
+  "tema": "medidas-theme",
+  "metricas": [
+    { "id": "peso", "label": "Peso", "short": "Peso", "unit": "kg", "min": 20, "max": 400 },
+    { "id": "abdomen", "label": "Perímetro abdominal", "short": "Abdómen", "unit": "cm", "min": 30, "max": 250 },
+    { "id": "gordura", "label": "Gordura corporal", "short": "Gordura", "unit": "%", "min": 1, "max": 70 }
+  ],
+  "todas": ["peso", "abdomen", "gordura", "musculo", "peito", "anca", "braco", "coxa"]
+}
+</script>
+<script>
+  // O tema antes da primeira pintura, como na app.
+  try {
+    var t = localStorage.getItem("medidas-theme");
+    if (t === "dark" || t === "light") document.documentElement.dataset.theme = t;
+  } catch (e) {}
+</script>
+<style>
+  :root {
+    color-scheme: light;
+    --plane: #f9f9f7;
+    --surface-1: #fcfcfb;
+    --text-primary: #0b0b0b;
+    --text-secondary: #52514e;
+    --text-muted: #898781;
+    --border: rgba(11, 11, 11, 0.1);
+    --erro: #d03b3b;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --plane: #0d0d0d;
+      --surface-1: #1a1a19;
+      --text-primary: #ffffff;
+      --text-secondary: #c3c2b7;
+      --text-muted: #898781;
+      --border: rgba(255, 255, 255, 0.1);
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --plane: #0d0d0d;
+    --surface-1: #1a1a19;
+    --text-primary: #ffffff;
+    --text-secondary: #c3c2b7;
+    --text-muted: #898781;
+    --border: rgba(255, 255, 255, 0.1);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--plane);
+    color: var(--text-primary);
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  main { max-width: 28rem; margin: 0 auto; padding: 2rem 1rem 3rem; }
+  .cartao {
+    background: var(--surface-1);
+    border: 1px solid var(--border);
+    border-radius: 1rem;
+    padding: 1.25rem;
+    margin-top: 1rem;
+  }
+  h1 { font-size: 1.25rem; font-weight: 600; margin: 1rem 0 0.25rem; }
+  h2 { font-size: 1rem; font-weight: 600; margin: 0 0 0.75rem; }
+  p { margin: 0.25rem 0 0; font-size: 0.875rem; line-height: 1.5; color: var(--text-secondary); }
+  .grelha { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+  label { display: flex; flex-direction: column; gap: 0.375rem; font-size: 0.75rem; font-weight: 500; color: var(--text-secondary); }
+  input, textarea {
+    min-height: 44px;
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: 0.75rem;
+    background: var(--plane);
+    color: var(--text-primary);
+    padding: 0 0.75rem;
+    font: inherit;
+    font-size: 1rem;
+    font-variant-numeric: tabular-nums;
+  }
+  textarea { padding: 0.5rem 0.75rem; min-height: 3.5rem; }
+  .espaco { margin-top: 0.75rem; }
+  button {
+    min-height: 44px;
+    border-radius: 0.75rem;
+    padding: 0 1rem;
+    font: inherit;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+  }
+  .primario { background: var(--text-primary); color: var(--plane); border: 0; width: 100%; margin-top: 1rem; }
+  .secundario { background: transparent; color: var(--text-secondary); border: 1px solid var(--border); }
+  .estado { margin-top: 0.75rem; font-size: 0.875rem; min-height: 1.25rem; }
+  .estado.erro { color: var(--erro); }
+  .discreto { color: var(--text-muted); font-size: 0.75rem; }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<main>
+  <svg width="36" height="36" viewBox="0 0 32 32" aria-hidden="true">
+    <rect x="1" y="1" width="30" height="30" rx="9" fill="currentColor"/>
+    <path d="M7.5 20.5l5-7 4 4 7-9.5" fill="none" stroke="#2a78d6" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="23.5" cy="8" r="2.8" fill="#2a78d6"/>
+  </svg>
+
+  <h1>Sem rede</h1>
+  <p>A app precisa de ligação para mostrar os teus registos. A medida de hoje podes registá-la já: fica guardada neste aparelho e segue sozinha quando a app abrir com rede.</p>
+
+  <section class="cartao" id="sem-conta" hidden>
+    <h2>Ainda não dá para registar sem rede</h2>
+    <p>Abre a app uma vez com rede e com a sessão iniciada. A partir daí, podes registar aqui mesmo sem ligação.</p>
+  </section>
+
+  <form class="cartao" id="formulario" hidden novalidate>
+    <h2>Registar medidas</h2>
+    <div class="grelha">
+      <label>Data<input type="date" name="date" required></label>
+      <label>Hora<input type="time" name="hora" required></label>
+    </div>
+    <div class="grelha espaco" id="campos"></div>
+    <label class="espaco">Nota (opcional)<textarea name="nota" maxlength="500" rows="2"></textarea></label>
+    <button type="submit" class="primario">Guardar neste aparelho</button>
+    <p class="estado" id="estado" role="status" aria-live="polite"></p>
+  </form>
+
+  <p class="discreto espaco" id="pendentes" hidden></p>
+
+  <div class="espaco">
+    <button type="button" class="secundario" id="tentar">Tentar abrir a app</button>
+  </div>
+</main>
+
+<script>
+(function () {
+  "use strict";
+  var cfg = JSON.parse(document.getElementById("configuracao").textContent);
+
+  function ler(chave) {
+    try { return localStorage.getItem(chave); } catch (e) { return null; }
+  }
+
+  var uid = ler(cfg.marcaUtilizador);
+  var chaveFila = uid ? cfg.filaPrefixo + uid : null;
+
+  document.getElementById("tentar").addEventListener("click", function () {
+    location.replace("/");
+  });
+  // Quando a rede volta, a app a serio abre sozinha -- e e ela que envia a fila.
+  window.addEventListener("online", function () { location.replace("/"); });
+
+  if (!chaveFila) {
+    document.getElementById("sem-conta").hidden = false;
+    return;
+  }
+
+  var form = document.getElementById("formulario");
+  var estado = document.getElementById("estado");
+  form.hidden = false;
+
+  cfg.metricas.forEach(function (m) {
+    var l = document.createElement("label");
+    // O rotulo curto no campo, como no formulario da app; o completo fica
+    // para as mensagens de erro.
+    l.textContent = m.short + " (" + m.unit + ")";
+    var i = document.createElement("input");
+    i.type = "text";
+    i.name = m.id;
+    i.inputMode = "decimal";
+    i.autocomplete = "off";
+    i.placeholder = "--";
+    l.appendChild(i);
+    document.getElementById("campos").appendChild(l);
+  });
+
+  function dois(n) { return String(n).padStart(2, "0"); }
+  function preencherAgora() {
+    var d = new Date();
+    var hoje = d.getFullYear() + "-" + dois(d.getMonth() + 1) + "-" + dois(d.getDate());
+    form.date.value = hoje;
+    form.date.max = hoje;
+    form.hora.value = dois(d.getHours()) + ":" + dois(d.getMinutes());
+  }
+
+  function lerFila() {
+    try {
+      var l = JSON.parse(ler(chaveFila) || "[]");
+      return Array.isArray(l) ? l : [];
+    } catch (e) { return []; }
+  }
+
+  function mostrarPendentes() {
+    var n = lerFila().filter(function (p) { return !p.falha; }).length;
+    var el = document.getElementById("pendentes");
+    el.hidden = n === 0;
+    el.textContent = n === 1
+      ? "1 medição guardada neste aparelho, à espera de rede."
+      : n + " medições guardadas neste aparelho, à espera de rede.";
+  }
+
+  function avisar(texto, erro) {
+    estado.textContent = texto;
+    estado.className = erro ? "estado erro" : "estado";
+  }
+
+  // "82,4" lê-se como em portugues; vazio e medida por fazer, nunca zero.
+  function numero(texto) {
+    var t = String(texto || "").trim().replace(",", ".");
+    if (t === "") return null;
+    var n = Number(t);
+    return isFinite(n) ? n : NaN;
+  }
+
+  form.addEventListener("submit", function (ev) {
+    ev.preventDefault();
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(form.date.value)) return avisar("Escolhe a data.", true);
+    if (!/^\d{2}:\d{2}$/.test(form.hora.value)) return avisar("Escolhe a hora.", true);
+
+    var values = {};
+    cfg.todas.forEach(function (id) { values[id] = null; });
+    var algum = false;
+    for (var k = 0; k < cfg.metricas.length; k++) {
+      var m = cfg.metricas[k];
+      var v = numero(form[m.id].value);
+      if (v !== v) return avisar(m.label + ": valor não é um número.", true);
+      if (v !== null && (v < m.min || v > m.max)) {
+        return avisar(m.label + " tem de estar entre " + m.min + " e " + m.max + " " + m.unit + ".", true);
+      }
+      if (v !== null) algum = true;
+      values[m.id] = v;
+    }
+    if (!algum) return avisar("Preenche pelo menos uma medida.", true);
+
+    var nota = form.nota.value.trim();
+    // A mesma forma que lib/fila-offline.ts guarda: a app envia-a tal e qual.
+    var pendente = {
+      entrada: {
+        id: crypto.randomUUID(),
+        date: form.date.value,
+        hora: form.hora.value,
+        nota: nota === "" ? null : nota,
+        values: values
+      },
+      guardadaEm: new Date().toISOString()
+    };
+
+    var fila = lerFila();
+    fila.push(pendente);
+    try {
+      localStorage.setItem(chaveFila, JSON.stringify(fila));
+    } catch (e) {
+      return avisar("Este aparelho não deixou guardá-la. Tenta outra vez quando tiveres ligação.", true);
+    }
+
+    form.reset();
+    preencherAgora();
+    avisar("Guardada neste aparelho. Segue sozinha quando a app abrir com rede.", false);
+    mostrarPendentes();
+  });
+
+  preencherAgora();
+  mostrarPendentes();
+})();
+</script>
+</body>
+</html>

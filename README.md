@@ -215,11 +215,23 @@ aparelho, e quatro decisões protegem-na:
 e com rede intermitente a ordem entre "apagar esta" e "gravar outra" deixava de
 ser garantida. Sem rede, diz que não apagou.
 
-**Não há service worker**, e por isso abrir a app sem rede nenhuma continua a não
-funcionar — resolveu-se gravar sem rede com a app já aberta, que é o caso real.
-Um service worker que guardasse as páginas guardava também as medidas de quem
-as viu, no aparelho, depois de sair da conta. É uma decisão que merece ser
-tomada de propósito, não de passagem.
+**Abrir a app sem rede nenhuma** — o caso de todas as manhãs, porque o telemóvel
+fecha as apps em segundo plano e a app instalada arranca do zero — mostra uma
+página própria em vez do erro do browser, e **deixa registar** peso, abdómen e
+gordura para a mesma fila. Quando a rede volta, a app abre sozinha e envia.
+
+O *service worker* (`public/sw.js`) faz só isto, e o que **não** faz é a decisão
+que importa: nunca guarda páginas da app nem respostas da API. As páginas trazem
+as medidas todas lá dentro, e guardá-las no aparelho deixava dados de saúde lá
+ficar depois de sair da conta. Guarda uma única página, `public/offline.html`,
+estática e igual para toda a gente.
+
+Essa página não vê a sessão, por isso sabe em que fila guardar por uma marca
+com o id da conta, que o painel escreve ao abrir e o botão de sair apaga — só
+existe enquanto há alguém com sessão iniciada neste aparelho. Como é estática,
+tem uma cópia da chave da fila e dos limites das medidas; um teste compara-a com
+`lib/`, e outro obriga a `VERSAO` do `sw.js` a acompanhar o conteúdo da página —
+sem isso, uma página nova ficava para sempre na versão antiga nos telemóveis.
 
 ## Contas, consentimento e onboarding
 
@@ -372,6 +384,9 @@ lib/
   form-entry.ts      do formulário a uma medição validada — partilhado pela action e pela fila
   fila-offline.ts    medições guardadas no aparelho enquanto não há rede
   csv.ts             ler e escrever CSV, e separar o novo do que já existe
+public/
+  sw.js              service worker: só a página offline, nada com dados
+  offline.html       estática; regista sem rede para a fila de quem tem sessão
   esquema.ts         reconhecer uma coluna que a migração ainda não criou
   dates.ts           dias de calendário em AAAA-MM-DD, sem fusos horários
 components/

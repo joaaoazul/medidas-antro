@@ -92,3 +92,16 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
   `objetivo_peso` e os outros em `objetivos`; so `app/page.tsx` junta os dois.
   Nenhum componente deve voltar a ter um `=== "peso"` para decidir se desenha um
   objetivo.
+- O service worker (`public/sw.js`) so guarda `public/offline.html`. Nunca
+  acrescentar cache de paginas da app nem de respostas da API: vem renderizadas
+  com as medidas de quem as viu, e ficavam no aparelho depois de sair da conta.
+  `tests/offline-page.test.ts` falha se aparecer um `cache.put`.
+- `public/offline.html` e estatica e tem copias (chave da fila, marca do
+  utilizador, tema, limites das medidas). Mudar qualquer uma em `lib/` obriga a
+  muda-la la -- o teste compara. E qualquer mudanca a pagina obriga a por em
+  `VERSAO` do `sw.js` o inicio do novo sha256 dela
+  (`sha256sum public/offline.html | cut -c1-12`); o teste tambem falha sem isso.
+- A marca `medidas-utilizador` (id da conta, no localStorage) e escrita pelo
+  painel e apagada pelo botao de sair. E so por ela que a pagina offline sabe
+  em que fila guardar; sem ela, nao deixa registar.
+

@@ -49,6 +49,16 @@ export function chave(userId: string): string {
   return `medidas-fila:${userId}`;
 }
 
+/**
+ * Quem tem a sessao aberta neste aparelho.
+ *
+ * A pagina offline (public/offline.html) e estatica e nao ve a sessao: sem
+ * isto, nao saberia em que fila por conta guardar a medicao. Escreve-a o
+ * painel ao abrir, apaga-a o botao de sair -- por isso so existe enquanto ha
+ * alguem com sessao iniciada. Nao e um dado de saude: e o id da conta.
+ */
+export const MARCA_UTILIZADOR = "medidas-utilizador";
+
 /** A fila de uma conta. Conteudo ilegivel e tratado como fila vazia. */
 export function ler(armazem: Armazem, userId: string): Pendente[] {
   try {

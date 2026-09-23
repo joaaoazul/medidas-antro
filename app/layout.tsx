@@ -5,6 +5,7 @@ import {
   NOVIDADES_KEY,
   NOVIDADES_VERSAO,
 } from "@/lib/novidades";
+import RegistarSW from "@/components/RegistarSW";
 import "./globals.css";
 
 const outfit = Outfit({
@@ -82,7 +83,10 @@ export default function RootLayout({
         <InlineScript html={themeScript} />
         <InlineScript html={novidadesScript} />
       </head>
-      <body className="min-h-screen antialiased">{children}</body>
+      <body className="min-h-screen antialiased">
+        {children}
+        <RegistarSW />
+      </body>
     </html>
   );
 }

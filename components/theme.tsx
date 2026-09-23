@@ -4,7 +4,8 @@ import { useCallback, useSyncExternalStore } from "react";
 
 export type Mode = "light" | "dark";
 
-const STORAGE_KEY = "medidas-theme";
+/** Exportada para a pagina offline -- estatica -- poder ler o mesmo tema. */
+export const STORAGE_KEY = "medidas-theme";
 
 /**
  * O tema nao e estado do React: vive no dataset do <html> (escrito antes da

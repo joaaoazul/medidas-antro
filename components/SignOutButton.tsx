@@ -2,6 +2,7 @@
 
 import { useFormStatus } from "react-dom";
 import { signOut } from "@/app/auth/actions";
+import { MARCA_UTILIZADOR } from "@/lib/fila-offline";
 import { CHROME, useTheme } from "./theme";
 
 function Submit({ compact }: { compact: boolean }) {
@@ -60,7 +61,18 @@ export default function SignOutButton({
   compact?: boolean;
 }) {
   return (
-    <form action={signOut}>
+    <form
+      action={signOut}
+      // Antes de sair, a marca: sem ela, a pagina offline deixava de guardar na
+      // fila de quem saiu. A fila em si fica, a espera da dona.
+      onSubmit={() => {
+        try {
+          localStorage.removeItem(MARCA_UTILIZADOR);
+        } catch {
+          // Nada a apagar.
+        }
+      }}
+    >
       <Submit compact={compact} />
     </form>
   );

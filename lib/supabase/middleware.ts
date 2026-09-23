@@ -18,6 +18,11 @@ const PUBLIC_PATHS = [
   // para /entrar, e a app nunca se instalava. Nao tem nada de ninguem: nome,
   // cores e icones.
   "/manifest.webmanifest",
+  // O service worker e a pagina que ele mostra sem rede. Tem de se poder ir
+  // buscar sem sessao: atras dela, o service worker guardava o redirect para
+  // /entrar no lugar da pagina offline. Nenhum dos dois tem nada de ninguem.
+  "/sw.js",
+  "/offline.html",
 ];
 
 /**

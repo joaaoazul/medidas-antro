@@ -13,11 +13,10 @@ import type { MetadataRoute } from "next";
  * segura (o circulo de 80% ao centro), por isso o mesmo ficheiro serve de
  * icone normal e de icone "maskable".
  *
- * Nao ha service worker. Abrir a app sem rede nenhuma continua a nao
- * funcionar -- o que se resolveu foi gravar sem rede com a app ja aberta, que e
- * o caso real. Um service worker que guardasse as paginas guardava tambem as
- * medidas de quem as viu, no aparelho, depois de sair da conta; e uma decisao
- * que merece ser tomada de proposito, nao de passagem.
+ * Abrir a app sem rede mostra public/offline.html, pelo service worker
+ * (public/sw.js), que deixa registar a medida do dia. O service worker so
+ * guarda essa pagina, estatica e igual para toda a gente: nunca as paginas da
+ * app, que trazem as medidas de quem as viu.
  */
 export default function manifest(): MetadataRoute.Manifest {
   return {
