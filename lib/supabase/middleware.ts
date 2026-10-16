@@ -16,6 +16,14 @@ const PUBLIC_PATHS = [
 ];
 
 /**
+ * Tempo maximo para falar com a Supabase a partir do middleware. Se o projeto
+ * estiver pausado ou inacessivel, o pedido ficaria pendurado ate a plataforma o
+ * cortar com um timeout, e a app inteira ficava em baixo (todos os pedidos
+ * passam aqui). Melhor falhar depressa e tratar como "sem sessao".
+ */
+const SUPABASE_TIMEOUT_MS = 3000;
+
+/**
  * Renova a sessao em cada pedido e guarda as rotas privadas.
  *
  * Os tokens da Supabase expiram ao fim de uma hora. Sem isto, quem deixasse o
@@ -29,6 +37,18 @@ export async function updateSession(request: NextRequest) {
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
+      global: {
+        fetch: (input, init) =>
+          fetch(input, {
+            ...init,
+            signal: init?.signal
+              ? AbortSignal.any([
+                  init.signal,
+                  AbortSignal.timeout(SUPABASE_TIMEOUT_MS),
+                ])
+              : AbortSignal.timeout(SUPABASE_TIMEOUT_MS),
+          }),
+      },
       cookies: {
         getAll() {
           return request.cookies.getAll();
@@ -49,9 +69,15 @@ export async function updateSession(request: NextRequest) {
   // getUser() valida o token contra o servidor da Supabase. getSession() apenas
   // le o cookie, que quem esta do outro lado do ecra tambem consegue escrever,
   // por isso nao serve para decidir quem entra.
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  // Se a Supabase falhar ou demorar, tratamos como sem sessao: as rotas
+  // privadas redirecionam para /entrar (publica) em vez de pendurar o pedido.
+  let user = null;
+  try {
+    const { data } = await supabase.auth.getUser();
+    user = data.user;
+  } catch {
+    user = null;
+  }
 
   const { pathname } = request.nextUrl;
   const isPublic = PUBLIC_PATHS.some(
