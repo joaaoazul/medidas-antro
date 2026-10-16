@@ -13,6 +13,9 @@ const PUBLIC_PATHS = [
   // Conteudo informativo geral, sem dados de ninguem -- nao ha razao para
   // ficar atras de sessao, e um endereco publico tambem se pode enviar.
   "/artigos",
+  // Chamado pelo cron da Vercel, que nao tem sessao. A propria rota exige o
+  // CRON_SECRET.
+  "/api/keep-alive",
 ];
 
 /**

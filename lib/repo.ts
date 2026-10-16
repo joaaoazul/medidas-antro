@@ -218,3 +218,20 @@ export async function deleteAllEntries(): Promise<number> {
 
   return data?.length ?? 0;
 }
+
+/**
+ * Faz uma consulta minima a base de dados, sem sessao.
+ *
+ * Existe so para o plano gratuito da Supabase nao pausar o projeto por
+ * inatividade. Com a chave anonima e sem sessao, as politicas de seguranca
+ * devolvem zero linhas -- o que conta e o pedido chegar ao Postgres.
+ */
+export async function pingDatabase(): Promise<void> {
+  const supabase = await createClient();
+
+  const { error } = await supabase
+    .from("entries")
+    .select("id", { count: "exact", head: true });
+
+  if (error) throw new Error(`Base de dados inacessível: ${error.message}`);
+}
